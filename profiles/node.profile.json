@@ -1,0 +1,11 @@
+{
+  "schema_version": "1.0.0",
+  "name": "node",
+  "description": "Base environment plus a pinned Node.js toolchain",
+  "extends": ["base"],
+  "include": ["node-toolchain"],
+  "exclude": [],
+  "platforms": ["linux/amd64", "linux/arm64"],
+  "projections": ["docker", "devcontainer", "nix", "workstation"],
+  "constraints": {"allow_privileged": false, "allow_services": false, "secrets": "forbidden"}
+}

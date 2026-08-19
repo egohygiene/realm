@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.egohygiene.io/realm/resolved-profile.v1.schema.json",
+  "title": "Resolved Realm profile v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "catalog_version", "profile", "lineage", "platform", "projection", "capabilities", "packages", "artifacts", "source_pins", "constraints"],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "catalog_version": {"type": "string"},
+    "profile": {"type": "string"},
+    "lineage": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "platform": {"type": "string"},
+    "projection": {"type": "string"},
+    "capabilities": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "packages": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "version", "source", "capability"],
+        "properties": {
+          "name": {"type": "string"},
+          "version": {"type": "string"},
+          "source": {"type": "string"},
+          "capability": {"type": "string"}
+        }
+      }
+    },
+    "source_pins": {"type": "object", "additionalProperties": {"type": "string"}},
+    "constraints": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["privileged", "services", "secrets"],
+      "properties": {
+        "privileged": {"type": "boolean"},
+        "services": {"type": "boolean"},
+        "secrets": {"const": "forbidden"}
+      }
+    }
+  }
+}
