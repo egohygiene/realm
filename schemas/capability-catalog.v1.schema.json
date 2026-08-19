@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.egohygiene.io/realm/capability-catalog.v1.schema.json",
+  "title": "Realm capability catalog v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "catalog_version", "platforms", "projections", "source_pins", "capabilities"],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "catalog_version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+    "platforms": {"$ref": "#/$defs/uniqueStrings"},
+    "projections": {"$ref": "#/$defs/uniqueStrings"},
+    "source_pins": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {"type": "string", "minLength": 1}
+    },
+    "capabilities": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {"$ref": "#/$defs/capability"}
+    }
+  },
+  "$defs": {
+    "uniqueStrings": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true
+    },
+    "capability": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["version", "kind", "owner", "requires", "conflicts", "platforms", "projections", "packages", "artifacts", "constraints"],
+      "properties": {
+        "version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+        "kind": {"enum": ["foundation", "toolset", "language", "shell", "service"]},
+        "owner": {"type": "string", "pattern": "^[a-z0-9_.-]+/[a-z0-9_.-]+$"},
+        "requires": {"$ref": "#/$defs/uniqueStrings"},
+        "conflicts": {"$ref": "#/$defs/uniqueStrings"},
+        "platforms": {"$ref": "#/$defs/uniqueStrings"},
+        "projections": {"$ref": "#/$defs/uniqueStrings"},
+        "packages": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["apt", "nix", "brew"],
+          "properties": {
+            "apt": {"$ref": "#/$defs/uniqueStrings"},
+            "nix": {"$ref": "#/$defs/uniqueStrings"},
+            "brew": {"$ref": "#/$defs/uniqueStrings"}
+          }
+        },
+        "artifacts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name", "version", "source"],
+            "properties": {
+              "name": {"type": "string", "minLength": 1},
+              "version": {"type": "string", "minLength": 1},
+              "source": {"type": "string", "minLength": 1}
+            }
+          }
+        },
+        "constraints": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["privileged", "services"],
+          "properties": {
+            "privileged": {"type": "boolean"},
+            "services": {"type": "boolean"}
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,158 @@
+{
+  "schema_version": "1.0.0",
+  "catalog_version": "1.0.0",
+  "platforms": ["linux/amd64", "linux/arm64"],
+  "projections": ["docker", "devcontainer", "nix", "workstation"],
+  "source_pins": {
+    "debian": "https://snapshot.debian.org/archive/debian/20260818T000000Z/",
+    "nixpkgs": "github:NixOS/nixpkgs@0000000000000000000000000000000000000000",
+    "homebrew-core": "github:Homebrew/homebrew-core@0000000000000000000000000000000000000000"
+  },
+  "capabilities": {
+    "realm-base": {
+      "version": "1.0.0",
+      "kind": "foundation",
+      "owner": "egohygiene/realm",
+      "requires": [],
+      "conflicts": [],
+      "platforms": ["linux/amd64", "linux/arm64"],
+      "projections": ["docker", "devcontainer", "nix", "workstation"],
+      "packages": {
+        "apt": ["ca-certificates", "curl", "gnupg"],
+        "nix": ["cacert", "curl", "gnupg"],
+        "brew": ["curl", "gnupg"]
+      },
+      "artifacts": [],
+      "constraints": {"privileged": false, "services": false}
+    },
+    "common-cli": {
+      "version": "1.0.0",
+      "kind": "toolset",
+      "owner": "egohygiene/realm",
+      "requires": ["realm-base"],
+      "conflicts": [],
+      "platforms": ["linux/amd64", "linux/arm64"],
+      "projections": ["docker", "devcontainer", "nix", "workstation"],
+      "packages": {
+        "apt": ["file", "git-lfs", "jq", "openssh-client", "rsync", "tree", "unzip", "wget", "xz-utils", "zip"],
+        "nix": ["file", "git-lfs", "jq", "openssh", "rsync", "tree", "unzip", "wget", "xz", "zip"],
+        "brew": ["git-lfs", "jq", "rsync", "tree", "wget", "xz"]
+      },
+      "artifacts": [],
+      "constraints": {"privileged": false, "services": false}
+    },
+    "build-toolchain": {
+      "version": "1.0.0",
+      "kind": "toolset",
+      "owner": "egohygiene/realm",
+      "requires": ["realm-base"],
+      "conflicts": [],
+      "platforms": ["linux/amd64", "linux/arm64"],
+      "projections": ["docker", "devcontainer", "nix", "workstation"],
+      "packages": {
+        "apt": ["build-essential", "ccache", "clang", "clang-format", "clang-tidy", "cmake", "make", "ninja-build", "pkg-config"],
+        "nix": ["ccache", "clang", "cmake", "gnumake", "ninja", "pkg-config"],
+        "brew": ["ccache", "clang-format", "cmake", "ninja", "pkg-config"]
+      },
+      "artifacts": [],
+      "constraints": {"privileged": false, "services": false}
+    },
+    "rust-toolchain": {
+      "version": "1.0.0",
+      "kind": "language",
+      "owner": "egohygiene/realm",
+      "requires": ["build-toolchain"],
+      "conflicts": [],
+      "platforms": ["linux/amd64", "linux/arm64"],
+      "projections": ["docker", "devcontainer", "nix", "workstation"],
+      "packages": {"apt": [], "nix": ["rustup"], "brew": ["rustup"]},
+      "artifacts": [
+        {"name": "rustup", "version": "1.28.2", "source": "https://github.com/rust-lang/rustup@1.28.2"}
+      ],
+      "constraints": {"privileged": false, "services": false}
+    },
+    "node-toolchain": {
+      "version": "1.0.0",
+      "kind": "language",
+      "owner": "egohygiene/realm",
+      "requires": ["build-toolchain"],
+      "conflicts": [],
+      "platforms": ["linux/amd64", "linux/arm64"],
+      "projections": ["docker", "devcontainer", "nix", "workstation"],
+      "packages": {"apt": [], "nix": ["nodejs_24", "corepack"], "brew": ["node@24"]},
+      "artifacts": [
+        {"name": "node", "version": "24.6.0", "source": "https://github.com/nodejs/node@v24.6.0"}
+      ],
+      "constraints": {"privileged": false, "services": false}
+    },
+    "python-toolchain": {
+      "version": "1.0.0",
+      "kind": "language",
+      "owner": "egohygiene/realm",
+      "requires": ["build-toolchain"],
+      "conflicts": [],
+      "platforms": ["linux/amd64", "linux/arm64"],
+      "projections": ["docker", "devcontainer", "nix", "workstation"],
+      "packages": {
+        "apt": ["python3", "python3-pip", "python3-venv"],
+        "nix": ["python313", "uv"],
+        "brew": ["python@3.13", "uv"]
+      },
+      "artifacts": [],
+      "constraints": {"privileged": false, "services": false}
+    },
+    "cloud-cli": {
+      "version": "1.0.0",
+      "kind": "toolset",
+      "owner": "egohygiene/realm",
+      "requires": ["common-cli"],
+      "conflicts": [],
+      "platforms": ["linux/amd64", "linux/arm64"],
+      "projections": ["docker", "devcontainer", "nix", "workstation"],
+      "packages": {"apt": [], "nix": ["awscli2", "google-cloud-sdk", "opentofu", "pulumi-bin"], "brew": ["awscli", "google-cloud-sdk", "opentofu", "pulumi"]},
+      "artifacts": [
+        {"name": "opentofu", "version": "1.10.6", "source": "https://github.com/opentofu/opentofu@v1.10.6"},
+        {"name": "pulumi", "version": "3.196.0", "source": "https://github.com/pulumi/pulumi@v3.196.0"}
+      ],
+      "constraints": {"privileged": false, "services": false}
+    },
+    "media-toolchain": {
+      "version": "1.0.0",
+      "kind": "toolset",
+      "owner": "egohygiene/realm",
+      "requires": ["common-cli"],
+      "conflicts": [],
+      "platforms": ["linux/amd64", "linux/arm64"],
+      "projections": ["docker", "devcontainer", "nix", "workstation"],
+      "packages": {"apt": ["ffmpeg", "imagemagick"], "nix": ["ffmpeg", "imagemagick"], "brew": ["ffmpeg", "imagemagick"]},
+      "artifacts": [],
+      "constraints": {"privileged": false, "services": false}
+    },
+    "mantle-shell": {
+      "version": "0.1.0",
+      "kind": "shell",
+      "owner": "egohygiene/mantle",
+      "requires": ["common-cli"],
+      "conflicts": [],
+      "platforms": ["linux/amd64", "linux/arm64"],
+      "projections": ["docker", "devcontainer", "nix", "workstation"],
+      "packages": {"apt": [], "nix": [], "brew": []},
+      "artifacts": [
+        {"name": "mantle", "version": "0.1.0", "source": "https://github.com/egohygiene/mantle@0000000000000000000000000000000000000000"}
+      ],
+      "constraints": {"privileged": false, "services": false}
+    },
+    "container-host": {
+      "version": "1.0.0",
+      "kind": "service",
+      "owner": "egohygiene/realm",
+      "requires": ["common-cli"],
+      "conflicts": [],
+      "platforms": ["linux/amd64", "linux/arm64"],
+      "projections": ["devcontainer", "nix", "workstation"],
+      "packages": {"apt": ["docker.io"], "nix": ["docker"], "brew": ["docker"]},
+      "artifacts": [],
+      "constraints": {"privileged": true, "services": true}
+    }
+  }
+}

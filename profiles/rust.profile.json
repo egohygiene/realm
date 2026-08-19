@@ -1,0 +1,11 @@
+{
+  "schema_version": "1.0.0",
+  "name": "rust",
+  "description": "Base environment plus a pinned Rust toolchain",
+  "extends": ["base"],
+  "include": ["rust-toolchain"],
+  "exclude": [],
+  "platforms": ["linux/amd64", "linux/arm64"],
+  "projections": ["docker", "devcontainer", "nix", "workstation"],
+  "constraints": {"allow_privileged": false, "allow_services": false, "secrets": "forbidden"}
+}

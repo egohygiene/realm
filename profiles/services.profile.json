@@ -1,0 +1,11 @@
+{
+  "schema_version": "1.0.0",
+  "name": "services",
+  "description": "Explicit opt-in host/service capabilities; never inherited by full",
+  "extends": ["base"],
+  "include": ["container-host"],
+  "exclude": [],
+  "platforms": ["linux/amd64", "linux/arm64"],
+  "projections": ["devcontainer", "nix", "workstation"],
+  "constraints": {"allow_privileged": true, "allow_services": true, "secrets": "forbidden"}
+}

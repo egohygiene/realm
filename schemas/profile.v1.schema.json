@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.egohygiene.io/realm/profile.v1.schema.json",
+  "title": "Realm profile v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "name", "description", "extends", "include", "exclude", "platforms", "projections", "constraints"],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "name": {"type": "string", "pattern": "^[a-z][a-z0-9-]*$"},
+    "description": {"type": "string", "minLength": 1},
+    "extends": {"$ref": "#/$defs/uniqueNames"},
+    "include": {"$ref": "#/$defs/uniqueNames"},
+    "exclude": {"$ref": "#/$defs/uniqueNames"},
+    "platforms": {"$ref": "#/$defs/uniqueNames"},
+    "projections": {"$ref": "#/$defs/uniqueNames"},
+    "constraints": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["allow_privileged", "allow_services", "secrets"],
+      "properties": {
+        "allow_privileged": {"type": "boolean"},
+        "allow_services": {"type": "boolean"},
+        "secrets": {"const": "forbidden"}
+      }
+    }
+  },
+  "$defs": {
+    "uniqueNames": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true
+    }
+  }
+}
