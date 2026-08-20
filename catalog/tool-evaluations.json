@@ -61,6 +61,32 @@
       "rationale": "Superseded by the maintained Compose v2 plugin architecture; do not add the legacy client to stable profiles.",
       "tests": []
     },
+    "docker-compose-v2": {
+      "display_name": "Docker Compose v2",
+      "purpose": "Compose multi-container development services when a service-enabled profile explicitly requests them.",
+      "category": "containers",
+      "source": "https://github.com/docker/compose",
+      "version_source": null,
+      "license": "Apache-2.0",
+      "platforms": ["linux/amd64", "linux/arm64"],
+      "security": {
+        "risk": "high",
+        "privileged": false,
+        "network_access": false,
+        "notes": "Compose can control the configured container engine; keep it out of non-service profiles unless explicitly required."
+      },
+      "maintenance": {
+        "upstream": "docker/compose",
+        "review_cadence": "before-adoption",
+        "last_reviewed": "2026-08-20"
+      },
+      "overlap": ["docker-compose-v1"],
+      "profile_candidate": "services",
+      "status": "experimental",
+      "owner": "egohygiene/realm",
+      "rationale": "Preferred Compose architecture, but Realm has not yet pinned and tested the plugin as a stable profile capability.",
+      "tests": []
+    },
     "ffmpeg": {
       "display_name": "FFmpeg",
       "purpose": "Provide media inspection, transcoding, extraction, and conversion capabilities for media-oriented repositories.",
@@ -137,7 +163,7 @@
       "status": "accepted",
       "owner": "egohygiene/realm",
       "rationale": "Pinned runtime already represented by the node-toolchain capability and directly owned by the Node profile.",
-      "tests": ["tests/test_realm_profiles.py::test_resolve_node_profile"]
+      "tests": ["tests/test_realm_profiles.py::RealmProfileTests.test_catalog_and_profiles_are_valid"]
     },
     "opentofu": {
       "display_name": "OpenTofu",
@@ -159,11 +185,11 @@
         "last_reviewed": "2026-08-20"
       },
       "overlap": ["pulumi"],
-      "profile_candidate": "cloud",
+      "profile_candidate": "full",
       "status": "accepted",
       "owner": "egohygiene/realm",
       "rationale": "Pinned artifact already declared by the cloud-cli capability. Stable inclusion is tooling-only and does not grant apply authority.",
-      "tests": ["tests/test_realm_profiles.py::test_full_profile_is_deterministic"]
+      "tests": ["tests/test_realm_profiles.py::RealmProfileTests.test_full_is_deterministic_and_dependency_ordered"]
     },
     "pulumi": {
       "display_name": "Pulumi",
@@ -185,11 +211,11 @@
         "last_reviewed": "2026-08-20"
       },
       "overlap": ["opentofu"],
-      "profile_candidate": "cloud",
+      "profile_candidate": "full",
       "status": "accepted",
       "owner": "egohygiene/realm",
       "rationale": "Pinned artifact already declared by the cloud-cli capability; inclusion supports consumers without making Pulumi mandatory.",
-      "tests": ["tests/test_realm_profiles.py::test_full_profile_is_deterministic"]
+      "tests": ["tests/test_realm_profiles.py::RealmProfileTests.test_full_is_deterministic_and_dependency_ordered"]
     },
     "rustup": {
       "display_name": "rustup",
@@ -215,7 +241,33 @@
       "status": "accepted",
       "owner": "egohygiene/realm",
       "rationale": "Pinned artifact already represented by the rust-toolchain capability and directly owned by the Rust profile.",
-      "tests": ["tests/test_realm_profiles.py::test_resolve_rust_profile"]
+      "tests": ["tests/test_realm_profiles.py::RealmProfileTests.test_language_profile_inherits_base"]
+    },
+    "strace": {
+      "display_name": "strace",
+      "purpose": "Provide bounded process-level syscall diagnostics for Linux development and debugging.",
+      "category": "observability",
+      "source": "https://strace.io/",
+      "version_source": null,
+      "license": "LGPL-2.1-or-later",
+      "platforms": ["linux/amd64", "linux/arm64"],
+      "security": {
+        "risk": "medium",
+        "privileged": false,
+        "network_access": false,
+        "notes": "Tracing may expose sensitive process arguments or data; use intentionally and do not persist traces by default."
+      },
+      "maintenance": {
+        "upstream": "strace",
+        "review_cadence": "before-adoption",
+        "last_reviewed": "2026-08-20"
+      },
+      "overlap": ["sysdig"],
+      "profile_candidate": "diagnostics",
+      "status": "experimental",
+      "owner": "egohygiene/realm",
+      "rationale": "Lower-privilege diagnostics candidate; stable inclusion waits for a diagnostics profile and exact package lock.",
+      "tests": []
     },
     "sysdig": {
       "display_name": "Sysdig",
