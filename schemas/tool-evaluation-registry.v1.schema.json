@@ -1,0 +1,95 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://realm.egohygiene.io/schemas/tool-evaluation-registry.v1.schema.json",
+  "title": "Realm Tool Evaluation Registry v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "registry_version", "statuses", "tools"],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "registry_version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+    "statuses": {
+      "type": "array",
+      "const": ["accepted", "experimental", "deferred", "rejected", "superseded"]
+    },
+    "tools": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {"$ref": "#/$defs/tool"}
+    }
+  },
+  "$defs": {
+    "security": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["risk", "privileged", "network_access", "notes"],
+      "properties": {
+        "risk": {"enum": ["low", "medium", "high"]},
+        "privileged": {"type": "boolean"},
+        "network_access": {"type": "boolean"},
+        "notes": {"type": "string", "minLength": 1}
+      }
+    },
+    "maintenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["upstream", "review_cadence", "last_reviewed"],
+      "properties": {
+        "upstream": {"type": "string", "minLength": 1},
+        "review_cadence": {"type": "string", "minLength": 1},
+        "last_reviewed": {"type": "string", "format": "date"}
+      }
+    },
+    "tool": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "display_name",
+        "purpose",
+        "category",
+        "source",
+        "version_source",
+        "license",
+        "platforms",
+        "security",
+        "maintenance",
+        "overlap",
+        "profile_candidate",
+        "status",
+        "owner",
+        "rationale",
+        "tests"
+      ],
+      "properties": {
+        "display_name": {"type": "string", "minLength": 1},
+        "purpose": {"type": "string", "minLength": 1},
+        "category": {"type": "string", "minLength": 1},
+        "source": {"type": "string", "minLength": 1},
+        "version_source": {"type": ["string", "null"]},
+        "license": {"type": "string", "minLength": 1},
+        "platforms": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "security": {"$ref": "#/$defs/security"},
+        "maintenance": {"$ref": "#/$defs/maintenance"},
+        "overlap": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "profile_candidate": {"type": "string", "minLength": 1},
+        "status": {"enum": ["accepted", "experimental", "deferred", "rejected", "superseded"]},
+        "owner": {"type": "string", "minLength": 1},
+        "rationale": {"type": "string", "minLength": 1},
+        "tests": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        }
+      }
+    }
+  }
+}
