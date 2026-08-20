@@ -1,0 +1,273 @@
+{
+  "schema_version": "1.0.0",
+  "registry_version": "1.0.0",
+  "statuses": [
+    "accepted",
+    "experimental",
+    "deferred",
+    "rejected",
+    "superseded"
+  ],
+  "tools": {
+    "aws-cli": {
+      "display_name": "AWS CLI",
+      "purpose": "Operate and inspect AWS resources from approved cloud-oriented development profiles.",
+      "category": "cloud",
+      "source": "https://github.com/aws/aws-cli-v2",
+      "version_source": null,
+      "license": "Apache-2.0",
+      "platforms": ["linux/amd64", "linux/arm64"],
+      "security": {
+        "risk": "medium",
+        "privileged": false,
+        "network_access": true,
+        "notes": "Credentials must remain external to Realm images and repository source."
+      },
+      "maintenance": {
+        "upstream": "aws/aws-cli",
+        "review_cadence": "quarterly",
+        "last_reviewed": "2026-08-20"
+      },
+      "overlap": [],
+      "profile_candidate": "cloud",
+      "status": "experimental",
+      "owner": "egohygiene/realm",
+      "rationale": "Useful cloud client already represented in the capability catalog, but stable inclusion waits for an immutable package/version lock and smoke test.",
+      "tests": []
+    },
+    "docker-compose-v1": {
+      "display_name": "Docker Compose v1",
+      "purpose": "Legacy Python-based Docker Compose client.",
+      "category": "containers",
+      "source": "https://github.com/docker/compose",
+      "version_source": null,
+      "license": "Apache-2.0",
+      "platforms": ["linux/amd64", "linux/arm64"],
+      "security": {
+        "risk": "medium",
+        "privileged": false,
+        "network_access": false,
+        "notes": "Legacy client is no longer the preferred Docker Compose architecture."
+      },
+      "maintenance": {
+        "upstream": "docker/compose",
+        "review_cadence": "on-demand",
+        "last_reviewed": "2026-08-20"
+      },
+      "overlap": ["docker-compose-v2"],
+      "profile_candidate": "services",
+      "status": "superseded",
+      "owner": "egohygiene/realm",
+      "rationale": "Superseded by the maintained Compose v2 plugin architecture; do not add the legacy client to stable profiles.",
+      "tests": []
+    },
+    "ffmpeg": {
+      "display_name": "FFmpeg",
+      "purpose": "Provide media inspection, transcoding, extraction, and conversion capabilities for media-oriented repositories.",
+      "category": "media",
+      "source": "https://ffmpeg.org/",
+      "version_source": null,
+      "license": "LGPL-2.1-or-later / GPL-2.0-or-later depending on build",
+      "platforms": ["linux/amd64", "linux/arm64"],
+      "security": {
+        "risk": "medium",
+        "privileged": false,
+        "network_access": false,
+        "notes": "Treat untrusted media as hostile input and keep decoder exposure current through package updates."
+      },
+      "maintenance": {
+        "upstream": "FFmpeg",
+        "review_cadence": "quarterly",
+        "last_reviewed": "2026-08-20"
+      },
+      "overlap": [],
+      "profile_candidate": "media",
+      "status": "experimental",
+      "owner": "egohygiene/realm",
+      "rationale": "Already represented in the media capability, but stable inclusion waits for exact package locking and representative smoke tests.",
+      "tests": []
+    },
+    "google-cloud-cli": {
+      "display_name": "Google Cloud CLI",
+      "purpose": "Operate and inspect Google Cloud resources from approved cloud-oriented development profiles.",
+      "category": "cloud",
+      "source": "https://github.com/GoogleCloudPlatform/cloud-sdk-docker",
+      "version_source": null,
+      "license": "Apache-2.0 and component-specific licenses",
+      "platforms": ["linux/amd64", "linux/arm64"],
+      "security": {
+        "risk": "medium",
+        "privileged": false,
+        "network_access": true,
+        "notes": "Authentication state and application-default credentials must not be baked into images."
+      },
+      "maintenance": {
+        "upstream": "Google Cloud SDK",
+        "review_cadence": "quarterly",
+        "last_reviewed": "2026-08-20"
+      },
+      "overlap": [],
+      "profile_candidate": "cloud",
+      "status": "experimental",
+      "owner": "egohygiene/realm",
+      "rationale": "Already represented in the capability catalog, but a stable immutable source and architecture-specific validation are not yet recorded.",
+      "tests": []
+    },
+    "node": {
+      "display_name": "Node.js",
+      "purpose": "Provide the JavaScript/TypeScript runtime required by Node-based repositories and tooling.",
+      "category": "language",
+      "source": "https://github.com/nodejs/node",
+      "version_source": "https://github.com/nodejs/node@v24.6.0",
+      "license": "MIT",
+      "platforms": ["linux/amd64", "linux/arm64"],
+      "security": {
+        "risk": "low",
+        "privileged": false,
+        "network_access": false,
+        "notes": "Package-manager credentials and registries remain consumer configuration."
+      },
+      "maintenance": {
+        "upstream": "nodejs/node",
+        "review_cadence": "monthly",
+        "last_reviewed": "2026-08-20"
+      },
+      "overlap": [],
+      "profile_candidate": "node",
+      "status": "accepted",
+      "owner": "egohygiene/realm",
+      "rationale": "Pinned runtime already represented by the node-toolchain capability and directly owned by the Node profile.",
+      "tests": ["tests/test_realm_profiles.py::test_resolve_node_profile"]
+    },
+    "opentofu": {
+      "display_name": "OpenTofu",
+      "purpose": "Provide a Terraform-compatible infrastructure-as-code client for cloud and infrastructure development.",
+      "category": "cloud",
+      "source": "https://github.com/opentofu/opentofu",
+      "version_source": "https://github.com/opentofu/opentofu@v1.10.6",
+      "license": "MPL-2.0",
+      "platforms": ["linux/amd64", "linux/arm64"],
+      "security": {
+        "risk": "high",
+        "privileged": false,
+        "network_access": true,
+        "notes": "Can mutate remote infrastructure; Realm supplies tooling only. Credentials, state, apply authorization, and IaC modules belong outside the image."
+      },
+      "maintenance": {
+        "upstream": "opentofu/opentofu",
+        "review_cadence": "monthly",
+        "last_reviewed": "2026-08-20"
+      },
+      "overlap": ["pulumi"],
+      "profile_candidate": "cloud",
+      "status": "accepted",
+      "owner": "egohygiene/realm",
+      "rationale": "Pinned artifact already declared by the cloud-cli capability. Stable inclusion is tooling-only and does not grant apply authority.",
+      "tests": ["tests/test_realm_profiles.py::test_full_profile_is_deterministic"]
+    },
+    "pulumi": {
+      "display_name": "Pulumi",
+      "purpose": "Provide a programmable infrastructure-as-code client for repositories that explicitly choose Pulumi.",
+      "category": "cloud",
+      "source": "https://github.com/pulumi/pulumi",
+      "version_source": "https://github.com/pulumi/pulumi@v3.196.0",
+      "license": "Apache-2.0",
+      "platforms": ["linux/amd64", "linux/arm64"],
+      "security": {
+        "risk": "high",
+        "privileged": false,
+        "network_access": true,
+        "notes": "Can mutate remote infrastructure; credentials, backends, policy, state, and deployment intent remain consumer concerns."
+      },
+      "maintenance": {
+        "upstream": "pulumi/pulumi",
+        "review_cadence": "monthly",
+        "last_reviewed": "2026-08-20"
+      },
+      "overlap": ["opentofu"],
+      "profile_candidate": "cloud",
+      "status": "accepted",
+      "owner": "egohygiene/realm",
+      "rationale": "Pinned artifact already declared by the cloud-cli capability; inclusion supports consumers without making Pulumi mandatory.",
+      "tests": ["tests/test_realm_profiles.py::test_full_profile_is_deterministic"]
+    },
+    "rustup": {
+      "display_name": "rustup",
+      "purpose": "Install and select pinned Rust toolchains for Rust development profiles.",
+      "category": "language",
+      "source": "https://github.com/rust-lang/rustup",
+      "version_source": "https://github.com/rust-lang/rustup@1.28.2",
+      "license": "MIT OR Apache-2.0",
+      "platforms": ["linux/amd64", "linux/arm64"],
+      "security": {
+        "risk": "low",
+        "privileged": false,
+        "network_access": true,
+        "notes": "Toolchain downloads must be versioned by the consuming profile; avoid curl-to-shell installation paths in image builds."
+      },
+      "maintenance": {
+        "upstream": "rust-lang/rustup",
+        "review_cadence": "monthly",
+        "last_reviewed": "2026-08-20"
+      },
+      "overlap": [],
+      "profile_candidate": "rust",
+      "status": "accepted",
+      "owner": "egohygiene/realm",
+      "rationale": "Pinned artifact already represented by the rust-toolchain capability and directly owned by the Rust profile.",
+      "tests": ["tests/test_realm_profiles.py::test_resolve_rust_profile"]
+    },
+    "sysdig": {
+      "display_name": "Sysdig",
+      "purpose": "Provide host/container runtime inspection when an explicit privileged diagnostic profile is justified.",
+      "category": "observability",
+      "source": "https://github.com/draios/sysdig",
+      "version_source": null,
+      "license": "Apache-2.0",
+      "platforms": ["linux/amd64", "linux/arm64"],
+      "security": {
+        "risk": "high",
+        "privileged": true,
+        "network_access": false,
+        "notes": "Full functionality may require kernel access or elevated capabilities; never make the default development image privileged for this tool."
+      },
+      "maintenance": {
+        "upstream": "draios/sysdig",
+        "review_cadence": "before-adoption",
+        "last_reviewed": "2026-08-20"
+      },
+      "overlap": ["strace"],
+      "profile_candidate": "diagnostics-privileged",
+      "status": "deferred",
+      "owner": "egohygiene/realm",
+      "rationale": "Potentially useful diagnostics do not justify expanding default runtime privileges. Revisit only with a bounded opt-in profile and consumer requirement.",
+      "tests": []
+    },
+    "terraform": {
+      "display_name": "Terraform",
+      "purpose": "HashiCorp Terraform infrastructure-as-code client.",
+      "category": "cloud",
+      "source": "https://github.com/hashicorp/terraform",
+      "version_source": null,
+      "license": "BUSL-1.1 for current upstream releases",
+      "platforms": ["linux/amd64", "linux/arm64"],
+      "security": {
+        "risk": "high",
+        "privileged": false,
+        "network_access": true,
+        "notes": "Infrastructure mutation and state concerns are equivalent to other IaC clients."
+      },
+      "maintenance": {
+        "upstream": "hashicorp/terraform",
+        "review_cadence": "on-demand",
+        "last_reviewed": "2026-08-20"
+      },
+      "overlap": ["opentofu"],
+      "profile_candidate": "cloud",
+      "status": "rejected",
+      "owner": "egohygiene/realm",
+      "rationale": "Do not add a second Terraform-compatible client to the stable profile without a concrete compatibility requirement. OpenTofu currently satisfies the generic capability with a pinned source.",
+      "tests": []
+    }
+  }
+}
