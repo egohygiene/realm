@@ -1,0 +1,52 @@
+{
+  "schema_version": "1.0.0",
+  "distribution": "debian",
+  "release": "trixie",
+  "snapshot": "20260829T120000Z",
+  "security_snapshot": "20260829T120000Z",
+  "source_pins": {
+    "archive": "debian",
+    "security": "debian-security",
+    "base_image": "devcontainers-base"
+  },
+  "repositories": {
+    "archive": {
+      "suites": ["trixie", "trixie-updates"],
+      "components": ["main"],
+      "inrelease_sha256": {
+        "trixie": "98b25b5cd185c59d34aa6e4c3e9b5b8f01bbe9d104fe2dcfbcd30dc0a14a59ed",
+        "trixie-updates": "15a8d5e42c0d69f6bc92d7c62bb53846d1bbda09ef7bd43036a95b752ff72ef1"
+      }
+    },
+    "security": {
+      "suites": ["trixie-security"],
+      "components": ["main"],
+      "inrelease_sha256": {
+        "trixie-security": "0b92d3ff6ff5f544ad4d84714672bd6bb136fd1518dd23b1586dd7e578eaa66c"
+      }
+    }
+  },
+  "base_image": {
+    "repository": "mcr.microsoft.com/devcontainers/base",
+    "tag": "2.1.15-trixie",
+    "digest": "sha256:b8c3669fb4cc652621b3386517c40ab3e151e827de958d6fe75528798ffb5727",
+    "verified_at": "2026-08-30T11:39:22Z"
+  },
+  "architectures": {
+    "amd64": {
+      "platform": "linux/amd64",
+      "base_image_digest": "sha256:8337830a615a5bad80dea7a5e7b810f5af8167ffc9882ddfc1beddab3ba63ada"
+    },
+    "arm64": {
+      "platform": "linux/arm64",
+      "base_image_digest": "sha256:fc573a7fb8c54a39f5ee5c6f53784b83adbf8cbf2508ad439a3c3d0bfbd025d4"
+    }
+  },
+  "resolver_keyring": {
+    "url": "https://snapshot.debian.org/archive/debian/20260829T120000Z/pool/main/d/debian-archive-keyring/debian-archive-keyring_2025.1_all.deb",
+    "sha256": "9ea7778e443144ca490668737a8ab22dd3e748bb99e805e22ec055abeb3c7fac",
+    "member": "usr/share/keyrings/debian-archive-keyring.pgp",
+    "member_sha256": "506b815cbb32d9b6066b4a2aa524071e071761e7e7f68c3ac74f3061ba852017",
+    "target": "/usr/share/keyrings/debian-archive-keyring.pgp"
+  }
+}

@@ -1,0 +1,198 @@
+version: "3"
+
+vars:
+  PYTHON: '{{default "python3" .PYTHON}}'
+  KEYRING_DIRECTORY: '{{default ".cache/realm/keyring" .KEYRING_DIRECTORY}}'
+  KEYRING: '{{.KEYRING_DIRECTORY}}/debian-archive-keyring.pgp'
+  IMAGE: '{{default "realm-base:validation" .IMAGE}}'
+  IMAGE_REVISION: '{{default "local" .IMAGE_REVISION}}'
+  IMAGE_VERSION: '{{default "0.0.0-dev" .IMAGE_VERSION}}'
+
+tasks:
+  default:
+    desc: List Realm development tasks.
+    cmds:
+      - task --list
+
+  check:
+    desc: Run every offline Realm contract and unit check.
+    cmds:
+      - task: contracts:check
+      - task: packages:check
+      - task: scripts:check
+      - task: test
+
+  contracts:check:
+    desc: Validate capability, profile, and tool-registry contracts.
+    cmds:
+      - '"{{.PYTHON}}" tools/realm_profiles.py validate-catalog'
+      - '"{{.PYTHON}}" tools/realm_profiles.py validate-profiles'
+      - '"{{.PYTHON}}" tools/realm_tool_registry.py validate'
+
+  scripts:check:
+    desc: Check Realm Bash syntax and ShellCheck diagnostics.
+    cmds:
+      - bash -n images/base/scripts/install-apt-packages images/base/scripts/realm-packages images/base/scripts/verify-apt-packages images/base/tests/smoke.sh
+      - command -v shellcheck >/dev/null 2>&1
+      - shellcheck images/base/scripts/install-apt-packages images/base/scripts/realm-packages images/base/scripts/verify-apt-packages images/base/tests/smoke.sh
+
+  test:
+    desc: Run dependency-free Python tests and byte-compile source files.
+    cmds:
+      - '"{{.PYTHON}}" -m unittest discover --start-directory "tests" --pattern "test_*.py" --verbose'
+      - '"{{.PYTHON}}" -m compileall -q "tools" "tests"'
+      - git diff --check
+
+  packages:check:
+    desc: Validate snapshot configuration and committed apt locks offline.
+    cmds:
+      - '"{{.PYTHON}}" tools/realm_apt_packages.py check'
+
+  packages:keyring:
+    desc: Materialize the checksum-pinned Debian archive keyring.
+    sources:
+      - config/debian-trixie.json
+    generates:
+      - '{{.KEYRING}}'
+    cmds:
+      - '"{{.PYTHON}}" tools/realm_apt_packages.py prepare-keyring --output-directory "{{.KEYRING_DIRECTORY}}"'
+
+  packages:resolve:
+    desc: Regenerate the canonical apt lock for one architecture.
+    requires:
+      vars: [ARCH]
+    preconditions:
+      - sh: 'test "{{.ARCH}}" = "amd64" || test "{{.ARCH}}" = "arm64"'
+        msg: 'ARCH must be "amd64" or "arm64".'
+    deps:
+      - packages:keyring
+    cmds:
+      - '"{{.PYTHON}}" tools/realm_apt_packages.py resolve --architecture "{{.ARCH}}" --keyring "{{.KEYRING}}"'
+
+  packages:verify-lock:
+    desc: Replay snapshot resolution and compare one committed apt lock.
+    requires:
+      vars: [ARCH]
+    preconditions:
+      - sh: 'test "{{.ARCH}}" = "amd64" || test "{{.ARCH}}" = "arm64"'
+        msg: 'ARCH must be "amd64" or "arm64".'
+    deps:
+      - packages:keyring
+    cmds:
+      - '"{{.PYTHON}}" tools/realm_apt_packages.py verify-lock --architecture "{{.ARCH}}" --keyring "{{.KEYRING}}"'
+
+  packages:refresh:
+    desc: Preview a coordinated Debian snapshot refresh without publishing it.
+    requires:
+      vars: [SNAPSHOT, SECURITY_SNAPSHOT]
+    deps:
+      - packages:keyring
+    vars:
+      OUTPUT_DIRECTORY: '{{default ".cache/realm/refresh" .OUTPUT_DIRECTORY}}'
+    cmds:
+      - '"{{.PYTHON}}" tools/realm_apt_packages.py refresh --snapshot "{{.SNAPSHOT}}" --security-snapshot "{{.SECURITY_SNAPSHOT}}" --keyring "{{.KEYRING}}" --output-directory "{{.OUTPUT_DIRECTORY}}"'
+
+  image:build:
+    desc: Build the minimal Realm base image for one native architecture.
+    deps:
+      - packages:check
+    requires:
+      vars: [ARCH]
+    preconditions:
+      - sh: 'test "{{.ARCH}}" = "amd64" || test "{{.ARCH}}" = "arm64"'
+        msg: 'ARCH must be "amd64" or "arm64".'
+    cmds:
+      - >-
+        docker build
+        --file "images/base/Dockerfile"
+        --platform "linux/{{.ARCH}}"
+        --progress "plain"
+        --pull
+        --tag "{{.IMAGE}}"
+        --build-arg "IMAGE_REVISION={{.IMAGE_REVISION}}"
+        --build-arg "IMAGE_VERSION={{.IMAGE_VERSION}}"
+        "."
+
+  image:verify-base:
+    desc: Verify configured platform manifests belong to the pinned OCI index.
+    cmds:
+      - '"{{.PYTHON}}" tools/realm_apt_packages.py verify-base-image'
+
+  image:verify:
+    desc: Verify installed versions, provenance, apt health, and cleanup.
+    requires:
+      vars: [ARCH]
+    preconditions:
+      - sh: 'test "{{.ARCH}}" = "amd64" || test "{{.ARCH}}" = "arm64"'
+        msg: 'ARCH must be "amd64" or "arm64".'
+    cmds:
+      - >-
+        docker run
+        --rm
+        --network "none"
+        --user "root"
+        --entrypoint "/usr/local/libexec/realm/verify-apt-packages"
+        "{{.IMAGE}}"
+
+  image:smoke:
+    desc: Exercise the base image as its normal non-root development user.
+    requires:
+      vars: [ARCH]
+    preconditions:
+      - sh: 'test "{{.ARCH}}" = "amd64" || test "{{.ARCH}}" = "arm64"'
+        msg: 'ARCH must be "amd64" or "arm64".'
+    cmds:
+      - >-
+        docker run
+        --rm
+        --network "none"
+        --entrypoint "/usr/local/libexec/realm/smoke"
+        "{{.IMAGE}}"
+
+  image:size:
+    desc: Report expanded base, result, and delta sizes without enforcing a gate.
+    requires:
+      vars: [ARCH]
+    cmds:
+      - '"{{.PYTHON}}" tools/realm_apt_packages.py report-image-size --architecture "{{.ARCH}}" --image "{{.IMAGE}}"'
+
+  packages:verify:
+    desc: Replay the lock, build the image, and verify one architecture.
+    requires:
+      vars: [ARCH]
+    cmds:
+      - task: image:verify-base
+      - task: packages:verify-lock
+        vars:
+          ARCH: '{{.ARCH}}'
+      - task: image:build
+        vars:
+          ARCH: '{{.ARCH}}'
+          IMAGE: '{{.IMAGE}}'
+          IMAGE_REVISION: '{{.IMAGE_REVISION}}'
+          IMAGE_VERSION: '{{.IMAGE_VERSION}}'
+      - task: image:verify
+        vars:
+          ARCH: '{{.ARCH}}'
+          IMAGE: '{{.IMAGE}}'
+      - task: image:smoke
+        vars:
+          ARCH: '{{.ARCH}}'
+          IMAGE: '{{.IMAGE}}'
+
+  ci:contracts:
+    desc: Run the read-only, architecture-independent CI checks.
+    cmds:
+      - task: check
+
+  ci:architecture:
+    desc: Run online lock and image validation for one native architecture.
+    requires:
+      vars: [ARCH]
+    cmds:
+      - task: packages:verify
+        vars:
+          ARCH: '{{.ARCH}}'
+          IMAGE: '{{.IMAGE}}'
+          IMAGE_REVISION: '{{.IMAGE_REVISION}}'
+          IMAGE_VERSION: '{{.IMAGE_VERSION}}'

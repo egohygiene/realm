@@ -1,0 +1,616 @@
+#!/usr/bin/env bash
+
+set -Eeuo pipefail
+
+readonly REALM_PACKAGE_DIRECTORY="/usr/local/share/realm/packages"
+readonly REALM_LOCK_PATH="${REALM_PACKAGE_DIRECTORY}/apt-lock.json"
+readonly REALM_INVENTORY_PATH="${REALM_PACKAGE_DIRECTORY}/apt-installed.tsv"
+readonly REALM_METADATA_PATH="${REALM_PACKAGE_DIRECTORY}/build-metadata.json"
+readonly REALM_SOURCES_PATH="/etc/apt/sources.list.d/realm-debian-snapshot.sources"
+
+
+# @description Print an error and terminate the installer.
+# @arg $1 string Human-readable failure reason.
+# @exitcode 1 Always.
+die() {
+    printf "Realm apt installation failed: %s\n" "$1" >&2
+    exit 1
+}
+
+
+# @description Require one executable before changing the image.
+# @arg $1 string Command name.
+require_command() {
+    command -v "$1" >/dev/null 2>&1 || die "required command is unavailable: $1"
+}
+
+
+# @description Calculate the canonical checksum of a Realm apt lock.
+# @arg $1 string Lock path.
+# @stdout sha256-prefixed checksum.
+calculate_lock_checksum() {
+    local lock_path="$1"
+    local digest
+    digest="$(jq --compact-output --sort-keys 'del(.lock_checksum)' "${lock_path}" | sha256sum | awk '{print $1}')"
+    printf "sha256:%s\n" "${digest}"
+}
+
+
+# @description Verify one canonical JSON input against the checksum in the lock.
+# @arg $1 string Lock path.
+# @arg $2 string Lock checksum field.
+# @arg $3 string Canonical input path.
+# @arg $4 string Input label.
+verify_canonical_input() {
+    local lock_path="$1"
+    local checksum_field="$2"
+    local input_path="$3"
+    local label="$4"
+    local actual
+    local expected
+
+    [[ -f "${input_path}" && ! -L "${input_path}" ]] \
+        || die "${label} input is unavailable: ${input_path}"
+    expected="$(jq --raw-output ".${checksum_field}" "${lock_path}")"
+    actual="sha256:$(jq --compact-output --sort-keys '.' "${input_path}" | sha256sum | awk '{print $1}')"
+    [[ "${actual}" == "${expected}" ]] \
+        || die "${label} checksum does not match the package lock"
+}
+
+
+# @description Derive the base projection and compare every semantic lock input.
+# @arg $1 string Lock path.
+# @arg $2 string Catalog path.
+# @arg $3 string Snapshot configuration path.
+# @arg $4 string Base profile path.
+verify_lock_projection() {
+    local lock_path="$1"
+    local catalog_path="$2"
+    local config_path="$3"
+    local profile_path="$4"
+    local actual_resolved_checksum
+    local expected_path
+    local locked_resolved_checksum
+
+    expected_path="$(mktemp)"
+    jq --null-input \
+        --slurpfile catalog "${catalog_path}" \
+        --slurpfile config "${config_path}" \
+        --slurpfile lock "${lock_path}" \
+        --slurpfile profile "${profile_path}" '
+            ($catalog[0]) as $catalog |
+            ($config[0]) as $config |
+            ($lock[0]) as $lock |
+            ($profile[0]) as $profile |
+            def unique_preserving:
+                reduce .[] as $item
+                    ([]; if index($item) == null then . + [$item] else . end);
+            def capability_order($names):
+                [$names[] as $name |
+                    (capability_order($catalog.capabilities[$name].requires)[]),
+                    $name
+                ] | unique_preserving;
+            capability_order($profile.include) as $capabilities |
+            [$capabilities[] as $capability |
+                $catalog.capabilities[$capability].packages.apt[] as $name |
+                {name: $name, capability: $capability, required: true}
+            ] | sort_by(.name) as $packages |
+            [$capabilities[] as $capability |
+                $catalog.capabilities[$capability].artifacts[]
+            ] | sort_by(.name) as $artifacts |
+            {
+                capabilities: $capabilities,
+                packages: $packages,
+                base_safe: (
+                    ($profile.extends == []) and
+                    ($profile.exclude == []) and
+                    ($profile.constraints == {
+                        allow_privileged: false,
+                        allow_services: false,
+                        secrets: "forbidden"
+                    }) and
+                    ($profile.platforms | index($lock.platform) != null) and
+                    ($profile.projections | index("docker") != null) and
+                    ($artifacts == []) and
+                    (all($capabilities[];
+                        ($catalog.capabilities[.].platforms |
+                            index($lock.platform) != null) and
+                        ($catalog.capabilities[.].projections |
+                            index("docker") != null) and
+                        ($catalog.capabilities[.].constraints == {
+                            privileged: false,
+                            services: false
+                        })
+                    ))
+                ),
+                distribution: $config.distribution,
+                release: $config.release,
+                snapshot: $config.snapshot,
+                security_snapshot: $config.security_snapshot,
+                resolved: {
+                    schema_version: "1.0.0",
+                    catalog_version: $catalog.catalog_version,
+                    profile: "base",
+                    lineage: ["base"],
+                    platform: $lock.platform,
+                    projection: "docker",
+                    capabilities: $capabilities,
+                    packages: ($packages | map("apt:" + .name)),
+                    artifacts: $artifacts,
+                    source_pins: $catalog.source_pins,
+                    constraints: {
+                        privileged: false,
+                        services: false,
+                        secrets: "forbidden"
+                    }
+                },
+                repositories: [
+                    {
+                        name: "archive",
+                        uri: $catalog.source_pins[$config.source_pins.archive],
+                        suites: $config.repositories.archive.suites,
+                        components: $config.repositories.archive.components,
+                        signed_by: $config.resolver_keyring.target,
+                        inrelease_sha256:
+                            $config.repositories.archive.inrelease_sha256
+                    },
+                    {
+                        name: "security",
+                        uri: $catalog.source_pins[$config.source_pins.security],
+                        suites: $config.repositories.security.suites,
+                        components: $config.repositories.security.components,
+                        signed_by: $config.resolver_keyring.target,
+                        inrelease_sha256:
+                            $config.repositories.security.inrelease_sha256
+                    }
+                ],
+                base_image: {
+                    repository: $config.base_image.repository,
+                    tag: $config.base_image.tag,
+                    digest: $config.base_image.digest,
+                    platform_digest:
+                        $config.architectures[$lock.architecture].base_image_digest
+                },
+                keyring: {
+                    path: $config.resolver_keyring.target,
+                    sha256: $config.resolver_keyring.member_sha256
+                }
+            }
+        ' > "${expected_path}" \
+        || die "failed to derive the canonical base projection"
+
+    actual_resolved_checksum="sha256:$(
+        jq --compact-output --sort-keys '.resolved' "${expected_path}" \
+            | sha256sum \
+            | awk '{print $1}'
+    )"
+    locked_resolved_checksum="$(
+        jq --raw-output '.resolved_profile_checksum' "${lock_path}"
+    )"
+    [[ "${actual_resolved_checksum}" == "${locked_resolved_checksum}" ]] \
+        || die "resolved base profile checksum does not match the package lock"
+
+    if ! jq --exit-status --slurpfile expected "${expected_path}" '
+        . as $lock |
+        ($expected[0]) as $expected |
+        (.schema_version == "1.0.0") and
+        (.catalog_version == $expected.resolved.catalog_version) and
+        (.profile == "base") and
+        (.projection == "docker") and
+        ($expected.base_safe) and
+        (.distribution == $expected.distribution) and
+        (.release == $expected.release) and
+        (.snapshot == $expected.snapshot) and
+        (.security_snapshot == $expected.security_snapshot) and
+        (.architecture == "amd64" or .architecture == "arm64") and
+        (.platform == ("linux/" + .architecture)) and
+        (.base_image == $expected.base_image) and
+        (.keyring == $expected.keyring) and
+        (.repositories == $expected.repositories) and
+        ((.packages | map({name, capability, required})) == $expected.packages) and
+        (all(.packages[];
+            ((keys | sort) == [
+                "architecture", "capability", "name", "required", "version"
+            ]) and
+            (.version | type == "string" and length > 0) and
+            (.architecture == "all" or .architecture == $lock.architecture)
+        )) and
+        (.aliases == []) and
+        (.transitional_packages == []) and
+        (.unavailable_packages == [])
+    ' "${lock_path}" >/dev/null; then
+        rm --force "${expected_path}"
+        die "package lock does not equal the canonical base projection"
+    fi
+    rm --force "${expected_path}"
+}
+
+
+# @description Verify the recipe's frontend and parent match canonical pins.
+# @arg $1 string Dockerfile path.
+# @arg $2 string Catalog path.
+# @arg $3 string Snapshot configuration path.
+verify_dockerfile_contract() {
+    local dockerfile_path="$1"
+    local catalog_path="$2"
+    local config_path="$3"
+    local actual_base
+    local actual_frontend
+    local base_pin_name
+    local expected_base
+    local expected_frontend
+
+    [[ -f "${dockerfile_path}" && ! -L "${dockerfile_path}" ]] \
+        || die "Dockerfile input is unavailable: ${dockerfile_path}"
+    base_pin_name="$(jq --raw-output '.source_pins.base_image' "${config_path}")"
+    expected_base="$(
+        jq --raw-output --arg pin "${base_pin_name}" '.source_pins[$pin]' \
+            "${catalog_path}"
+    )"
+    expected_frontend="$(
+        jq --raw-output '.source_pins["dockerfile-frontend"]' "${catalog_path}"
+    )"
+    actual_base="$(
+        awk '$1 == "FROM" && $3 == "AS" && $4 == "realm-base" {print $2}' \
+            "${dockerfile_path}"
+    )"
+    actual_frontend="$(sed --quiet '1s/^# syntax=//p' "${dockerfile_path}")"
+    [[ "${actual_base}" == "${expected_base}" ]] \
+        || die "Dockerfile parent does not match the canonical base pin"
+    [[ "${actual_frontend}" == "${expected_frontend}" ]] \
+        || die "Dockerfile frontend does not match the canonical source pin"
+}
+
+
+# @description Verify lock checksum, architecture, release, and base-image identity.
+# @arg $1 string Lock path.
+verify_lock_identity() {
+    local lock_path="$1"
+    local actual_architecture
+    local expected_architecture
+    local expected_checksum
+    local actual_checksum
+    local expected_release
+
+    expected_checksum="$(jq --raw-output '.lock_checksum' "${lock_path}")"
+    actual_checksum="$(calculate_lock_checksum "${lock_path}")"
+    [[ "${actual_checksum}" == "${expected_checksum}" ]] \
+        || die "lock checksum mismatch: expected ${expected_checksum}, got ${actual_checksum}"
+
+    expected_architecture="$(jq --raw-output '.architecture' "${lock_path}")"
+    actual_architecture="$(dpkg --print-architecture)"
+    [[ "${actual_architecture}" == "${expected_architecture}" ]] \
+        || die "lock architecture ${expected_architecture} does not match ${actual_architecture}"
+
+    expected_release="$(jq --raw-output '.release' "${lock_path}")"
+    # shellcheck disable=SC1091
+    source /etc/os-release
+    [[ "${ID:-}" == "debian" && "${VERSION_CODENAME:-}" == "${expected_release}" ]] \
+        || die "image operating system does not match Debian ${expected_release}"
+}
+
+
+# @description Disable every upstream apt source before rendering Realm's lock.
+disable_upstream_sources() {
+    local source_path
+
+    if [[ -e /etc/apt/sources.list || -L /etc/apt/sources.list ]]; then
+        rm --force /etc/apt/sources.list
+    fi
+    install --mode="0644" /dev/null /etc/apt/sources.list
+    while IFS= read -r -d "" source_path; do
+        rm --force -- "${source_path}"
+    done < <(
+        find /etc/apt/sources.list.d -maxdepth 1 \
+            \( -type f -o -type l \) \
+            \( -name "*.list" -o -name "*.sources" \) -print0
+    )
+}
+
+
+# @description Render the lock's signed, timestamped Debian sources in deb822 form.
+# @arg $1 string Lock path.
+write_snapshot_sources() {
+    local lock_path="$1"
+    local architecture
+    local components
+    local index
+    local keyring_actual
+    local keyring_expected
+    local keyring_path
+    local repository_count
+    local signed_by
+    local suites
+    local uri
+
+    architecture="$(jq --raw-output '.architecture' "${lock_path}")"
+    keyring_path="$(jq --raw-output '.keyring.path' "${lock_path}")"
+    keyring_expected="$(jq --raw-output '.keyring.sha256' "${lock_path}")"
+    [[ -f "${keyring_path}" && ! -L "${keyring_path}" ]] \
+        || die "pinned repository keyring is unavailable: ${keyring_path}"
+    keyring_actual="$(sha256sum "${keyring_path}" | awk '{print $1}')"
+    [[ "${keyring_actual}" == "${keyring_expected}" ]] \
+        || die "repository keyring checksum mismatch"
+    repository_count="$(jq '.repositories | length' "${lock_path}")"
+    : > "${REALM_SOURCES_PATH}"
+    for ((index = 0; index < repository_count; index += 1)); do
+        uri="$(jq --raw-output ".repositories[${index}].uri" "${lock_path}")"
+        suites="$(jq --raw-output ".repositories[${index}].suites | join(\" \")" "${lock_path}")"
+        components="$(jq --raw-output ".repositories[${index}].components | join(\" \")" "${lock_path}")"
+        signed_by="$(jq --raw-output ".repositories[${index}].signed_by" "${lock_path}")"
+        [[ "${signed_by}" == "${keyring_path}" ]] \
+            || die "repository does not use the pinned keyring"
+        {
+            printf "Types: deb\n"
+            printf "URIs: %s\n" "${uri}"
+            printf "Suites: %s\n" "${suites}"
+            printf "Components: %s\n" "${components}"
+            printf "Architectures: %s\n" "${architecture}"
+            printf "Signed-By: %s\n" "${signed_by}"
+            printf "By-Hash: force\n"
+            printf "Check-Valid-Until: no\n\n"
+        } >> "${REALM_SOURCES_PATH}"
+    done
+}
+
+
+# @description Verify apt downloaded the exact signed metadata recorded in the lock.
+# @arg $1 string Lock path.
+verify_inrelease_hashes() {
+    local lock_path="$1"
+    local actual
+    local expected
+    local index
+    local metadata_path
+    local repository_count
+    local suite
+    local suite_count
+    local suite_index
+    local -a matches
+
+    repository_count="$(jq '.repositories | length' "${lock_path}")"
+    for ((index = 0; index < repository_count; index += 1)); do
+        suite_count="$(jq ".repositories[${index}].suites | length" "${lock_path}")"
+        for ((suite_index = 0; suite_index < suite_count; suite_index += 1)); do
+            suite="$(jq --raw-output ".repositories[${index}].suites[${suite_index}]" "${lock_path}")"
+            expected="$(jq --raw-output ".repositories[${index}].inrelease_sha256[\"${suite}\"]" "${lock_path}")"
+            mapfile -t matches < <(
+                find /var/lib/apt/lists -maxdepth 1 -type f \
+                    -name "*_dists_${suite}_InRelease" -print
+            )
+            [[ "${#matches[@]}" -eq 1 ]] \
+                || die "expected one signed InRelease file for ${suite}"
+            metadata_path="${matches[0]}"
+            actual="$(sha256sum "${metadata_path}" | awk '{print $1}')"
+            [[ "${actual}" == "${expected}" ]] \
+                || die "signed InRelease checksum mismatch for ${suite}"
+        done
+    done
+}
+
+
+# @description Assert Debian's service-start suppression policy is active.
+verify_service_suppression() {
+    local status
+
+    [[ -x /usr/sbin/policy-rc.d ]] \
+        || die "the pinned base image does not provide executable policy-rc.d"
+    if /usr/sbin/policy-rc.d; then
+        status=0
+    else
+        status=$?
+    fi
+    [[ "${status}" -eq 101 ]] \
+        || die "policy-rc.d must reject service starts with status 101"
+}
+
+
+# @description Install every requested root at its exact locked version.
+# @arg $1 string Lock path.
+install_locked_packages() {
+    local lock_path="$1"
+    local candidate_version
+    local locked_version
+    local name
+    local -a package_expressions
+
+    mapfile -t package_expressions < <(
+        jq --raw-output '.packages[] | "\(.name)=\(.version)"' "${lock_path}"
+    )
+    [[ "${#package_expressions[@]}" -gt 0 ]] || die "lock contains no packages"
+
+    find /var/lib/apt/lists -mindepth 1 -delete
+    find /var/cache/apt/archives -mindepth 1 \
+        \( -type f -o -type l \) -delete
+    apt-get update --error-on=any
+    verify_inrelease_hashes "${lock_path}"
+    while IFS=$'\t' read -r name locked_version; do
+        candidate_version="$(
+            LC_ALL="C" apt-cache policy "${name}" \
+                | awk '/^[[:space:]]*Candidate:/ {print $2; exit}'
+        )"
+        [[ "${candidate_version}" == "${locked_version}" ]] \
+            || die "${name} candidate ${candidate_version:-none} differs from lock ${locked_version}"
+    done < <(
+        jq --raw-output '.packages[] | [.name, .version] | @tsv' "${lock_path}"
+    )
+    apt-get install \
+        --simulate \
+        --no-install-recommends \
+        --no-remove \
+        "${package_expressions[@]}"
+    DEBIAN_FRONTEND="noninteractive" apt-get install \
+        --assume-yes \
+        --no-install-recommends \
+        --no-remove \
+        "${package_expressions[@]}"
+    apt-get check
+}
+
+
+# @description Persist the lock, exact installed inventory, and build metadata.
+# @arg $1 string Source lock path.
+# @arg $2 string Build revision.
+write_inventory() {
+    local source_lock="$1"
+    local build_revision="$2"
+    local base_digest
+    local base_platform_digest
+    local capability
+    local installed_architecture
+    local installed_status
+    local installed_version
+    local lock_checksum_value
+    local locked_version
+    local name
+    local security_snapshot
+    local snapshot
+    local temporary_inventory
+
+    install -d --mode="0755" "${REALM_PACKAGE_DIRECTORY}"
+    install --mode="0444" "${source_lock}" "${REALM_LOCK_PATH}"
+    lock_checksum_value="$(jq --raw-output '.lock_checksum' "${source_lock}")"
+    snapshot="$(jq --raw-output '.snapshot' "${source_lock}")"
+    security_snapshot="$(jq --raw-output '.security_snapshot' "${source_lock}")"
+    base_digest="$(jq --raw-output '.base_image.digest' "${source_lock}")"
+    base_platform_digest="$(jq --raw-output '.base_image.platform_digest' "${source_lock}")"
+
+    temporary_inventory="$(mktemp)"
+    printf "name\tlocked_version\tinstalled_version\tarchitecture\tcapability\tsnapshot\tsecurity_snapshot\tbase_image_digest\tbase_platform_digest\tbuild_revision\tlock_checksum\n" \
+        > "${temporary_inventory}"
+    while IFS=$'\t' read -r name locked_version capability; do
+        IFS=$'\t' read -r installed_status installed_version installed_architecture < <(
+            dpkg-query --show \
+                --showformat='${db:Status-Status}\t${Version}\t${Architecture}\n' \
+                "${name}"
+        )
+        [[ "${installed_status}" == "installed" ]] \
+            || die "${name} is not fully installed"
+        [[ "${installed_version}" == "${locked_version}" ]] \
+            || die "${name} installed ${installed_version}, expected ${locked_version}"
+        printf "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n" \
+            "${name}" \
+            "${locked_version}" \
+            "${installed_version}" \
+            "${installed_architecture}" \
+            "${capability}" \
+            "${snapshot}" \
+            "${security_snapshot}" \
+            "${base_digest}" \
+            "${base_platform_digest}" \
+            "${build_revision}" \
+            "${lock_checksum_value}" \
+            >> "${temporary_inventory}"
+    done < <(
+        jq --raw-output '.packages[] | [.name, .version, .capability] | @tsv' \
+            "${source_lock}"
+    )
+    install --mode="0444" "${temporary_inventory}" "${REALM_INVENTORY_PATH}"
+    rm --force "${temporary_inventory}"
+
+    jq --null-input \
+        --arg build_revision "${build_revision}" \
+        --arg lock_checksum "${lock_checksum_value}" \
+        --arg snapshot "${snapshot}" \
+        --arg security_snapshot "${security_snapshot}" \
+        --arg base_image_digest "${base_digest}" \
+        --arg base_platform_digest "${base_platform_digest}" \
+        '{
+            schema_version: "1.0.0",
+            build_revision: $build_revision,
+            lock_checksum: $lock_checksum,
+            snapshot: $snapshot,
+            security_snapshot: $security_snapshot,
+            base_image_digest: $base_image_digest,
+            base_platform_digest: $base_platform_digest
+        }' > "${REALM_METADATA_PATH}"
+    chmod "0444" "${REALM_METADATA_PATH}"
+}
+
+
+# @description Remove package indexes and archives without removing apt itself.
+clean_package_manager_state() {
+    apt-get clean
+    find /var/lib/apt/lists -mindepth 1 -delete
+    find /var/cache/apt/archives -mindepth 1 -delete
+}
+
+
+# @description Parse arguments and install the locked Realm base packages.
+# @arg $@ string Installer arguments.
+main() {
+    local build_revision="unknown"
+    local catalog_path=""
+    local config_path=""
+    local dockerfile_path=""
+    local lock_path=""
+    local profile_path=""
+
+    while (($# > 0)); do
+        case "$1" in
+            --catalog)
+                [[ "$#" -ge 2 ]] || die "--catalog requires a value"
+                catalog_path="$2"
+                shift 2
+                ;;
+            --build-revision)
+                [[ "$#" -ge 2 ]] || die "--build-revision requires a value"
+                build_revision="$2"
+                shift 2
+                ;;
+            --config)
+                [[ "$#" -ge 2 ]] || die "--config requires a value"
+                config_path="$2"
+                shift 2
+                ;;
+            --dockerfile)
+                [[ "$#" -ge 2 ]] || die "--dockerfile requires a value"
+                dockerfile_path="$2"
+                shift 2
+                ;;
+            --lock)
+                [[ "$#" -ge 2 ]] || die "--lock requires a value"
+                lock_path="$2"
+                shift 2
+                ;;
+            --profile)
+                [[ "$#" -ge 2 ]] || die "--profile requires a value"
+                profile_path="$2"
+                shift 2
+                ;;
+            *)
+                die "unknown argument: $1"
+                ;;
+        esac
+    done
+
+    [[ -f "${lock_path}" ]] || die "lock file does not exist: ${lock_path}"
+    for command_name in apt-cache apt-get awk dpkg dpkg-query find install jq sha256sum; do
+        require_command "${command_name}"
+    done
+    install -d --mode="0755" "${REALM_PACKAGE_DIRECTORY}"
+    verify_lock_identity "${lock_path}"
+    verify_canonical_input \
+        "${lock_path}" "catalog_checksum" "${catalog_path}" "catalog"
+    verify_canonical_input \
+        "${lock_path}" "configuration_checksum" "${config_path}" "configuration"
+    verify_canonical_input \
+        "${lock_path}" "profile_checksum" "${profile_path}" "base profile"
+    verify_dockerfile_contract \
+        "${dockerfile_path}" "${catalog_path}" "${config_path}"
+    verify_lock_projection \
+        "${lock_path}" "${catalog_path}" "${config_path}" "${profile_path}"
+    verify_service_suppression
+    disable_upstream_sources
+    write_snapshot_sources "${lock_path}"
+    install_locked_packages "${lock_path}"
+    write_inventory "${lock_path}" "${build_revision}"
+    clean_package_manager_state
+    printf "Realm apt installation complete: %s\n" \
+        "$(jq --raw-output '.lock_checksum' "${lock_path}")"
+}
+
+
+if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
+    main "$@"
+fi

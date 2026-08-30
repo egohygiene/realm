@@ -1,0 +1,157 @@
+{
+  "schema_version": "1.0.0",
+  "resolver_version": "1.0.0",
+  "catalog_version": "1.1.0",
+  "catalog_checksum": "sha256:f7a6199fc783dfc9a41afe68f344bd2da52f3f11ed21e2751188d14e0455db91",
+  "configuration_checksum": "sha256:ee1f45dd337a3de6d8443095b4dca596fcc1941a6274ae21ca492b2c96a472ee",
+  "profile_checksum": "sha256:965400ef4132e6619c017c2183bcfff62662e43ef1d48f23a6b091d11fd04f61",
+  "resolved_profile_checksum": "sha256:7534133f184ff307bf439d6e9e059fb89ae5c994fc4898f8e9630146c7f6ad33",
+  "profile": "base",
+  "projection": "docker",
+  "distribution": "debian",
+  "release": "trixie",
+  "snapshot": "20260829T120000Z",
+  "security_snapshot": "20260829T120000Z",
+  "architecture": "amd64",
+  "platform": "linux/amd64",
+  "generated_at": "2026-08-29T12:00:00Z",
+  "base_image": {
+    "repository": "mcr.microsoft.com/devcontainers/base",
+    "tag": "2.1.15-trixie",
+    "digest": "sha256:b8c3669fb4cc652621b3386517c40ab3e151e827de958d6fe75528798ffb5727",
+    "platform_digest": "sha256:8337830a615a5bad80dea7a5e7b810f5af8167ffc9882ddfc1beddab3ba63ada"
+  },
+  "keyring": {
+    "path": "/usr/share/keyrings/debian-archive-keyring.pgp",
+    "sha256": "506b815cbb32d9b6066b4a2aa524071e071761e7e7f68c3ac74f3061ba852017"
+  },
+  "repositories": [
+    {
+      "name": "archive",
+      "uri": "https://snapshot.debian.org/archive/debian/20260829T120000Z/",
+      "suites": [
+        "trixie",
+        "trixie-updates"
+      ],
+      "components": [
+        "main"
+      ],
+      "signed_by": "/usr/share/keyrings/debian-archive-keyring.pgp",
+      "inrelease_sha256": {
+        "trixie": "98b25b5cd185c59d34aa6e4c3e9b5b8f01bbe9d104fe2dcfbcd30dc0a14a59ed",
+        "trixie-updates": "15a8d5e42c0d69f6bc92d7c62bb53846d1bbda09ef7bd43036a95b752ff72ef1"
+      }
+    },
+    {
+      "name": "security",
+      "uri": "https://snapshot.debian.org/archive/debian-security/20260829T120000Z/",
+      "suites": [
+        "trixie-security"
+      ],
+      "components": [
+        "main"
+      ],
+      "signed_by": "/usr/share/keyrings/debian-archive-keyring.pgp",
+      "inrelease_sha256": {
+        "trixie-security": "0b92d3ff6ff5f544ad4d84714672bd6bb136fd1518dd23b1586dd7e578eaa66c"
+      }
+    }
+  ],
+  "packages": [
+    {
+      "name": "ca-certificates",
+      "version": "20250419",
+      "architecture": "all",
+      "capability": "realm-base",
+      "required": true
+    },
+    {
+      "name": "curl",
+      "version": "8.14.1-2+deb13u4",
+      "architecture": "amd64",
+      "capability": "realm-base",
+      "required": true
+    },
+    {
+      "name": "file",
+      "version": "1:5.46-5",
+      "architecture": "amd64",
+      "capability": "common-cli",
+      "required": true
+    },
+    {
+      "name": "git-lfs",
+      "version": "3.6.1-1+deb13u1",
+      "architecture": "amd64",
+      "capability": "common-cli",
+      "required": true
+    },
+    {
+      "name": "gnupg",
+      "version": "2.4.7-21+deb13u1",
+      "architecture": "all",
+      "capability": "realm-base",
+      "required": true
+    },
+    {
+      "name": "jq",
+      "version": "1.7.1-6+deb13u3",
+      "architecture": "amd64",
+      "capability": "common-cli",
+      "required": true
+    },
+    {
+      "name": "openssh-client",
+      "version": "1:10.0p1-7+deb13u4",
+      "architecture": "amd64",
+      "capability": "common-cli",
+      "required": true
+    },
+    {
+      "name": "rsync",
+      "version": "3.4.1+ds1-5+deb13u4",
+      "architecture": "amd64",
+      "capability": "common-cli",
+      "required": true
+    },
+    {
+      "name": "tree",
+      "version": "2.2.1-1",
+      "architecture": "amd64",
+      "capability": "common-cli",
+      "required": true
+    },
+    {
+      "name": "unzip",
+      "version": "6.0-29+deb13u1",
+      "architecture": "amd64",
+      "capability": "common-cli",
+      "required": true
+    },
+    {
+      "name": "wget",
+      "version": "1.25.0-2",
+      "architecture": "amd64",
+      "capability": "common-cli",
+      "required": true
+    },
+    {
+      "name": "xz-utils",
+      "version": "5.8.1-1+deb13u1",
+      "architecture": "amd64",
+      "capability": "common-cli",
+      "required": true
+    },
+    {
+      "name": "zip",
+      "version": "3.0-15+deb13u1",
+      "architecture": "amd64",
+      "capability": "common-cli",
+      "required": true
+    }
+  ],
+  "aliases": [],
+  "transitional_packages": [],
+  "unavailable_packages": [],
+  "lock_checksum": "sha256:8253894390ceea7754fa34ceb7f6da1ba42e75c2fc2df7361bfbc8877faaae57"
+}

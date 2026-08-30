@@ -113,8 +113,14 @@ def _secret_material_errors(value: Any, path: str = "$") -> list[str]:
 def immutable_source(value: Any) -> bool:
     if not isinstance(value, str) or not value:
         return False
-    if "snapshot.debian.org/archive/debian/" in value:
-        return bool(re.search(r"/[0-9]{8}T[0-9]{6}Z/$", value))
+    if "snapshot.debian.org/archive/" in value:
+        return bool(
+            re.fullmatch(
+                r"https://snapshot\.debian\.org/archive/"
+                r"(?:debian|debian-security)/[0-9]{8}T[0-9]{6}Z/",
+                value,
+            )
+        )
     if "@" not in value:
         return False
     source, reference = value.rsplit("@", 1)
