@@ -1,4 +1,4 @@
-# syntax=docker/dockerfile:1
+# syntax=docker/dockerfile:1.10@sha256:865e5dd094beca432e8c0a1d5e1c465db5f998dca4e439981029b3b81fb39ed5
 # check=error=true
 
 # Realm base development image
@@ -8,14 +8,11 @@
 # dependencies, and the Mantle shell experience should be layered on through
 # Dev Container Features or consuming repository configuration.
 
-ARG DEVCONTAINERS_BASE_VERSION="2"
-ARG DEBIAN_VARIANT="trixie"
+FROM mcr.microsoft.com/devcontainers/base:2.1.15-trixie@sha256:b8c3669fb4cc652621b3386517c40ab3e151e827de958d6fe75528798ffb5727 AS realm-base
 
-FROM mcr.microsoft.com/devcontainers/base:${DEVCONTAINERS_BASE_VERSION}-${DEBIAN_VARIANT} AS realm-base
-
-# Re-declare global build arguments so they are available in this stage.
-ARG DEVCONTAINERS_BASE_VERSION
-ARG DEBIAN_VARIANT
+# BuildKit supplies the native target architecture. It selects a committed lock
+# whose base-platform digest and Debian package versions are architecture bound.
+ARG TARGETARCH
 
 # Release metadata should be supplied by the publishing workflow.
 ARG IMAGE_CREATED="unknown"
@@ -28,10 +25,10 @@ ARG IMAGE_VERSION="0.0.0-dev"
 ARG REMOTE_USER="vscode"
 
 LABEL org.opencontainers.image.authors="Alan Szmyt" \
-      org.opencontainers.image.base.name="mcr.microsoft.com/devcontainers/base:${DEVCONTAINERS_BASE_VERSION}-${DEBIAN_VARIANT}" \
+      org.opencontainers.image.base.name="mcr.microsoft.com/devcontainers/base:2.1.15-trixie@sha256:b8c3669fb4cc652621b3386517c40ab3e151e827de958d6fe75528798ffb5727" \
       org.opencontainers.image.created="${IMAGE_CREATED}" \
       org.opencontainers.image.description="Language-neutral base development image for Ego Hygiene repositories." \
-      org.opencontainers.image.documentation="https://github.com/egohygiene/realm/tree/main/docs/images/base" \
+      org.opencontainers.image.documentation="https://github.com/egohygiene/realm/tree/main/images/base" \
       org.opencontainers.image.licenses="MIT" \
       org.opencontainers.image.revision="${IMAGE_REVISION}" \
       org.opencontainers.image.source="https://github.com/egohygiene/realm" \
@@ -51,49 +48,29 @@ USER root
 
 SHELL ["/bin/bash", "-o", "errexit", "-o", "nounset", "-o", "pipefail", "-c"]
 
-# Initial cross-repository baseline. Add a package here only when most Realm
-# consumers require it. Language runtimes belong in Dev Container Features;
-# product-specific libraries belong in the consuming repository.
-RUN apt-get update \
-    && DEBIAN_FRONTEND="noninteractive" apt-get install --yes --no-install-recommends \
-        build-essential \
-        ca-certificates \
-        ccache \
-        clang \
-        clang-format \
-        clang-tidy \
-        cmake \
-        curl \
-        dnsutils \
-        file \
-        gettext \
-        git-lfs \
-        gnupg \
-        htop \
-        iputils-ping \
-        jq \
-        lsof \
-        make \
-        moreutils \
-        net-tools \
-        ninja-build \
-        openssh-client \
-        pkg-config \
-        python3 \
-        python3-pip \
-        python3-venv \
-        rsync \
-        strace \
-        sysstat \
-        tcpdump \
-        tree \
-        unzip \
-        uuid-runtime \
-        wget \
-        xz-utils \
-        zip \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+# Package intent comes from the canonical base profile. The architecture locks
+# bind that intent to signed Debian snapshots and exact versions; the installer
+# fails closed on any checksum, platform, source, or package mismatch.
+COPY --chmod=0755 images/base/scripts/install-apt-packages /usr/local/libexec/realm/install-apt-packages
+COPY --chmod=0755 images/base/scripts/verify-apt-packages /usr/local/libexec/realm/verify-apt-packages
+COPY --chmod=0755 images/base/scripts/realm-packages /usr/local/bin/realm-packages
+COPY --chmod=0755 images/base/tests/smoke.sh /usr/local/libexec/realm/smoke
+COPY images/base/packages/locks/debian-trixie-${TARGETARCH}.lock.json /tmp/realm-apt-lock.json
+COPY catalog/capabilities.json /tmp/realm-inputs/catalog.json
+COPY config/debian-trixie.json /tmp/realm-inputs/config.json
+COPY images/base/Dockerfile /tmp/realm-inputs/Dockerfile
+COPY profiles/base.profile.json /tmp/realm-inputs/base.profile.json
+
+RUN [[ -n "${TARGETARCH}" ]] \
+    && /usr/local/libexec/realm/install-apt-packages \
+        --catalog "/tmp/realm-inputs/catalog.json" \
+        --config "/tmp/realm-inputs/config.json" \
+        --dockerfile "/tmp/realm-inputs/Dockerfile" \
+        --lock "/tmp/realm-apt-lock.json" \
+        --profile "/tmp/realm-inputs/base.profile.json" \
+        --build-revision "${IMAGE_REVISION}" \
+    && rm --force "/tmp/realm-apt-lock.json" \
+    && rm --recursive --force "/tmp/realm-inputs"
 
 # Restore the non-root interactive development user supplied by the upstream
 # image. Dev Container tooling can update this user's UID/GID for the host.

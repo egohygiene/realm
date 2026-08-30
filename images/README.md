@@ -18,6 +18,7 @@ selected through the explicit `services` profile or consuming orchestration.
 This preserves a useful full workstation toolset without silently granting a
 container extra privilege.
 
-`images/base/Dockerfile` remains a hand-authored bootstrap while the projection
-renderer is developed. Its package list must converge on the resolved `base`
-profile before the first stable release.
+`images/base/Dockerfile` consumes the resolved `base` package intent through
+snapshot-pinned, per-architecture locks. It contains no independent package
+list. See [`base/README.md`](base/README.md) for the image boundary, installed
+evidence, and refresh workflow.

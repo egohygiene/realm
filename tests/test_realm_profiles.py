@@ -13,6 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 
 from realm_profiles import (  # noqa: E402
+    immutable_source,
     load_json,
     load_profiles,
     resolve_profile,
@@ -106,6 +107,22 @@ class RealmProfileTests(unittest.TestCase):
         )
         errors = validate_catalog(catalog)
         self.assertTrue(any("immutable source" in error for error in errors))
+
+    def test_debian_archive_and_security_snapshots_are_immutable(self) -> None:
+        self.assertTrue(
+            immutable_source(
+                "https://snapshot.debian.org/archive/debian/20260827T120000Z/"
+            )
+        )
+        self.assertTrue(
+            immutable_source(
+                "https://snapshot.debian.org/archive/"
+                "debian-security/20260827T120000Z/"
+            )
+        )
+        self.assertFalse(
+            immutable_source("https://snapshot.debian.org/archive/debian/latest/")
+        )
 
     def test_selected_capability_conflict_is_rejected(self) -> None:
         catalog = copy.deepcopy(self.catalog)

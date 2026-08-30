@@ -1,10 +1,13 @@
 {
   "schema_version": "1.0.0",
-  "catalog_version": "1.0.0",
+  "catalog_version": "1.1.0",
   "platforms": ["linux/amd64", "linux/arm64"],
   "projections": ["docker", "devcontainer", "nix", "workstation"],
   "source_pins": {
-    "debian": "https://snapshot.debian.org/archive/debian/20260818T000000Z/",
+    "debian": "https://snapshot.debian.org/archive/debian/20260829T120000Z/",
+    "debian-security": "https://snapshot.debian.org/archive/debian-security/20260829T120000Z/",
+    "devcontainers-base": "mcr.microsoft.com/devcontainers/base:2.1.15-trixie@sha256:b8c3669fb4cc652621b3386517c40ab3e151e827de958d6fe75528798ffb5727",
+    "dockerfile-frontend": "docker/dockerfile:1.10@sha256:865e5dd094beca432e8c0a1d5e1c465db5f998dca4e439981029b3b81fb39ed5",
     "nixpkgs": "github:NixOS/nixpkgs@0000000000000000000000000000000000000000",
     "homebrew-core": "github:Homebrew/homebrew-core@0000000000000000000000000000000000000000"
   },

@@ -1,0 +1,110 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.egohygiene.io/realm/apt-snapshot-config.v1.schema.json",
+  "title": "Realm apt snapshot configuration v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "distribution",
+    "release",
+    "snapshot",
+    "security_snapshot",
+    "source_pins",
+    "repositories",
+    "base_image",
+    "architectures",
+    "resolver_keyring"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "distribution": {"const": "debian"},
+    "release": {"type": "string", "minLength": 1},
+    "snapshot": {"$ref": "#/$defs/snapshot"},
+    "security_snapshot": {"$ref": "#/$defs/snapshot"},
+    "source_pins": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["archive", "security", "base_image"],
+      "properties": {
+        "archive": {"type": "string", "minLength": 1},
+        "security": {"type": "string", "minLength": 1},
+        "base_image": {"type": "string", "minLength": 1}
+      }
+    },
+    "repositories": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["archive", "security"],
+      "properties": {
+        "archive": {"$ref": "#/$defs/repository"},
+        "security": {"$ref": "#/$defs/repository"}
+      }
+    },
+    "base_image": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repository", "tag", "digest", "verified_at"],
+      "properties": {
+        "repository": {"type": "string", "minLength": 1},
+        "tag": {"type": "string", "minLength": 1},
+        "digest": {"$ref": "#/$defs/digest"},
+        "verified_at": {"type": "string", "format": "date-time"}
+      }
+    },
+    "architectures": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["amd64", "arm64"],
+      "properties": {
+        "amd64": {"$ref": "#/$defs/architecture"},
+        "arm64": {"$ref": "#/$defs/architecture"}
+      }
+    },
+    "resolver_keyring": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["url", "sha256", "member", "member_sha256", "target"],
+      "properties": {
+        "url": {"type": "string", "format": "uri"},
+        "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "member": {"type": "string", "minLength": 1},
+        "member_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "target": {"type": "string", "pattern": "^/"}
+      }
+    }
+  },
+  "$defs": {
+    "snapshot": {"type": "string", "pattern": "^[0-9]{8}T[0-9]{6}Z$"},
+    "digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "strings": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1},
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "repository": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["suites", "components", "inrelease_sha256"],
+      "properties": {
+        "suites": {"$ref": "#/$defs/strings"},
+        "components": {"$ref": "#/$defs/strings"},
+        "inrelease_sha256": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+        }
+      }
+    },
+    "architecture": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["platform", "base_image_digest"],
+      "properties": {
+        "platform": {"enum": ["linux/amd64", "linux/arm64"]},
+        "base_image_digest": {"$ref": "#/$defs/digest"}
+      }
+    }
+  }
+}

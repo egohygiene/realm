@@ -1,0 +1,125 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.egohygiene.io/realm/apt-package-lock.v1.schema.json",
+  "title": "Realm apt package lock v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "resolver_version",
+    "catalog_version",
+    "catalog_checksum",
+    "configuration_checksum",
+    "profile_checksum",
+    "resolved_profile_checksum",
+    "profile",
+    "projection",
+    "distribution",
+    "release",
+    "snapshot",
+    "security_snapshot",
+    "architecture",
+    "platform",
+    "generated_at",
+    "base_image",
+    "keyring",
+    "repositories",
+    "packages",
+    "aliases",
+    "transitional_packages",
+    "unavailable_packages",
+    "lock_checksum"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "resolver_version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+    "catalog_version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+    "catalog_checksum": {"$ref": "#/$defs/checksum"},
+    "configuration_checksum": {"$ref": "#/$defs/checksum"},
+    "profile_checksum": {"$ref": "#/$defs/checksum"},
+    "resolved_profile_checksum": {"$ref": "#/$defs/checksum"},
+    "profile": {"const": "base"},
+    "projection": {"const": "docker"},
+    "distribution": {"const": "debian"},
+    "release": {"type": "string", "minLength": 1},
+    "snapshot": {"$ref": "#/$defs/snapshot"},
+    "security_snapshot": {"$ref": "#/$defs/snapshot"},
+    "architecture": {"enum": ["amd64", "arm64"]},
+    "platform": {"enum": ["linux/amd64", "linux/arm64"]},
+    "generated_at": {"type": "string", "format": "date-time"},
+    "base_image": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repository", "tag", "digest", "platform_digest"],
+      "properties": {
+        "repository": {"type": "string", "minLength": 1},
+        "tag": {"type": "string", "minLength": 1},
+        "digest": {"$ref": "#/$defs/digest"},
+        "platform_digest": {"$ref": "#/$defs/digest"}
+      }
+    },
+    "keyring": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": {"type": "string", "pattern": "^/"},
+        "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      }
+    },
+    "repositories": {
+      "type": "array",
+      "minItems": 2,
+      "items": {"$ref": "#/$defs/repository"}
+    },
+    "packages": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/package"}
+    },
+    "aliases": {"type": "array"},
+    "transitional_packages": {"type": "array"},
+    "unavailable_packages": {"type": "array"},
+    "lock_checksum": {"$ref": "#/$defs/checksum"}
+  },
+  "$defs": {
+    "snapshot": {"type": "string", "pattern": "^[0-9]{8}T[0-9]{6}Z$"},
+    "digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "checksum": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "strings": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1},
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "repository": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "uri", "suites", "components", "signed_by", "inrelease_sha256"],
+      "properties": {
+        "name": {"enum": ["archive", "security"]},
+        "uri": {"type": "string", "format": "uri"},
+        "suites": {"$ref": "#/$defs/strings"},
+        "components": {"$ref": "#/$defs/strings"},
+        "signed_by": {"type": "string", "pattern": "^/"},
+        "inrelease_sha256": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+        }
+      }
+    },
+    "package": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "version", "architecture", "capability", "required"],
+      "properties": {
+        "name": {"type": "string", "minLength": 1},
+        "version": {"type": "string", "minLength": 1},
+        "architecture": {"enum": ["all", "amd64", "arm64"]},
+        "capability": {"type": "string", "minLength": 1},
+        "required": {"const": true}
+      }
+    }
+  }
+}

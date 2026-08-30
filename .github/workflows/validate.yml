@@ -1,0 +1,96 @@
+name: Validate Realm
+
+on:
+  pull_request:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: "realm-validation-${{ github.event.pull_request.number || github.ref }}"
+  cancel-in-progress: true
+
+env:
+  DOCKER_BUILDKIT: "1"
+  PYTHONDONTWRITEBYTECODE: "1"
+
+jobs:
+  contracts:
+    name: Offline contracts
+    runs-on: "ubuntu-24.04"
+    timeout-minutes: 10
+    steps:
+      - name: Check out Realm without persisted credentials
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Install checksum-verified Task
+        uses: go-task/setup-task@a00fbb05ce67b35648be3c78cbc9fd85354c757e # v2.2.0
+        with:
+          version: "3.53.1"
+          checksum: "a54a408f6861ff921f6e87774180db31bacd8c1e7c944ca696db9fea49a82fc7"
+
+      - name: Run offline Realm checks
+        run: task ci:contracts
+
+  architecture:
+    name: "Base image (${{ matrix.architecture }})"
+    needs: ["contracts"]
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - architecture: "amd64"
+            runner: "ubuntu-24.04"
+            task_checksum: "a54a408f6861ff921f6e87774180db31bacd8c1e7c944ca696db9fea49a82fc7"
+          - architecture: "arm64"
+            runner: "ubuntu-24.04-arm"
+            task_checksum: "e3ad19101493a0112e1f22ae8ccc54bf03e533b1076a0ca1e6c782a09ad2e588"
+    runs-on: "${{ matrix.runner }}"
+    timeout-minutes: 45
+    steps:
+      - name: Check out Realm without persisted credentials
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Install checksum-verified Task
+        uses: go-task/setup-task@a00fbb05ce67b35648be3c78cbc9fd85354c757e # v2.2.0
+        with:
+          version: "3.53.1"
+          checksum: "${{ matrix.task_checksum }}"
+
+      - name: Confirm native runner architecture
+        shell: bash
+        env:
+          EXPECTED_ARCHITECTURE: "${{ matrix.architecture }}"
+        run: |
+          set -Eeuo pipefail
+          actual_architecture="$(dpkg --print-architecture)"
+          if [[ "${actual_architecture}" != "${EXPECTED_ARCHITECTURE}" ]]; then
+              printf "Expected %s, got %s\n" \
+                  "${EXPECTED_ARCHITECTURE}" \
+                  "${actual_architecture}" >&2
+              exit 1
+          fi
+
+      - name: Replay lock and validate image
+        env:
+          ARCHITECTURE: "${{ matrix.architecture }}"
+          IMAGE_REVISION: "${{ github.sha }}"
+        run: >-
+          task ci:architecture
+          ARCH="${ARCHITECTURE}"
+          IMAGE_REVISION="${IMAGE_REVISION}"
+
+      - name: Report informational image size
+        env:
+          ARCHITECTURE: "${{ matrix.architecture }}"
+        run: |
+          printf "| Architecture | Base expanded (bytes) | Result expanded (bytes) | Delta (bytes) |\n" >> "${GITHUB_STEP_SUMMARY}"
+          printf "| --- | ---: | ---: | ---: |\n" >> "${GITHUB_STEP_SUMMARY}"
+          task image:size ARCH="${ARCHITECTURE}" >> "${GITHUB_STEP_SUMMARY}"
