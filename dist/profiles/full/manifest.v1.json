@@ -1,0 +1,316 @@
+{
+  "schema_version": "1.0.0",
+  "publication_version": "1.0.0",
+  "profile": "full",
+  "description": "Union of supported non-service development toolsets",
+  "catalog_checksum": "sha256:ad15bb347eea66d9d89bb7c0d9d8f4e2cfe6d024b6eaf253af8f263b3a6c7a82",
+  "registry_checksum": "sha256:2ec2581ab7ebe4c4b898abe139f8ac8dd0b3b9b69e89a04f9ac81ff5df988c16",
+  "profile_checksum": "sha256:c3b2266c4702cff9a290a23d2bdaa47db3836b9bff16d4a001c9013391773624",
+  "cache_key": "sha256:7c2da443497724951e5343ea7632f370790567997d7202f04ddf55f7e8cd3496",
+  "contents": {
+    "capabilities": [
+      "realm-base",
+      "build-toolchain",
+      "common-cli",
+      "cloud-cli",
+      "flutter-toolchain",
+      "git-toolchain",
+      "mantle-shell",
+      "media-toolchain",
+      "node-toolchain",
+      "python-toolchain",
+      "rust-toolchain"
+    ],
+    "packages": {
+      "docker": [
+        "apt:build-essential",
+        "apt:ca-certificates",
+        "apt:ccache",
+        "apt:clang",
+        "apt:clang-format",
+        "apt:clang-tidy",
+        "apt:cmake",
+        "apt:curl",
+        "apt:ffmpeg",
+        "apt:file",
+        "apt:git",
+        "apt:git-delta",
+        "apt:git-lfs",
+        "apt:gnupg",
+        "apt:imagemagick",
+        "apt:jq",
+        "apt:make",
+        "apt:ninja-build",
+        "apt:openssh-client",
+        "apt:pkg-config",
+        "apt:python3",
+        "apt:python3-pip",
+        "apt:python3-venv",
+        "apt:rsync",
+        "apt:tree",
+        "apt:unzip",
+        "apt:wget",
+        "apt:xz-utils",
+        "apt:zip"
+      ],
+      "devcontainer": [
+        "apt:build-essential",
+        "apt:ca-certificates",
+        "apt:ccache",
+        "apt:clang",
+        "apt:clang-format",
+        "apt:clang-tidy",
+        "apt:cmake",
+        "apt:curl",
+        "apt:ffmpeg",
+        "apt:file",
+        "apt:git",
+        "apt:git-delta",
+        "apt:git-lfs",
+        "apt:gnupg",
+        "apt:imagemagick",
+        "apt:jq",
+        "apt:make",
+        "apt:ninja-build",
+        "apt:openssh-client",
+        "apt:pkg-config",
+        "apt:python3",
+        "apt:python3-pip",
+        "apt:python3-venv",
+        "apt:rsync",
+        "apt:tree",
+        "apt:unzip",
+        "apt:wget",
+        "apt:xz-utils",
+        "apt:zip"
+      ],
+      "nix": [
+        "nix:cacert",
+        "nix:ccache",
+        "nix:clang",
+        "nix:cmake",
+        "nix:corepack",
+        "nix:curl",
+        "nix:ffmpeg",
+        "nix:file",
+        "nix:flutter",
+        "nix:git",
+        "nix:git-lfs",
+        "nix:gitAndTools.delta",
+        "nix:gnumake",
+        "nix:gnupg",
+        "nix:imagemagick",
+        "nix:jq",
+        "nix:ninja",
+        "nix:nodejs_24",
+        "nix:openssh",
+        "nix:opentofu",
+        "nix:pkg-config",
+        "nix:pulumi-bin",
+        "nix:python313",
+        "nix:rsync",
+        "nix:rustup",
+        "nix:tree",
+        "nix:unzip",
+        "nix:uv",
+        "nix:wget",
+        "nix:xz",
+        "nix:zip"
+      ],
+      "workstation": [
+        "nix:cacert",
+        "nix:ccache",
+        "nix:clang",
+        "nix:cmake",
+        "nix:corepack",
+        "nix:curl",
+        "nix:ffmpeg",
+        "nix:file",
+        "nix:flutter",
+        "nix:git",
+        "nix:git-lfs",
+        "nix:gitAndTools.delta",
+        "nix:gnumake",
+        "nix:gnupg",
+        "nix:imagemagick",
+        "nix:jq",
+        "nix:ninja",
+        "nix:nodejs_24",
+        "nix:openssh",
+        "nix:opentofu",
+        "nix:pkg-config",
+        "nix:pulumi-bin",
+        "nix:python313",
+        "nix:rsync",
+        "nix:rustup",
+        "nix:tree",
+        "nix:unzip",
+        "nix:uv",
+        "nix:wget",
+        "nix:xz",
+        "nix:zip"
+      ]
+    },
+    "artifacts": [
+      {
+        "name": "flutter",
+        "version": "3.35.1",
+        "source": "https://github.com/flutter/flutter@20f82749394e68bcfbbeee96bad384abaae09c13",
+        "capability": "flutter-toolchain"
+      },
+      {
+        "name": "git-delta",
+        "version": "0.18.2",
+        "source": "https://github.com/dandavison/delta@a589ff9debaefdd3992384434120f5a03a103481",
+        "capability": "git-toolchain"
+      },
+      {
+        "name": "mantle",
+        "version": "2026.8.30",
+        "source": "https://github.com/egohygiene/mantle@e5a4e9ca20833a29d6f20b18ff7103674ed3a064",
+        "capability": "mantle-shell"
+      },
+      {
+        "name": "node",
+        "version": "24.6.0",
+        "source": "https://github.com/nodejs/node@v24.6.0",
+        "capability": "node-toolchain"
+      },
+      {
+        "name": "opentofu",
+        "version": "1.10.6",
+        "source": "https://github.com/opentofu/opentofu@v1.10.6",
+        "capability": "cloud-cli"
+      },
+      {
+        "name": "pulumi",
+        "version": "3.196.0",
+        "source": "https://github.com/pulumi/pulumi@v3.196.0",
+        "capability": "cloud-cli"
+      },
+      {
+        "name": "python",
+        "version": "3.13.7",
+        "source": "https://github.com/python/cpython@bcee1c322115c581da27600f2ae55e5439c027eb",
+        "capability": "python-toolchain"
+      },
+      {
+        "name": "rustup",
+        "version": "1.28.2",
+        "source": "https://github.com/rust-lang/rustup@1.28.2",
+        "capability": "rust-toolchain"
+      }
+    ],
+    "tools": [
+      {
+        "id": "ffmpeg",
+        "license": "LGPL-2.1-or-later / GPL-2.0-or-later depending on build",
+        "owner": "egohygiene/realm",
+        "source": "https://snapshot.debian.org/archive/debian/20260829T120000Z/",
+        "stable_capability": "media-toolchain"
+      },
+      {
+        "id": "flutter",
+        "license": "BSD-3-Clause",
+        "owner": "egohygiene/realm",
+        "source": "https://github.com/flutter/flutter@20f82749394e68bcfbbeee96bad384abaae09c13",
+        "stable_capability": "flutter-toolchain"
+      },
+      {
+        "id": "git",
+        "license": "GPL-2.0-only",
+        "owner": "egohygiene/realm",
+        "source": "https://snapshot.debian.org/archive/debian/20260829T120000Z/",
+        "stable_capability": "git-toolchain"
+      },
+      {
+        "id": "git-delta",
+        "license": "MIT",
+        "owner": "egohygiene/realm",
+        "source": "https://github.com/dandavison/delta@a589ff9debaefdd3992384434120f5a03a103481",
+        "stable_capability": "git-toolchain"
+      },
+      {
+        "id": "imagemagick",
+        "license": "ImageMagick",
+        "owner": "egohygiene/realm",
+        "source": "https://snapshot.debian.org/archive/debian/20260829T120000Z/",
+        "stable_capability": "media-toolchain"
+      },
+      {
+        "id": "mantle",
+        "license": "MIT",
+        "owner": "egohygiene/mantle",
+        "source": "https://github.com/egohygiene/mantle@e5a4e9ca20833a29d6f20b18ff7103674ed3a064",
+        "stable_capability": "mantle-shell"
+      },
+      {
+        "id": "node",
+        "license": "MIT",
+        "owner": "egohygiene/realm",
+        "source": "https://github.com/nodejs/node@v24.6.0",
+        "stable_capability": "node-toolchain"
+      },
+      {
+        "id": "opentofu",
+        "license": "MPL-2.0",
+        "owner": "egohygiene/realm",
+        "source": "https://github.com/opentofu/opentofu@v1.10.6",
+        "stable_capability": "cloud-cli"
+      },
+      {
+        "id": "pulumi",
+        "license": "Apache-2.0",
+        "owner": "egohygiene/realm",
+        "source": "https://github.com/pulumi/pulumi@v3.196.0",
+        "stable_capability": "cloud-cli"
+      },
+      {
+        "id": "python",
+        "license": "PSF-2.0",
+        "owner": "egohygiene/realm",
+        "source": "https://github.com/python/cpython@bcee1c322115c581da27600f2ae55e5439c027eb",
+        "stable_capability": "python-toolchain"
+      },
+      {
+        "id": "rustup",
+        "license": "MIT OR Apache-2.0",
+        "owner": "egohygiene/realm",
+        "source": "https://github.com/rust-lang/rustup@1.28.2",
+        "stable_capability": "rust-toolchain"
+      }
+    ]
+  },
+  "support": [
+    {
+      "platform": "linux/amd64",
+      "projections": [
+        "docker",
+        "devcontainer",
+        "nix",
+        "workstation"
+      ]
+    },
+    {
+      "platform": "linux/arm64",
+      "projections": [
+        "docker",
+        "devcontainer",
+        "nix",
+        "workstation"
+      ]
+    }
+  ],
+  "size": {
+    "status": "unmeasured",
+    "metric": "expanded OCI image bytes",
+    "owner": "Realm issue #6",
+    "command": "task image:size ARCH=\"<amd64|arm64>\" IMAGE=\"<published-image>\"",
+    "reason": "No profile OCI image has been built or published. Do not infer an image size from declared package names."
+  },
+  "sbom": {
+    "format": "SPDX-2.3 declared-intent",
+    "path": "sbom.spdx.json",
+    "sha256": "sha256:21feac7457724b04950ff1c9a1e9e6f3acecb301220bf6fd3b1b891acf262e3a"
+  }
+}

@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "catalog_version": "1.1.0",
+  "catalog_version": "1.2.0",
   "platforms": ["linux/amd64", "linux/arm64"],
   "projections": ["docker", "devcontainer", "nix", "workstation"],
   "source_pins": {
@@ -8,8 +8,8 @@
     "debian-security": "https://snapshot.debian.org/archive/debian-security/20260829T120000Z/",
     "devcontainers-base": "mcr.microsoft.com/devcontainers/base:2.1.15-trixie@sha256:b8c3669fb4cc652621b3386517c40ab3e151e827de958d6fe75528798ffb5727",
     "dockerfile-frontend": "docker/dockerfile:1.10@sha256:865e5dd094beca432e8c0a1d5e1c465db5f998dca4e439981029b3b81fb39ed5",
-    "nixpkgs": "github:NixOS/nixpkgs@0000000000000000000000000000000000000000",
-    "homebrew-core": "github:Homebrew/homebrew-core@0000000000000000000000000000000000000000"
+    "nixpkgs": "github:NixOS/nixpkgs@ac62194c3917d5f474c1a844b6fd6da2db95077d",
+    "homebrew-core": "github:Homebrew/homebrew-core@acaaa48453c4ddd45f1086e8166dfe7940b8f098"
   },
   "capabilities": {
     "realm-base": {
@@ -101,7 +101,9 @@
         "nix": ["python313", "uv"],
         "brew": ["python@3.13", "uv"]
       },
-      "artifacts": [],
+      "artifacts": [
+        {"name": "python", "version": "3.13.7", "source": "https://github.com/python/cpython@bcee1c322115c581da27600f2ae55e5439c027eb"}
+      ],
       "constraints": {"privileged": false, "services": false}
     },
     "cloud-cli": {
@@ -112,7 +114,7 @@
       "conflicts": [],
       "platforms": ["linux/amd64", "linux/arm64"],
       "projections": ["docker", "devcontainer", "nix", "workstation"],
-      "packages": {"apt": [], "nix": ["awscli2", "google-cloud-sdk", "opentofu", "pulumi-bin"], "brew": ["awscli", "google-cloud-sdk", "opentofu", "pulumi"]},
+      "packages": {"apt": [], "nix": ["opentofu", "pulumi-bin"], "brew": ["opentofu", "pulumi"]},
       "artifacts": [
         {"name": "opentofu", "version": "1.10.6", "source": "https://github.com/opentofu/opentofu@v1.10.6"},
         {"name": "pulumi", "version": "3.196.0", "source": "https://github.com/pulumi/pulumi@v3.196.0"}
@@ -141,7 +143,35 @@
       "projections": ["docker", "devcontainer", "nix", "workstation"],
       "packages": {"apt": [], "nix": [], "brew": []},
       "artifacts": [
-        {"name": "mantle", "version": "0.1.0", "source": "https://github.com/egohygiene/mantle@0000000000000000000000000000000000000000"}
+        {"name": "mantle", "version": "2026.8.30", "source": "https://github.com/egohygiene/mantle@e5a4e9ca20833a29d6f20b18ff7103674ed3a064"}
+      ],
+      "constraints": {"privileged": false, "services": false}
+    },
+    "flutter-toolchain": {
+      "version": "1.0.0",
+      "kind": "language",
+      "owner": "egohygiene/realm",
+      "requires": ["build-toolchain"],
+      "conflicts": [],
+      "platforms": ["linux/amd64", "linux/arm64"],
+      "projections": ["docker", "devcontainer", "nix", "workstation"],
+      "packages": {"apt": [], "nix": ["flutter"], "brew": ["flutter"]},
+      "artifacts": [
+        {"name": "flutter", "version": "3.35.1", "source": "https://github.com/flutter/flutter@20f82749394e68bcfbbeee96bad384abaae09c13"}
+      ],
+      "constraints": {"privileged": false, "services": false}
+    },
+    "git-toolchain": {
+      "version": "1.0.0",
+      "kind": "toolset",
+      "owner": "egohygiene/realm",
+      "requires": ["common-cli"],
+      "conflicts": [],
+      "platforms": ["linux/amd64", "linux/arm64"],
+      "projections": ["docker", "devcontainer", "nix", "workstation"],
+      "packages": {"apt": ["git", "git-delta"], "nix": ["git", "git-lfs", "gitAndTools.delta"], "brew": ["git", "git-lfs", "git-delta"]},
+      "artifacts": [
+        {"name": "git-delta", "version": "0.18.2", "source": "https://github.com/dandavison/delta@a589ff9debaefdd3992384434120f5a03a103481"}
       ],
       "constraints": {"privileged": false, "services": false}
     },

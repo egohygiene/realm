@@ -28,6 +28,18 @@ tasks:
       - '"{{.PYTHON}}" tools/realm_profiles.py validate-catalog'
       - '"{{.PYTHON}}" tools/realm_profiles.py validate-profiles'
       - '"{{.PYTHON}}" tools/realm_tool_registry.py validate'
+      - task: profiles:check
+
+  profiles:render:
+    desc: Render deterministic profile publication declarations.
+    cmds:
+      - '"{{.PYTHON}}" tools/realm_profile_publications.py render'
+
+  profiles:check:
+    desc: Validate profile admission and checked-in publication declarations.
+    cmds:
+      - '"{{.PYTHON}}" tools/realm_profile_publications.py validate'
+      - '"{{.PYTHON}}" tools/realm_profile_publications.py check'
 
   scripts:check:
     desc: Check Realm Bash syntax and ShellCheck diagnostics.

@@ -1,0 +1,709 @@
+{
+  "spdxVersion": "SPDX-2.3",
+  "dataLicense": "CC0-1.0",
+  "SPDXID": "SPDXRef-DOCUMENT",
+  "name": "realm-profile-flutter",
+  "documentNamespace": "https://schemas.egohygiene.io/realm/profile-sbom/flutter/be7cbfe284ef870811592154840c4b5d11281b6b21661d6fad314773bdb2b12a",
+  "creationInfo": {
+    "created": "2026-08-31T00:00:00Z",
+    "creators": [
+      "Tool: realm-profile-publications/1.0.0"
+    ],
+    "comment": "Declared profile intent only. A published OCI image requires its own build-time SBOM and provenance attestation."
+  },
+  "documentDescribes": [
+    "SPDXRef-Package-apt-build-essential",
+    "SPDXRef-Package-apt-ca-certificates",
+    "SPDXRef-Package-apt-ccache",
+    "SPDXRef-Package-apt-clang",
+    "SPDXRef-Package-apt-clang-format",
+    "SPDXRef-Package-apt-clang-tidy",
+    "SPDXRef-Package-apt-cmake",
+    "SPDXRef-Package-apt-curl",
+    "SPDXRef-Package-apt-file",
+    "SPDXRef-Package-apt-git-lfs",
+    "SPDXRef-Package-apt-gnupg",
+    "SPDXRef-Package-apt-jq",
+    "SPDXRef-Package-apt-make",
+    "SPDXRef-Package-apt-ninja-build",
+    "SPDXRef-Package-apt-openssh-client",
+    "SPDXRef-Package-apt-pkg-config",
+    "SPDXRef-Package-apt-rsync",
+    "SPDXRef-Package-apt-tree",
+    "SPDXRef-Package-apt-unzip",
+    "SPDXRef-Package-apt-wget",
+    "SPDXRef-Package-apt-xz-utils",
+    "SPDXRef-Package-apt-zip",
+    "SPDXRef-Package-nix-cacert",
+    "SPDXRef-Package-nix-ccache",
+    "SPDXRef-Package-nix-clang",
+    "SPDXRef-Package-nix-cmake",
+    "SPDXRef-Package-nix-curl",
+    "SPDXRef-Package-nix-file",
+    "SPDXRef-Package-nix-flutter",
+    "SPDXRef-Package-nix-git-lfs",
+    "SPDXRef-Package-nix-gnumake",
+    "SPDXRef-Package-nix-gnupg",
+    "SPDXRef-Package-nix-jq",
+    "SPDXRef-Package-nix-ninja",
+    "SPDXRef-Package-nix-openssh",
+    "SPDXRef-Package-nix-pkg-config",
+    "SPDXRef-Package-nix-rsync",
+    "SPDXRef-Package-nix-tree",
+    "SPDXRef-Package-nix-unzip",
+    "SPDXRef-Package-nix-wget",
+    "SPDXRef-Package-nix-xz",
+    "SPDXRef-Package-nix-zip",
+    "SPDXRef-Tool-flutter"
+  ],
+  "packages": [
+    {
+      "SPDXID": "SPDXRef-Package-apt-build-essential",
+      "name": "apt:build-essential",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: egohygiene/realm",
+      "comment": "Declared Realm package intent. The projected build must attest the resolved package version and installed license metadata."
+    },
+    {
+      "SPDXID": "SPDXRef-Package-apt-ca-certificates",
+      "name": "apt:ca-certificates",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: egohygiene/realm",
+      "comment": "Declared Realm package intent. The projected build must attest the resolved package version and installed license metadata."
+    },
+    {
+      "SPDXID": "SPDXRef-Package-apt-ccache",
+      "name": "apt:ccache",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: egohygiene/realm",
+      "comment": "Declared Realm package intent. The projected build must attest the resolved package version and installed license metadata."
+    },
+    {
+      "SPDXID": "SPDXRef-Package-apt-clang",
+      "name": "apt:clang",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: egohygiene/realm",
+      "comment": "Declared Realm package intent. The projected build must attest the resolved package version and installed license metadata."
+    },
+    {
+      "SPDXID": "SPDXRef-Package-apt-clang-format",
+      "name": "apt:clang-format",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: egohygiene/realm",
+      "comment": "Declared Realm package intent. The projected build must attest the resolved package version and installed license metadata."
+    },
+    {
+      "SPDXID": "SPDXRef-Package-apt-clang-tidy",
+      "name": "apt:clang-tidy",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: egohygiene/realm",
+      "comment": "Declared Realm package intent. The projected build must attest the resolved package version and installed license metadata."
+    },
+    {
+      "SPDXID": "SPDXRef-Package-apt-cmake",
+      "name": "apt:cmake",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: egohygiene/realm",
+      "comment": "Declared Realm package intent. The projected build must attest the resolved package version and installed license metadata."
+    },
+    {
+      "SPDXID": "SPDXRef-Package-apt-curl",
+      "name": "apt:curl",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: egohygiene/realm",
+      "comment": "Declared Realm package intent. The projected build must attest the resolved package version and installed license metadata."
+    },
+    {
+      "SPDXID": "SPDXRef-Package-apt-file",
+      "name": "apt:file",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: egohygiene/realm",
+      "comment": "Declared Realm package intent. The projected build must attest the resolved package version and installed license metadata."
+    },
+    {
+      "SPDXID": "SPDXRef-Package-apt-git-lfs",
+      "name": "apt:git-lfs",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: egohygiene/realm",
+      "comment": "Declared Realm package intent. The projected build must attest the resolved package version and installed license metadata."
+    },
+    {
+      "SPDXID": "SPDXRef-Package-apt-gnupg",
+      "name": "apt:gnupg",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: egohygiene/realm",
+      "comment": "Declared Realm package intent. The projected build must attest the resolved package version and installed license metadata."
+    },
+    {
+      "SPDXID": "SPDXRef-Package-apt-jq",
+      "name": "apt:jq",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: egohygiene/realm",
+      "comment": "Declared Realm package intent. The projected build must attest the resolved package version and installed license metadata."
+    },
+    {
+      "SPDXID": "SPDXRef-Package-apt-make",
+      "name": "apt:make",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: egohygiene/realm",
+      "comment": "Declared Realm package intent. The projected build must attest the resolved package version and installed license metadata."
+    },
+    {
+      "SPDXID": "SPDXRef-Package-apt-ninja-build",
+      "name": "apt:ninja-build",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: egohygiene/realm",
+      "comment": "Declared Realm package intent. The projected build must attest the resolved package version and installed license metadata."
+    },
+    {
+      "SPDXID": "SPDXRef-Package-apt-openssh-client",
+      "name": "apt:openssh-client",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: egohygiene/realm",
+      "comment": "Declared Realm package intent. The projected build must attest the resolved package version and installed license metadata."
+    },
+    {
+      "SPDXID": "SPDXRef-Package-apt-pkg-config",
+      "name": "apt:pkg-config",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: egohygiene/realm",
+      "comment": "Declared Realm package intent. The projected build must attest the resolved package version and installed license metadata."
+    },
+    {
+      "SPDXID": "SPDXRef-Package-apt-rsync",
+      "name": "apt:rsync",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: egohygiene/realm",
+      "comment": "Declared Realm package intent. The projected build must attest the resolved package version and installed license metadata."
+    },
+    {
+      "SPDXID": "SPDXRef-Package-apt-tree",
+      "name": "apt:tree",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: egohygiene/realm",
+      "comment": "Declared Realm package intent. The projected build must attest the resolved package version and installed license metadata."
+    },
+    {
+      "SPDXID": "SPDXRef-Package-apt-unzip",
+      "name": "apt:unzip",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: egohygiene/realm",
+      "comment": "Declared Realm package intent. The projected build must attest the resolved package version and installed license metadata."
+    },
+    {
+      "SPDXID": "SPDXRef-Package-apt-wget",
+      "name": "apt:wget",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: egohygiene/realm",
+      "comment": "Declared Realm package intent. The projected build must attest the resolved package version and installed license metadata."
+    },
+    {
+      "SPDXID": "SPDXRef-Package-apt-xz-utils",
+      "name": "apt:xz-utils",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: egohygiene/realm",
+      "comment": "Declared Realm package intent. The projected build must attest the resolved package version and installed license metadata."
+    },
+    {
+      "SPDXID": "SPDXRef-Package-apt-zip",
+      "name": "apt:zip",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: egohygiene/realm",
+      "comment": "Declared Realm package intent. The projected build must attest the resolved package version and installed license metadata."
+    },
+    {
+      "SPDXID": "SPDXRef-Package-nix-cacert",
+      "name": "nix:cacert",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: egohygiene/realm",
+      "comment": "Declared Realm package intent. The projected build must attest the resolved package version and installed license metadata."
+    },
+    {
+      "SPDXID": "SPDXRef-Package-nix-ccache",
+      "name": "nix:ccache",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: egohygiene/realm",
+      "comment": "Declared Realm package intent. The projected build must attest the resolved package version and installed license metadata."
+    },
+    {
+      "SPDXID": "SPDXRef-Package-nix-clang",
+      "name": "nix:clang",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: egohygiene/realm",
+      "comment": "Declared Realm package intent. The projected build must attest the resolved package version and installed license metadata."
+    },
+    {
+      "SPDXID": "SPDXRef-Package-nix-cmake",
+      "name": "nix:cmake",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: egohygiene/realm",
+      "comment": "Declared Realm package intent. The projected build must attest the resolved package version and installed license metadata."
+    },
+    {
+      "SPDXID": "SPDXRef-Package-nix-curl",
+      "name": "nix:curl",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: egohygiene/realm",
+      "comment": "Declared Realm package intent. The projected build must attest the resolved package version and installed license metadata."
+    },
+    {
+      "SPDXID": "SPDXRef-Package-nix-file",
+      "name": "nix:file",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: egohygiene/realm",
+      "comment": "Declared Realm package intent. The projected build must attest the resolved package version and installed license metadata."
+    },
+    {
+      "SPDXID": "SPDXRef-Package-nix-flutter",
+      "name": "nix:flutter",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: egohygiene/realm",
+      "comment": "Declared Realm package intent. The projected build must attest the resolved package version and installed license metadata."
+    },
+    {
+      "SPDXID": "SPDXRef-Package-nix-git-lfs",
+      "name": "nix:git-lfs",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: egohygiene/realm",
+      "comment": "Declared Realm package intent. The projected build must attest the resolved package version and installed license metadata."
+    },
+    {
+      "SPDXID": "SPDXRef-Package-nix-gnumake",
+      "name": "nix:gnumake",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: egohygiene/realm",
+      "comment": "Declared Realm package intent. The projected build must attest the resolved package version and installed license metadata."
+    },
+    {
+      "SPDXID": "SPDXRef-Package-nix-gnupg",
+      "name": "nix:gnupg",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: egohygiene/realm",
+      "comment": "Declared Realm package intent. The projected build must attest the resolved package version and installed license metadata."
+    },
+    {
+      "SPDXID": "SPDXRef-Package-nix-jq",
+      "name": "nix:jq",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: egohygiene/realm",
+      "comment": "Declared Realm package intent. The projected build must attest the resolved package version and installed license metadata."
+    },
+    {
+      "SPDXID": "SPDXRef-Package-nix-ninja",
+      "name": "nix:ninja",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: egohygiene/realm",
+      "comment": "Declared Realm package intent. The projected build must attest the resolved package version and installed license metadata."
+    },
+    {
+      "SPDXID": "SPDXRef-Package-nix-openssh",
+      "name": "nix:openssh",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: egohygiene/realm",
+      "comment": "Declared Realm package intent. The projected build must attest the resolved package version and installed license metadata."
+    },
+    {
+      "SPDXID": "SPDXRef-Package-nix-pkg-config",
+      "name": "nix:pkg-config",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: egohygiene/realm",
+      "comment": "Declared Realm package intent. The projected build must attest the resolved package version and installed license metadata."
+    },
+    {
+      "SPDXID": "SPDXRef-Package-nix-rsync",
+      "name": "nix:rsync",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: egohygiene/realm",
+      "comment": "Declared Realm package intent. The projected build must attest the resolved package version and installed license metadata."
+    },
+    {
+      "SPDXID": "SPDXRef-Package-nix-tree",
+      "name": "nix:tree",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: egohygiene/realm",
+      "comment": "Declared Realm package intent. The projected build must attest the resolved package version and installed license metadata."
+    },
+    {
+      "SPDXID": "SPDXRef-Package-nix-unzip",
+      "name": "nix:unzip",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: egohygiene/realm",
+      "comment": "Declared Realm package intent. The projected build must attest the resolved package version and installed license metadata."
+    },
+    {
+      "SPDXID": "SPDXRef-Package-nix-wget",
+      "name": "nix:wget",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: egohygiene/realm",
+      "comment": "Declared Realm package intent. The projected build must attest the resolved package version and installed license metadata."
+    },
+    {
+      "SPDXID": "SPDXRef-Package-nix-xz",
+      "name": "nix:xz",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: egohygiene/realm",
+      "comment": "Declared Realm package intent. The projected build must attest the resolved package version and installed license metadata."
+    },
+    {
+      "SPDXID": "SPDXRef-Package-nix-zip",
+      "name": "nix:zip",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: egohygiene/realm",
+      "comment": "Declared Realm package intent. The projected build must attest the resolved package version and installed license metadata."
+    },
+    {
+      "SPDXID": "SPDXRef-Tool-flutter",
+      "name": "Flutter SDK",
+      "versionInfo": "https://github.com/flutter/flutter@20f82749394e68bcfbbeee96bad384abaae09c13",
+      "downloadLocation": "https://github.com/flutter/flutter@20f82749394e68bcfbbeee96bad384abaae09c13",
+      "filesAnalyzed": false,
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "supplier": "Organization: egohygiene/realm",
+      "comment": "Realm tool id: flutter; declared upstream license: BSD-3-Clause; capability: flutter-toolchain."
+    }
+  ],
+  "relationships": [
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-Package-apt-build-essential"
+    },
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-Package-apt-ca-certificates"
+    },
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-Package-apt-ccache"
+    },
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-Package-apt-clang"
+    },
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-Package-apt-clang-format"
+    },
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-Package-apt-clang-tidy"
+    },
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-Package-apt-cmake"
+    },
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-Package-apt-curl"
+    },
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-Package-apt-file"
+    },
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-Package-apt-git-lfs"
+    },
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-Package-apt-gnupg"
+    },
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-Package-apt-jq"
+    },
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-Package-apt-make"
+    },
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-Package-apt-ninja-build"
+    },
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-Package-apt-openssh-client"
+    },
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-Package-apt-pkg-config"
+    },
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-Package-apt-rsync"
+    },
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-Package-apt-tree"
+    },
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-Package-apt-unzip"
+    },
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-Package-apt-wget"
+    },
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-Package-apt-xz-utils"
+    },
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-Package-apt-zip"
+    },
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-Package-nix-cacert"
+    },
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-Package-nix-ccache"
+    },
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-Package-nix-clang"
+    },
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-Package-nix-cmake"
+    },
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-Package-nix-curl"
+    },
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-Package-nix-file"
+    },
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-Package-nix-flutter"
+    },
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-Package-nix-git-lfs"
+    },
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-Package-nix-gnumake"
+    },
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-Package-nix-gnupg"
+    },
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-Package-nix-jq"
+    },
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-Package-nix-ninja"
+    },
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-Package-nix-openssh"
+    },
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-Package-nix-pkg-config"
+    },
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-Package-nix-rsync"
+    },
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-Package-nix-tree"
+    },
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-Package-nix-unzip"
+    },
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-Package-nix-wget"
+    },
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-Package-nix-xz"
+    },
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-Package-nix-zip"
+    },
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-Tool-flutter"
+    }
+  ]
+}

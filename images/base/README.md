@@ -77,8 +77,8 @@ the base-image issue; the explicit full-image budget belongs to issue #6.
 
 ## Explicit boundaries
 
-- [Issue #5](https://github.com/egohygiene/realm/issues/5) owns language,
-  media, cloud, Git, and other curated workstation profiles.
+- Curated language, media, cloud, Git, Flutter, and other workstation profiles
+  are declared in [`../../dist/profiles/`](../../dist/profiles/).
 - [Issue #6](https://github.com/egohygiene/realm/issues/6) owns the complete
   stable-profile union, image-size budgets, and the delta from this base.
 - The explicit `services` profile or consuming orchestration owns privileged

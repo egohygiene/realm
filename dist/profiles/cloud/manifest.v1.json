@@ -1,0 +1,145 @@
+{
+  "schema_version": "1.0.0",
+  "publication_version": "1.0.0",
+  "profile": "cloud",
+  "description": "Base environment plus pinned infrastructure-as-code clients",
+  "catalog_checksum": "sha256:ad15bb347eea66d9d89bb7c0d9d8f4e2cfe6d024b6eaf253af8f263b3a6c7a82",
+  "registry_checksum": "sha256:2ec2581ab7ebe4c4b898abe139f8ac8dd0b3b9b69e89a04f9ac81ff5df988c16",
+  "profile_checksum": "sha256:05c81353112c1fe16772b93f04931ffcacd2f7d793a39b9cdb2b396d6f9d7926",
+  "cache_key": "sha256:5cb36583f84a21f27a3ec77adddf4ee53bbfe9a9bce6d84edafe5a71faefe1b9",
+  "contents": {
+    "capabilities": [
+      "realm-base",
+      "common-cli",
+      "cloud-cli"
+    ],
+    "packages": {
+      "docker": [
+        "apt:ca-certificates",
+        "apt:curl",
+        "apt:file",
+        "apt:git-lfs",
+        "apt:gnupg",
+        "apt:jq",
+        "apt:openssh-client",
+        "apt:rsync",
+        "apt:tree",
+        "apt:unzip",
+        "apt:wget",
+        "apt:xz-utils",
+        "apt:zip"
+      ],
+      "devcontainer": [
+        "apt:ca-certificates",
+        "apt:curl",
+        "apt:file",
+        "apt:git-lfs",
+        "apt:gnupg",
+        "apt:jq",
+        "apt:openssh-client",
+        "apt:rsync",
+        "apt:tree",
+        "apt:unzip",
+        "apt:wget",
+        "apt:xz-utils",
+        "apt:zip"
+      ],
+      "nix": [
+        "nix:cacert",
+        "nix:curl",
+        "nix:file",
+        "nix:git-lfs",
+        "nix:gnupg",
+        "nix:jq",
+        "nix:openssh",
+        "nix:opentofu",
+        "nix:pulumi-bin",
+        "nix:rsync",
+        "nix:tree",
+        "nix:unzip",
+        "nix:wget",
+        "nix:xz",
+        "nix:zip"
+      ],
+      "workstation": [
+        "nix:cacert",
+        "nix:curl",
+        "nix:file",
+        "nix:git-lfs",
+        "nix:gnupg",
+        "nix:jq",
+        "nix:openssh",
+        "nix:opentofu",
+        "nix:pulumi-bin",
+        "nix:rsync",
+        "nix:tree",
+        "nix:unzip",
+        "nix:wget",
+        "nix:xz",
+        "nix:zip"
+      ]
+    },
+    "artifacts": [
+      {
+        "name": "opentofu",
+        "version": "1.10.6",
+        "source": "https://github.com/opentofu/opentofu@v1.10.6",
+        "capability": "cloud-cli"
+      },
+      {
+        "name": "pulumi",
+        "version": "3.196.0",
+        "source": "https://github.com/pulumi/pulumi@v3.196.0",
+        "capability": "cloud-cli"
+      }
+    ],
+    "tools": [
+      {
+        "id": "opentofu",
+        "license": "MPL-2.0",
+        "owner": "egohygiene/realm",
+        "source": "https://github.com/opentofu/opentofu@v1.10.6",
+        "stable_capability": "cloud-cli"
+      },
+      {
+        "id": "pulumi",
+        "license": "Apache-2.0",
+        "owner": "egohygiene/realm",
+        "source": "https://github.com/pulumi/pulumi@v3.196.0",
+        "stable_capability": "cloud-cli"
+      }
+    ]
+  },
+  "support": [
+    {
+      "platform": "linux/amd64",
+      "projections": [
+        "docker",
+        "devcontainer",
+        "nix",
+        "workstation"
+      ]
+    },
+    {
+      "platform": "linux/arm64",
+      "projections": [
+        "docker",
+        "devcontainer",
+        "nix",
+        "workstation"
+      ]
+    }
+  ],
+  "size": {
+    "status": "unmeasured",
+    "metric": "expanded OCI image bytes",
+    "owner": "Realm issue #6",
+    "command": "task image:size ARCH=\"<amd64|arm64>\" IMAGE=\"<published-image>\"",
+    "reason": "No profile OCI image has been built or published. Do not infer an image size from declared package names."
+  },
+  "sbom": {
+    "format": "SPDX-2.3 declared-intent",
+    "path": "sbom.spdx.json",
+    "sha256": "sha256:103b739206fcc1e5dd71612c02ad0aac38e39da65403c4a3251c9e551f3220ac"
+  }
+}

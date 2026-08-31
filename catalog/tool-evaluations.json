@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "registry_version": "1.0.0",
+  "registry_version": "1.1.0",
   "statuses": [
     "accepted",
     "experimental",
@@ -30,6 +30,7 @@
       },
       "overlap": [],
       "profile_candidate": "cloud",
+      "stable_capability": null,
       "status": "experimental",
       "owner": "egohygiene/realm",
       "rationale": "Useful cloud client already represented in the capability catalog, but stable inclusion waits for an immutable package/version lock and smoke test.",
@@ -56,6 +57,7 @@
       },
       "overlap": ["docker-compose-v2"],
       "profile_candidate": "services",
+      "stable_capability": null,
       "status": "superseded",
       "owner": "egohygiene/realm",
       "rationale": "Superseded by the maintained Compose v2 plugin architecture; do not add the legacy client to stable profiles.",
@@ -82,6 +84,7 @@
       },
       "overlap": ["docker-compose-v1"],
       "profile_candidate": "services",
+      "stable_capability": null,
       "status": "experimental",
       "owner": "egohygiene/realm",
       "rationale": "Preferred Compose architecture, but Realm has not yet pinned and tested the plugin as a stable profile capability.",
@@ -92,7 +95,7 @@
       "purpose": "Provide media inspection, transcoding, extraction, and conversion capabilities for media-oriented repositories.",
       "category": "media",
       "source": "https://ffmpeg.org/",
-      "version_source": null,
+      "version_source": "https://snapshot.debian.org/archive/debian/20260829T120000Z/",
       "license": "LGPL-2.1-or-later / GPL-2.0-or-later depending on build",
       "platforms": ["linux/amd64", "linux/arm64"],
       "security": {
@@ -108,10 +111,92 @@
       },
       "overlap": [],
       "profile_candidate": "media",
-      "status": "experimental",
+      "stable_capability": "media-toolchain",
+      "status": "accepted",
       "owner": "egohygiene/realm",
-      "rationale": "Already represented in the media capability, but stable inclusion waits for exact package locking and representative smoke tests.",
-      "tests": []
+      "rationale": "The Debian snapshot pin and bounded media profile make the declared package intent reproducible; a built-image package lock and runtime smoke test remain required before an OCI release.",
+      "tests": ["tests/test_realm_profile_publications.py::RealmProfilePublicationTests.test_every_stable_tool_maps_to_its_profile"]
+    },
+    "flutter": {
+      "display_name": "Flutter SDK",
+      "purpose": "Provide a pinned Flutter SDK for mobile, desktop, and web application development.",
+      "category": "language",
+      "source": "https://github.com/flutter/flutter",
+      "version_source": "https://github.com/flutter/flutter@20f82749394e68bcfbbeee96bad384abaae09c13",
+      "license": "BSD-3-Clause",
+      "platforms": ["linux/amd64", "linux/arm64"],
+      "security": {
+        "risk": "medium",
+        "privileged": false,
+        "network_access": true,
+        "notes": "SDK and package-cache state remain outside the image; application signing keys and store credentials are never Realm inputs."
+      },
+      "maintenance": {
+        "upstream": "flutter/flutter",
+        "review_cadence": "monthly",
+        "last_reviewed": "2026-08-31"
+      },
+      "overlap": [],
+      "profile_candidate": "flutter",
+      "stable_capability": "flutter-toolchain",
+      "status": "accepted",
+      "owner": "egohygiene/realm",
+      "rationale": "The SDK is pinned to the reviewed 3.35.1 revision and isolated in a dedicated profile so it does not inflate unrelated language environments.",
+      "tests": ["tests/test_realm_profile_publications.py::RealmProfilePublicationTests.test_every_stable_tool_maps_to_its_profile"]
+    },
+    "git": {
+      "display_name": "Git",
+      "purpose": "Provide the portable version-control client required by repository-oriented development environments.",
+      "category": "version-control",
+      "source": "https://git-scm.com/",
+      "version_source": "https://snapshot.debian.org/archive/debian/20260829T120000Z/",
+      "license": "GPL-2.0-only",
+      "platforms": ["linux/amd64", "linux/arm64"],
+      "security": {
+        "risk": "medium",
+        "privileged": false,
+        "network_access": true,
+        "notes": "Git may contact untrusted remotes; credentials, signing keys, and user configuration remain external to Realm."
+      },
+      "maintenance": {
+        "upstream": "git/git",
+        "review_cadence": "quarterly",
+        "last_reviewed": "2026-08-31"
+      },
+      "overlap": [],
+      "profile_candidate": "git",
+      "stable_capability": "git-toolchain",
+      "status": "accepted",
+      "owner": "egohygiene/realm",
+      "rationale": "Git is kept in a dedicated profile with a snapshot-pinned package source; the base image stays intentionally smaller.",
+      "tests": ["tests/test_realm_profile_publications.py::RealmProfilePublicationTests.test_every_stable_tool_maps_to_its_profile"]
+    },
+    "git-delta": {
+      "display_name": "delta",
+      "purpose": "Provide a readable terminal diff pager without adding an unbounded editor or GUI stack.",
+      "category": "version-control",
+      "source": "https://github.com/dandavison/delta",
+      "version_source": "https://github.com/dandavison/delta@a589ff9debaefdd3992384434120f5a03a103481",
+      "license": "MIT",
+      "platforms": ["linux/amd64", "linux/arm64"],
+      "security": {
+        "risk": "low",
+        "privileged": false,
+        "network_access": false,
+        "notes": "delta only processes local diff content and has no credential or service requirement."
+      },
+      "maintenance": {
+        "upstream": "dandavison/delta",
+        "review_cadence": "quarterly",
+        "last_reviewed": "2026-08-31"
+      },
+      "overlap": [],
+      "profile_candidate": "git",
+      "stable_capability": "git-toolchain",
+      "status": "accepted",
+      "owner": "egohygiene/realm",
+      "rationale": "A bounded terminal diff tool adds useful review ergonomics while the profile remains separate from the language and base profiles.",
+      "tests": ["tests/test_realm_profile_publications.py::RealmProfilePublicationTests.test_every_stable_tool_maps_to_its_profile"]
     },
     "google-cloud-cli": {
       "display_name": "Google Cloud CLI",
@@ -134,10 +219,65 @@
       },
       "overlap": [],
       "profile_candidate": "cloud",
+      "stable_capability": null,
       "status": "experimental",
       "owner": "egohygiene/realm",
       "rationale": "Already represented in the capability catalog, but a stable immutable source and architecture-specific validation are not yet recorded.",
       "tests": []
+    },
+    "imagemagick": {
+      "display_name": "ImageMagick",
+      "purpose": "Provide deterministic image inspection and conversion support for media-oriented repositories.",
+      "category": "media",
+      "source": "https://imagemagick.org/",
+      "version_source": "https://snapshot.debian.org/archive/debian/20260829T120000Z/",
+      "license": "ImageMagick",
+      "platforms": ["linux/amd64", "linux/arm64"],
+      "security": {
+        "risk": "medium",
+        "privileged": false,
+        "network_access": false,
+        "notes": "Treat untrusted images and image formats as hostile input; policy files remain consuming-repository configuration."
+      },
+      "maintenance": {
+        "upstream": "ImageMagick Studio LLC",
+        "review_cadence": "quarterly",
+        "last_reviewed": "2026-08-31"
+      },
+      "overlap": [],
+      "profile_candidate": "media",
+      "stable_capability": "media-toolchain",
+      "status": "accepted",
+      "owner": "egohygiene/realm",
+      "rationale": "Image conversion belongs with FFmpeg in the explicitly selected media profile and shares its snapshot-pinned package source.",
+      "tests": ["tests/test_realm_profile_publications.py::RealmProfilePublicationTests.test_every_stable_tool_maps_to_its_profile"]
+    },
+    "mantle": {
+      "display_name": "Mantle",
+      "purpose": "Provide the pinned portable shell environment selected by the complete Realm developer profile.",
+      "category": "shell",
+      "source": "https://github.com/egohygiene/mantle",
+      "version_source": "https://github.com/egohygiene/mantle@e5a4e9ca20833a29d6f20b18ff7103674ed3a064",
+      "license": "MIT",
+      "platforms": ["linux/amd64", "linux/arm64"],
+      "security": {
+        "risk": "medium",
+        "privileged": false,
+        "network_access": false,
+        "notes": "Mantle configures an interactive shell environment but does not receive credentials or replace Realm's non-root user policy."
+      },
+      "maintenance": {
+        "upstream": "egohygiene/mantle",
+        "review_cadence": "monthly",
+        "last_reviewed": "2026-08-31"
+      },
+      "overlap": [],
+      "profile_candidate": "full",
+      "stable_capability": "mantle-shell",
+      "status": "accepted",
+      "owner": "egohygiene/mantle",
+      "rationale": "Realm consumes the reviewed immutable Mantle revision while leaving shell behavior and installer implementation with Mantle.",
+      "tests": ["tests/test_realm_profile_publications.py::RealmProfilePublicationTests.test_every_stable_tool_maps_to_its_profile"]
     },
     "node": {
       "display_name": "Node.js",
@@ -160,6 +300,7 @@
       },
       "overlap": [],
       "profile_candidate": "node",
+      "stable_capability": "node-toolchain",
       "status": "accepted",
       "owner": "egohygiene/realm",
       "rationale": "Pinned runtime already represented by the node-toolchain capability and directly owned by the Node profile.",
@@ -185,11 +326,12 @@
         "last_reviewed": "2026-08-20"
       },
       "overlap": ["pulumi"],
-      "profile_candidate": "full",
+      "profile_candidate": "cloud",
+      "stable_capability": "cloud-cli",
       "status": "accepted",
       "owner": "egohygiene/realm",
       "rationale": "Pinned artifact already declared by the cloud-cli capability. Stable inclusion is tooling-only and does not grant apply authority.",
-      "tests": ["tests/test_realm_profiles.py::RealmProfileTests.test_full_is_deterministic_and_dependency_ordered"]
+      "tests": ["tests/test_realm_profile_publications.py::RealmProfilePublicationTests.test_every_stable_tool_maps_to_its_profile"]
     },
     "pulumi": {
       "display_name": "Pulumi",
@@ -211,11 +353,39 @@
         "last_reviewed": "2026-08-20"
       },
       "overlap": ["opentofu"],
-      "profile_candidate": "full",
+      "profile_candidate": "cloud",
+      "stable_capability": "cloud-cli",
       "status": "accepted",
       "owner": "egohygiene/realm",
       "rationale": "Pinned artifact already declared by the cloud-cli capability; inclusion supports consumers without making Pulumi mandatory.",
-      "tests": ["tests/test_realm_profiles.py::RealmProfileTests.test_full_is_deterministic_and_dependency_ordered"]
+      "tests": ["tests/test_realm_profile_publications.py::RealmProfilePublicationTests.test_every_stable_tool_maps_to_its_profile"]
+    },
+    "python": {
+      "display_name": "Python",
+      "purpose": "Provide the Python runtime and virtual-environment support required by Python repositories and tooling.",
+      "category": "language",
+      "source": "https://github.com/python/cpython",
+      "version_source": "https://github.com/python/cpython@bcee1c322115c581da27600f2ae55e5439c027eb",
+      "license": "PSF-2.0",
+      "platforms": ["linux/amd64", "linux/arm64"],
+      "security": {
+        "risk": "low",
+        "privileged": false,
+        "network_access": false,
+        "notes": "Package indexes, virtual environments, and publishing credentials remain consumer configuration."
+      },
+      "maintenance": {
+        "upstream": "python/cpython",
+        "review_cadence": "monthly",
+        "last_reviewed": "2026-08-31"
+      },
+      "overlap": [],
+      "profile_candidate": "python",
+      "stable_capability": "python-toolchain",
+      "status": "accepted",
+      "owner": "egohygiene/realm",
+      "rationale": "The selected CPython revision is represented by the dedicated Python capability and does not make Python a requirement of the base image.",
+      "tests": ["tests/test_realm_profile_publications.py::RealmProfilePublicationTests.test_every_stable_tool_maps_to_its_profile"]
     },
     "rustup": {
       "display_name": "rustup",
@@ -238,6 +408,7 @@
       },
       "overlap": [],
       "profile_candidate": "rust",
+      "stable_capability": "rust-toolchain",
       "status": "accepted",
       "owner": "egohygiene/realm",
       "rationale": "Pinned artifact already represented by the rust-toolchain capability and directly owned by the Rust profile.",
@@ -264,6 +435,7 @@
       },
       "overlap": ["sysdig"],
       "profile_candidate": "diagnostics",
+      "stable_capability": null,
       "status": "experimental",
       "owner": "egohygiene/realm",
       "rationale": "Lower-privilege diagnostics candidate; stable inclusion waits for a diagnostics profile and exact package lock.",
@@ -290,6 +462,7 @@
       },
       "overlap": ["strace"],
       "profile_candidate": "diagnostics-privileged",
+      "stable_capability": null,
       "status": "deferred",
       "owner": "egohygiene/realm",
       "rationale": "Potentially useful diagnostics do not justify expanding default runtime privileges. Revisit only with a bounded opt-in profile and consumer requirement.",
@@ -316,6 +489,7 @@
       },
       "overlap": ["opentofu"],
       "profile_candidate": "cloud",
+      "stable_capability": null,
       "status": "rejected",
       "owner": "egohygiene/realm",
       "rationale": "Do not add a second Terraform-compatible client to the stable profile without a concrete compatibility requirement. OpenTofu currently satisfies the generic capability with a pinned source.",

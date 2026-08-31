@@ -31,6 +31,7 @@ REQUIRED_TOOL_FIELDS = {
     "maintenance",
     "overlap",
     "profile_candidate",
+    "stable_capability",
     "status",
     "owner",
     "rationale",
@@ -50,7 +51,17 @@ def load_registry(path: Path) -> dict[str, Any]:
 
 def immutable_source(value: Any) -> bool:
     """Return whether a source reference is pinned to an immutable revision."""
-    if not isinstance(value, str) or not value or "@" not in value:
+    if not isinstance(value, str) or not value:
+        return False
+    if "snapshot.debian.org/archive/" in value:
+        return bool(
+            re.fullmatch(
+                r"https://snapshot\.debian\.org/archive/"
+                r"(?:debian|debian-security)/[0-9]{8}T[0-9]{6}Z/",
+                value,
+            )
+        )
+    if "@" not in value:
         return False
     source, reference = value.rsplit("@", 1)
     if not source or not reference or reference.lower() in MUTABLE_REFS:
@@ -129,6 +140,12 @@ def validate_registry(registry: dict[str, Any]) -> list[str]:
         if status not in CANONICAL_STATUSES:
             errors.append(f"{path}.status is not recognized: {status!r}")
 
+        stable_capability = tool.get("stable_capability")
+        if stable_capability is not None and (
+            not isinstance(stable_capability, str) or not stable_capability.strip()
+        ):
+            errors.append(f"{path}.stable_capability must be a non-empty string or null")
+
         errors.extend(_string_list(tool.get("platforms"), f"{path}.platforms", allow_empty=False))
         errors.extend(_string_list(tool.get("overlap"), f"{path}.overlap"))
         errors.extend(_string_list(tool.get("tests"), f"{path}.tests"))
@@ -181,6 +198,11 @@ def validate_registry(registry: dict[str, Any]) -> list[str]:
                 errors.append(f"{path} is accepted but has no owning profile")
             if str(tool.get("license", "")).strip().lower() in {"", "unknown", "tbd"}:
                 errors.append(f"{path} is accepted but its license is unresolved")
+            if not isinstance(stable_capability, str) or not stable_capability:
+                errors.append(f"{path} is accepted but has no stable capability")
+
+        if status != "accepted" and stable_capability is not None:
+            errors.append(f"{path} is not accepted but names a stable capability")
 
         if status in {"rejected", "superseded", "deferred"} and not tool.get("rationale"):
             errors.append(f"{path} requires a decision rationale")

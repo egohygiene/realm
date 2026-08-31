@@ -1,0 +1,161 @@
+{
+  "schema_version": "1.0.0",
+  "publication_version": "1.0.0",
+  "profile": "rust",
+  "description": "Base environment plus a pinned Rust toolchain",
+  "catalog_checksum": "sha256:ad15bb347eea66d9d89bb7c0d9d8f4e2cfe6d024b6eaf253af8f263b3a6c7a82",
+  "registry_checksum": "sha256:2ec2581ab7ebe4c4b898abe139f8ac8dd0b3b9b69e89a04f9ac81ff5df988c16",
+  "profile_checksum": "sha256:79516b9284ed18da56da9f48f7877ef04d4deb043f8e25fe78ca59f205c8fe6e",
+  "cache_key": "sha256:765f16692892d49ba55bee68f5d29ff0d6ad020b8ea641210506f341be655560",
+  "contents": {
+    "capabilities": [
+      "realm-base",
+      "build-toolchain",
+      "common-cli",
+      "rust-toolchain"
+    ],
+    "packages": {
+      "docker": [
+        "apt:build-essential",
+        "apt:ca-certificates",
+        "apt:ccache",
+        "apt:clang",
+        "apt:clang-format",
+        "apt:clang-tidy",
+        "apt:cmake",
+        "apt:curl",
+        "apt:file",
+        "apt:git-lfs",
+        "apt:gnupg",
+        "apt:jq",
+        "apt:make",
+        "apt:ninja-build",
+        "apt:openssh-client",
+        "apt:pkg-config",
+        "apt:rsync",
+        "apt:tree",
+        "apt:unzip",
+        "apt:wget",
+        "apt:xz-utils",
+        "apt:zip"
+      ],
+      "devcontainer": [
+        "apt:build-essential",
+        "apt:ca-certificates",
+        "apt:ccache",
+        "apt:clang",
+        "apt:clang-format",
+        "apt:clang-tidy",
+        "apt:cmake",
+        "apt:curl",
+        "apt:file",
+        "apt:git-lfs",
+        "apt:gnupg",
+        "apt:jq",
+        "apt:make",
+        "apt:ninja-build",
+        "apt:openssh-client",
+        "apt:pkg-config",
+        "apt:rsync",
+        "apt:tree",
+        "apt:unzip",
+        "apt:wget",
+        "apt:xz-utils",
+        "apt:zip"
+      ],
+      "nix": [
+        "nix:cacert",
+        "nix:ccache",
+        "nix:clang",
+        "nix:cmake",
+        "nix:curl",
+        "nix:file",
+        "nix:git-lfs",
+        "nix:gnumake",
+        "nix:gnupg",
+        "nix:jq",
+        "nix:ninja",
+        "nix:openssh",
+        "nix:pkg-config",
+        "nix:rsync",
+        "nix:rustup",
+        "nix:tree",
+        "nix:unzip",
+        "nix:wget",
+        "nix:xz",
+        "nix:zip"
+      ],
+      "workstation": [
+        "nix:cacert",
+        "nix:ccache",
+        "nix:clang",
+        "nix:cmake",
+        "nix:curl",
+        "nix:file",
+        "nix:git-lfs",
+        "nix:gnumake",
+        "nix:gnupg",
+        "nix:jq",
+        "nix:ninja",
+        "nix:openssh",
+        "nix:pkg-config",
+        "nix:rsync",
+        "nix:rustup",
+        "nix:tree",
+        "nix:unzip",
+        "nix:wget",
+        "nix:xz",
+        "nix:zip"
+      ]
+    },
+    "artifacts": [
+      {
+        "name": "rustup",
+        "version": "1.28.2",
+        "source": "https://github.com/rust-lang/rustup@1.28.2",
+        "capability": "rust-toolchain"
+      }
+    ],
+    "tools": [
+      {
+        "id": "rustup",
+        "license": "MIT OR Apache-2.0",
+        "owner": "egohygiene/realm",
+        "source": "https://github.com/rust-lang/rustup@1.28.2",
+        "stable_capability": "rust-toolchain"
+      }
+    ]
+  },
+  "support": [
+    {
+      "platform": "linux/amd64",
+      "projections": [
+        "docker",
+        "devcontainer",
+        "nix",
+        "workstation"
+      ]
+    },
+    {
+      "platform": "linux/arm64",
+      "projections": [
+        "docker",
+        "devcontainer",
+        "nix",
+        "workstation"
+      ]
+    }
+  ],
+  "size": {
+    "status": "unmeasured",
+    "metric": "expanded OCI image bytes",
+    "owner": "Realm issue #6",
+    "command": "task image:size ARCH=\"<amd64|arm64>\" IMAGE=\"<published-image>\"",
+    "reason": "No profile OCI image has been built or published. Do not infer an image size from declared package names."
+  },
+  "sbom": {
+    "format": "SPDX-2.3 declared-intent",
+    "path": "sbom.spdx.json",
+    "sha256": "sha256:046486c246fb8759bd5a18e185e31f8d697cc69bd2ffaa1306bad40f6e454f5e"
+  }
+}

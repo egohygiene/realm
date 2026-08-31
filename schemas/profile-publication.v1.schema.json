@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.egohygiene.io/realm/profile-publication.v1.schema.json",
+  "title": "Realm profile publication v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "publication_version", "profile", "description", "catalog_checksum", "registry_checksum", "profile_checksum", "cache_key", "contents", "support", "size", "sbom"],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "publication_version": {"const": "1.0.0"},
+    "profile": {"type": "string", "pattern": "^[a-z][a-z0-9-]*$"},
+    "description": {"type": "string", "minLength": 1},
+    "catalog_checksum": {"$ref": "#/$defs/checksum"},
+    "registry_checksum": {"$ref": "#/$defs/checksum"},
+    "profile_checksum": {"$ref": "#/$defs/checksum"},
+    "cache_key": {"$ref": "#/$defs/checksum"},
+    "contents": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["capabilities", "packages", "artifacts", "tools"],
+      "properties": {
+        "capabilities": {"$ref": "#/$defs/strings"},
+        "packages": {"type": "object", "additionalProperties": {"$ref": "#/$defs/strings"}},
+        "artifacts": {"type": "array", "items": {"type": "object"}},
+        "tools": {"type": "array", "items": {"$ref": "#/$defs/tool"}}
+      }
+    },
+    "support": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["platform", "projections"],
+        "properties": {
+          "platform": {"type": "string", "minLength": 1},
+          "projections": {"$ref": "#/$defs/strings"}
+        }
+      }
+    },
+    "size": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "metric", "owner", "command", "reason"],
+      "properties": {
+        "status": {"const": "unmeasured"},
+        "metric": {"type": "string", "minLength": 1},
+        "owner": {"type": "string", "minLength": 1},
+        "command": {"type": "string", "minLength": 1},
+        "reason": {"type": "string", "minLength": 1}
+      }
+    },
+    "sbom": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["format", "path", "sha256"],
+      "properties": {
+        "format": {"const": "SPDX-2.3 declared-intent"},
+        "path": {"const": "sbom.spdx.json"},
+        "sha256": {"$ref": "#/$defs/checksum"}
+      }
+    }
+  },
+  "$defs": {
+    "checksum": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "strings": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true
+    },
+    "tool": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "license", "owner", "source", "stable_capability"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "license": {"type": "string", "minLength": 1},
+        "owner": {"type": "string", "minLength": 1},
+        "source": {"type": "string", "minLength": 1},
+        "stable_capability": {"type": "string", "minLength": 1}
+      }
+    }
+  }
+}

@@ -55,6 +55,7 @@
         "maintenance",
         "overlap",
         "profile_candidate",
+        "stable_capability",
         "status",
         "owner",
         "rationale",
@@ -81,6 +82,7 @@
           "items": {"type": "string", "minLength": 1}
         },
         "profile_candidate": {"type": "string", "minLength": 1},
+        "stable_capability": {"type": ["string", "null"], "minLength": 1},
         "status": {"enum": ["accepted", "experimental", "deferred", "rejected", "superseded"]},
         "owner": {"type": "string", "minLength": 1},
         "rationale": {"type": "string", "minLength": 1},

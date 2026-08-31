@@ -35,13 +35,23 @@ their consumers, and lexical ordering for otherwise independent nodes.
 | `rust` | `base` | build and Rust toolchains | forbidden |
 | `node` | `base` | build and Node.js toolchains | forbidden |
 | `python` | `base` | build and Python toolchains | forbidden |
-| `full` | all language profiles | cloud, media, and Mantle tools | forbidden |
+| `flutter` | `base` | pinned Flutter SDK | forbidden |
+| `git` | `base` | Git and a bounded terminal diff tool | forbidden |
+| `cloud` | `base` | pinned OpenTofu and Pulumi clients | forbidden |
+| `media` | `base` | FFmpeg and ImageMagick | forbidden |
+| `full` | all stable non-service profiles | Mantle shell environment | forbidden |
 | `services` | `base` | container host service | explicit opt-in |
 
 `full` means every supported non-service development toolset. It does not mean
 every possible host daemon, database, credential, or product dependency. Those
 belong in explicit service profiles or consuming application orchestration.
 This definition keeps `full` portable enough for CI and Dev Containers.
+
+The current stable profile family is `base`, `rust`, `node`, `python`,
+`flutter`, `git`, `cloud`, `media`, and `full`. `services` remains the explicit
+privileged/service boundary and is not inherited by `full`. Candidate tools
+remain visible in the tool registry but cannot enter this family until the
+stable-admission contract maps them to a reviewed capability.
 
 ## Projections
 
@@ -85,3 +95,11 @@ privileged capabilities, mutable sources, and secret-bearing data.
 5. Publish semantic tags and immutable digests through Relay-owned workflows.
 6. Add Darwin only after Nix/Homebrew workstation projections have cross-host
    tests.
+
+## Publication declarations
+
+`dist/profiles/` contains deterministic manifests, declared-intent SPDX
+documents, cache identities, and a platform support matrix for every profile.
+They are reviewable planning and release inputs, not claims that a profile OCI
+image has been built. See [profile-publications.md](profile-publications.md)
+for the exact evidence boundaries and regeneration commands.

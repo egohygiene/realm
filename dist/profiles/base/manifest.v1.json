@@ -1,0 +1,112 @@
+{
+  "schema_version": "1.0.0",
+  "publication_version": "1.0.0",
+  "profile": "base",
+  "description": "Small language-neutral development foundation",
+  "catalog_checksum": "sha256:ad15bb347eea66d9d89bb7c0d9d8f4e2cfe6d024b6eaf253af8f263b3a6c7a82",
+  "registry_checksum": "sha256:2ec2581ab7ebe4c4b898abe139f8ac8dd0b3b9b69e89a04f9ac81ff5df988c16",
+  "profile_checksum": "sha256:bd591f3701e67972c601165e7d3215ddeca52cda2c6c5fea80649a1cadbcc0c0",
+  "cache_key": "sha256:8eb6369c4a1d9f054adc2796ac368842eb2c8569c51f281e2615aec5325020ed",
+  "contents": {
+    "capabilities": [
+      "realm-base",
+      "common-cli"
+    ],
+    "packages": {
+      "docker": [
+        "apt:ca-certificates",
+        "apt:curl",
+        "apt:file",
+        "apt:git-lfs",
+        "apt:gnupg",
+        "apt:jq",
+        "apt:openssh-client",
+        "apt:rsync",
+        "apt:tree",
+        "apt:unzip",
+        "apt:wget",
+        "apt:xz-utils",
+        "apt:zip"
+      ],
+      "devcontainer": [
+        "apt:ca-certificates",
+        "apt:curl",
+        "apt:file",
+        "apt:git-lfs",
+        "apt:gnupg",
+        "apt:jq",
+        "apt:openssh-client",
+        "apt:rsync",
+        "apt:tree",
+        "apt:unzip",
+        "apt:wget",
+        "apt:xz-utils",
+        "apt:zip"
+      ],
+      "nix": [
+        "nix:cacert",
+        "nix:curl",
+        "nix:file",
+        "nix:git-lfs",
+        "nix:gnupg",
+        "nix:jq",
+        "nix:openssh",
+        "nix:rsync",
+        "nix:tree",
+        "nix:unzip",
+        "nix:wget",
+        "nix:xz",
+        "nix:zip"
+      ],
+      "workstation": [
+        "nix:cacert",
+        "nix:curl",
+        "nix:file",
+        "nix:git-lfs",
+        "nix:gnupg",
+        "nix:jq",
+        "nix:openssh",
+        "nix:rsync",
+        "nix:tree",
+        "nix:unzip",
+        "nix:wget",
+        "nix:xz",
+        "nix:zip"
+      ]
+    },
+    "artifacts": [],
+    "tools": []
+  },
+  "support": [
+    {
+      "platform": "linux/amd64",
+      "projections": [
+        "docker",
+        "devcontainer",
+        "nix",
+        "workstation"
+      ]
+    },
+    {
+      "platform": "linux/arm64",
+      "projections": [
+        "docker",
+        "devcontainer",
+        "nix",
+        "workstation"
+      ]
+    }
+  ],
+  "size": {
+    "status": "unmeasured",
+    "metric": "expanded OCI image bytes",
+    "owner": "Realm issue #6",
+    "command": "task image:size ARCH=\"<amd64|arm64>\" IMAGE=\"<published-image>\"",
+    "reason": "No profile OCI image has been built or published. Do not infer an image size from declared package names."
+  },
+  "sbom": {
+    "format": "SPDX-2.3 declared-intent",
+    "path": "sbom.spdx.json",
+    "sha256": "sha256:2616c3d7c980675986be600892a249f801f79b36c2ae8a4057dbe701bec3c38a"
+  }
+}

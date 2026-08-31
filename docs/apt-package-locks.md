@@ -161,9 +161,9 @@ from the completed layer.
 - Snapshot pinning freezes security updates. A deliberate refresh cadence and
   vulnerability review remain necessary.
 - This contract covers only the Debian Trixie minimal base on `amd64` and
-  `arm64`. Language and workstation profiles belong to
-  [issue #5](https://github.com/egohygiene/realm/issues/5); the complete image
-  and its size budget belong to
+  `arm64`. Language and workstation profile declarations are published in
+  [`../dist/profiles/`](../dist/profiles/); the complete image and its size
+  budget belong to
   [issue #6](https://github.com/egohygiene/realm/issues/6).
 - Privileged monitoring, host daemons, background services, GUI forwarding,
   credentials, and project-specific dependencies are outside this base.

@@ -1,9 +1,9 @@
 {
   "schema_version": "1.0.0",
-  "name": "full",
-  "description": "Union of supported non-service development toolsets",
-  "extends": ["cloud", "flutter", "git", "media", "node", "python", "rust"],
-  "include": ["cloud-cli", "media-toolchain", "mantle-shell"],
+  "name": "cloud",
+  "description": "Base environment plus pinned infrastructure-as-code clients",
+  "extends": ["base"],
+  "include": ["cloud-cli"],
   "exclude": [],
   "platforms": ["linux/amd64", "linux/arm64"],
   "projections": ["docker", "devcontainer", "nix", "workstation"],

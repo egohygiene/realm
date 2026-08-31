@@ -40,6 +40,21 @@ class RealmToolRegistryTests(unittest.TestCase):
         errors = validate_registry(registry)
         self.assertTrue(any("has no owning test evidence" in error for error in errors))
 
+    def test_experimental_tool_cannot_name_a_stable_capability(self) -> None:
+        registry = copy.deepcopy(self.registry)
+        registry["tools"]["aws-cli"]["stable_capability"] = "cloud-cli"
+        errors = validate_registry(registry)
+        self.assertTrue(
+            any("not accepted but names a stable capability" in error for error in errors)
+        )
+
+    def test_snapshot_is_an_immutable_package_source(self) -> None:
+        self.assertEqual(validate_registry(self.registry), [])
+        self.assertEqual(
+            self.registry["tools"]["ffmpeg"]["version_source"],
+            "https://snapshot.debian.org/archive/debian/20260829T120000Z/",
+        )
+
     def test_unknown_overlap_is_rejected(self) -> None:
         registry = copy.deepcopy(self.registry)
         registry["tools"]["opentofu"]["overlap"] = ["does-not-exist"]
