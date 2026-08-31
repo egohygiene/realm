@@ -1,0 +1,143 @@
+{
+  "schema_version": "1.0.0",
+  "publication_version": "1.0.0",
+  "profile": "git",
+  "description": "Base environment plus Git and a bounded terminal diff tool",
+  "catalog_checksum": "sha256:ad15bb347eea66d9d89bb7c0d9d8f4e2cfe6d024b6eaf253af8f263b3a6c7a82",
+  "registry_checksum": "sha256:2ec2581ab7ebe4c4b898abe139f8ac8dd0b3b9b69e89a04f9ac81ff5df988c16",
+  "profile_checksum": "sha256:d96943f99a75853a308e9188283c06138d51a993c7b721449fa8ed2261b05746",
+  "cache_key": "sha256:c1b82c1dd3e072bb8cc07103de566c9ca9a1e6f8535ef9c1b08d535db3204208",
+  "contents": {
+    "capabilities": [
+      "realm-base",
+      "common-cli",
+      "git-toolchain"
+    ],
+    "packages": {
+      "docker": [
+        "apt:ca-certificates",
+        "apt:curl",
+        "apt:file",
+        "apt:git",
+        "apt:git-delta",
+        "apt:git-lfs",
+        "apt:gnupg",
+        "apt:jq",
+        "apt:openssh-client",
+        "apt:rsync",
+        "apt:tree",
+        "apt:unzip",
+        "apt:wget",
+        "apt:xz-utils",
+        "apt:zip"
+      ],
+      "devcontainer": [
+        "apt:ca-certificates",
+        "apt:curl",
+        "apt:file",
+        "apt:git",
+        "apt:git-delta",
+        "apt:git-lfs",
+        "apt:gnupg",
+        "apt:jq",
+        "apt:openssh-client",
+        "apt:rsync",
+        "apt:tree",
+        "apt:unzip",
+        "apt:wget",
+        "apt:xz-utils",
+        "apt:zip"
+      ],
+      "nix": [
+        "nix:cacert",
+        "nix:curl",
+        "nix:file",
+        "nix:git",
+        "nix:git-lfs",
+        "nix:gitAndTools.delta",
+        "nix:gnupg",
+        "nix:jq",
+        "nix:openssh",
+        "nix:rsync",
+        "nix:tree",
+        "nix:unzip",
+        "nix:wget",
+        "nix:xz",
+        "nix:zip"
+      ],
+      "workstation": [
+        "nix:cacert",
+        "nix:curl",
+        "nix:file",
+        "nix:git",
+        "nix:git-lfs",
+        "nix:gitAndTools.delta",
+        "nix:gnupg",
+        "nix:jq",
+        "nix:openssh",
+        "nix:rsync",
+        "nix:tree",
+        "nix:unzip",
+        "nix:wget",
+        "nix:xz",
+        "nix:zip"
+      ]
+    },
+    "artifacts": [
+      {
+        "name": "git-delta",
+        "version": "0.18.2",
+        "source": "https://github.com/dandavison/delta@a589ff9debaefdd3992384434120f5a03a103481",
+        "capability": "git-toolchain"
+      }
+    ],
+    "tools": [
+      {
+        "id": "git",
+        "license": "GPL-2.0-only",
+        "owner": "egohygiene/realm",
+        "source": "https://snapshot.debian.org/archive/debian/20260829T120000Z/",
+        "stable_capability": "git-toolchain"
+      },
+      {
+        "id": "git-delta",
+        "license": "MIT",
+        "owner": "egohygiene/realm",
+        "source": "https://github.com/dandavison/delta@a589ff9debaefdd3992384434120f5a03a103481",
+        "stable_capability": "git-toolchain"
+      }
+    ]
+  },
+  "support": [
+    {
+      "platform": "linux/amd64",
+      "projections": [
+        "docker",
+        "devcontainer",
+        "nix",
+        "workstation"
+      ]
+    },
+    {
+      "platform": "linux/arm64",
+      "projections": [
+        "docker",
+        "devcontainer",
+        "nix",
+        "workstation"
+      ]
+    }
+  ],
+  "size": {
+    "status": "unmeasured",
+    "metric": "expanded OCI image bytes",
+    "owner": "Realm issue #6",
+    "command": "task image:size ARCH=\"<amd64|arm64>\" IMAGE=\"<published-image>\"",
+    "reason": "No profile OCI image has been built or published. Do not infer an image size from declared package names."
+  },
+  "sbom": {
+    "format": "SPDX-2.3 declared-intent",
+    "path": "sbom.spdx.json",
+    "sha256": "sha256:e5676dd6330ec66d1f23b5824ecd8195b8ebae32f5d63571b7a05a7b64eccdd3"
+  }
+}

@@ -1,9 +1,9 @@
 {
   "schema_version": "1.0.0",
-  "name": "full",
-  "description": "Union of supported non-service development toolsets",
-  "extends": ["cloud", "flutter", "git", "media", "node", "python", "rust"],
-  "include": ["cloud-cli", "media-toolchain", "mantle-shell"],
+  "name": "media",
+  "description": "Base environment plus bounded media inspection and conversion tools",
+  "extends": ["base"],
+  "include": ["media-toolchain"],
   "exclude": [],
   "platforms": ["linux/amd64", "linux/arm64"],
   "projections": ["docker", "devcontainer", "nix", "workstation"],

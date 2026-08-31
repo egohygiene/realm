@@ -19,6 +19,7 @@ The registry records, for every reviewed tool:
 - maintenance owner and review cadence;
 - overlap with existing tools;
 - candidate owning profile;
+- stable capability, when the decision has passed admission;
 - lifecycle decision and rationale;
 - immutable version source and test evidence when stable inclusion is accepted.
 
@@ -36,6 +37,12 @@ The tool is approved for stable inclusion in the named profile/capability. Accep
 - a maintenance/review owner.
 
 An `accepted` registry entry does **not** grant runtime credentials or authorization. For example, accepting an IaC CLI means Realm may package the client; it does not give that client permission to apply infrastructure.
+
+An accepted entry must also set `stable_capability` to the catalog capability it
+actually supplies. Realm validates that the named `profile_candidate` resolves
+that capability for each supported target. Every non-accepted lifecycle state
+must set `stable_capability` to `null`; this prevents a candidate from reaching
+a stable profile through a metadata-only change.
 
 ### `experimental`
 
@@ -57,7 +64,9 @@ The tool served a valid historical role but another tool/version/architecture ha
 
 ## Stable-inclusion rule
 
-A tool may only move to `accepted` when its `version_source` is immutable. The validator accepts pinned semantic versions, full Git commit SHAs, or SHA-256 digest references.
+A tool may only move to `accepted` when its `version_source` is immutable. The
+validator accepts pinned semantic versions, full Git commit SHAs, SHA-256 digest
+references, or an exact Debian snapshot URL for a snapshot-resolved package.
 
 Do not use these as stable sources:
 

@@ -29,10 +29,17 @@ truth.
   replays, and previews refreshes of the snapshot-pinned apt locks.
 - [`tools/realm_tool_registry.py`](tools/realm_tool_registry.py) validates tool
   inclusion decisions and renders the review queue.
+- [`tools/realm_profile_publications.py`](tools/realm_profile_publications.py)
+  validates stable-tool admission and renders deterministic profile manifests,
+  declared-intent SPDX inventories, cache keys, and support evidence.
+- [`dist/profiles/`](dist/profiles/) publishes the current per-profile contents,
+  declared SBOMs, size-evidence state, and support matrix.
 - [`docs/profiles.md`](docs/profiles.md) records profile semantics and release
   boundaries.
 - [`docs/tool-registry.md`](docs/tool-registry.md) documents tool evaluation,
   stable-inclusion gates, overlap decisions, and maintenance policy.
+- [`docs/profile-publications.md`](docs/profile-publications.md) documents
+  profile publication evidence, cache identity, and the built-image boundary.
 - [`docs/mantle-shell.md`](docs/mantle-shell.md) explains build-time `SHELL`
   versus an installed interactive Mantle shell.
 - [`docs/apt-package-locks.md`](docs/apt-package-locks.md) documents the apt
@@ -57,9 +64,9 @@ explicit snapshots, signed `InRelease` metadata, and exact per-architecture
 package versions. A build fails closed when those inputs disagree; it never
 falls back to a live mirror.
 
-Language toolchains and curated workstation tools remain in the profile work
-tracked by [issue #5](https://github.com/egohygiene/realm/issues/5). The tested
-union and its size budget remain in
+Language and workstation profile declarations are published in
+[`dist/profiles/`](dist/profiles/). The tested OCI-image union and its size
+budget remain in
 [issue #6](https://github.com/egohygiene/realm/issues/6). Privileged or
 service-backed capabilities are never inherited by the base or `full` profile.
 
@@ -76,6 +83,7 @@ The underlying dependency-free commands remain available for focused checks:
 python3 tools/realm_profiles.py validate-catalog
 python3 tools/realm_profiles.py validate-profiles
 python3 tools/realm_tool_registry.py validate
+python3 tools/realm_profile_publications.py check
 python3 tools/realm_apt_packages.py check
 python3 -m unittest discover --start-directory "tests" --verbose
 ```

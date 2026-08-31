@@ -1,0 +1,161 @@
+{
+  "schema_version": "1.0.0",
+  "publication_version": "1.0.0",
+  "profile": "flutter",
+  "description": "Base environment plus the pinned Flutter SDK",
+  "catalog_checksum": "sha256:ad15bb347eea66d9d89bb7c0d9d8f4e2cfe6d024b6eaf253af8f263b3a6c7a82",
+  "registry_checksum": "sha256:2ec2581ab7ebe4c4b898abe139f8ac8dd0b3b9b69e89a04f9ac81ff5df988c16",
+  "profile_checksum": "sha256:1a3fc00b9ebe3ee6ccd474738838c70f208bfa630e939052edcd5710b4ef28fe",
+  "cache_key": "sha256:be7cbfe284ef870811592154840c4b5d11281b6b21661d6fad314773bdb2b12a",
+  "contents": {
+    "capabilities": [
+      "realm-base",
+      "build-toolchain",
+      "common-cli",
+      "flutter-toolchain"
+    ],
+    "packages": {
+      "docker": [
+        "apt:build-essential",
+        "apt:ca-certificates",
+        "apt:ccache",
+        "apt:clang",
+        "apt:clang-format",
+        "apt:clang-tidy",
+        "apt:cmake",
+        "apt:curl",
+        "apt:file",
+        "apt:git-lfs",
+        "apt:gnupg",
+        "apt:jq",
+        "apt:make",
+        "apt:ninja-build",
+        "apt:openssh-client",
+        "apt:pkg-config",
+        "apt:rsync",
+        "apt:tree",
+        "apt:unzip",
+        "apt:wget",
+        "apt:xz-utils",
+        "apt:zip"
+      ],
+      "devcontainer": [
+        "apt:build-essential",
+        "apt:ca-certificates",
+        "apt:ccache",
+        "apt:clang",
+        "apt:clang-format",
+        "apt:clang-tidy",
+        "apt:cmake",
+        "apt:curl",
+        "apt:file",
+        "apt:git-lfs",
+        "apt:gnupg",
+        "apt:jq",
+        "apt:make",
+        "apt:ninja-build",
+        "apt:openssh-client",
+        "apt:pkg-config",
+        "apt:rsync",
+        "apt:tree",
+        "apt:unzip",
+        "apt:wget",
+        "apt:xz-utils",
+        "apt:zip"
+      ],
+      "nix": [
+        "nix:cacert",
+        "nix:ccache",
+        "nix:clang",
+        "nix:cmake",
+        "nix:curl",
+        "nix:file",
+        "nix:flutter",
+        "nix:git-lfs",
+        "nix:gnumake",
+        "nix:gnupg",
+        "nix:jq",
+        "nix:ninja",
+        "nix:openssh",
+        "nix:pkg-config",
+        "nix:rsync",
+        "nix:tree",
+        "nix:unzip",
+        "nix:wget",
+        "nix:xz",
+        "nix:zip"
+      ],
+      "workstation": [
+        "nix:cacert",
+        "nix:ccache",
+        "nix:clang",
+        "nix:cmake",
+        "nix:curl",
+        "nix:file",
+        "nix:flutter",
+        "nix:git-lfs",
+        "nix:gnumake",
+        "nix:gnupg",
+        "nix:jq",
+        "nix:ninja",
+        "nix:openssh",
+        "nix:pkg-config",
+        "nix:rsync",
+        "nix:tree",
+        "nix:unzip",
+        "nix:wget",
+        "nix:xz",
+        "nix:zip"
+      ]
+    },
+    "artifacts": [
+      {
+        "name": "flutter",
+        "version": "3.35.1",
+        "source": "https://github.com/flutter/flutter@20f82749394e68bcfbbeee96bad384abaae09c13",
+        "capability": "flutter-toolchain"
+      }
+    ],
+    "tools": [
+      {
+        "id": "flutter",
+        "license": "BSD-3-Clause",
+        "owner": "egohygiene/realm",
+        "source": "https://github.com/flutter/flutter@20f82749394e68bcfbbeee96bad384abaae09c13",
+        "stable_capability": "flutter-toolchain"
+      }
+    ]
+  },
+  "support": [
+    {
+      "platform": "linux/amd64",
+      "projections": [
+        "docker",
+        "devcontainer",
+        "nix",
+        "workstation"
+      ]
+    },
+    {
+      "platform": "linux/arm64",
+      "projections": [
+        "docker",
+        "devcontainer",
+        "nix",
+        "workstation"
+      ]
+    }
+  ],
+  "size": {
+    "status": "unmeasured",
+    "metric": "expanded OCI image bytes",
+    "owner": "Realm issue #6",
+    "command": "task image:size ARCH=\"<amd64|arm64>\" IMAGE=\"<published-image>\"",
+    "reason": "No profile OCI image has been built or published. Do not infer an image size from declared package names."
+  },
+  "sbom": {
+    "format": "SPDX-2.3 declared-intent",
+    "path": "sbom.spdx.json",
+    "sha256": "sha256:0a5fd72b19e2fb4233d01390ba56ac4243776ecaef9f89d3ca93eb3e82964538"
+  }
+}

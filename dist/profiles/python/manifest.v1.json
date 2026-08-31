@@ -1,0 +1,169 @@
+{
+  "schema_version": "1.0.0",
+  "publication_version": "1.0.0",
+  "profile": "python",
+  "description": "Base environment plus a pinned Python toolchain",
+  "catalog_checksum": "sha256:ad15bb347eea66d9d89bb7c0d9d8f4e2cfe6d024b6eaf253af8f263b3a6c7a82",
+  "registry_checksum": "sha256:2ec2581ab7ebe4c4b898abe139f8ac8dd0b3b9b69e89a04f9ac81ff5df988c16",
+  "profile_checksum": "sha256:5ab7a5e705caaa1c5a00077d9a0413c28f20c1d9aadcb4a85e41e861d213287e",
+  "cache_key": "sha256:5f83b79ffb153bfd843ddc53975fc144e8d3d5eeb684e13738c56253920a22c6",
+  "contents": {
+    "capabilities": [
+      "realm-base",
+      "build-toolchain",
+      "common-cli",
+      "python-toolchain"
+    ],
+    "packages": {
+      "docker": [
+        "apt:build-essential",
+        "apt:ca-certificates",
+        "apt:ccache",
+        "apt:clang",
+        "apt:clang-format",
+        "apt:clang-tidy",
+        "apt:cmake",
+        "apt:curl",
+        "apt:file",
+        "apt:git-lfs",
+        "apt:gnupg",
+        "apt:jq",
+        "apt:make",
+        "apt:ninja-build",
+        "apt:openssh-client",
+        "apt:pkg-config",
+        "apt:python3",
+        "apt:python3-pip",
+        "apt:python3-venv",
+        "apt:rsync",
+        "apt:tree",
+        "apt:unzip",
+        "apt:wget",
+        "apt:xz-utils",
+        "apt:zip"
+      ],
+      "devcontainer": [
+        "apt:build-essential",
+        "apt:ca-certificates",
+        "apt:ccache",
+        "apt:clang",
+        "apt:clang-format",
+        "apt:clang-tidy",
+        "apt:cmake",
+        "apt:curl",
+        "apt:file",
+        "apt:git-lfs",
+        "apt:gnupg",
+        "apt:jq",
+        "apt:make",
+        "apt:ninja-build",
+        "apt:openssh-client",
+        "apt:pkg-config",
+        "apt:python3",
+        "apt:python3-pip",
+        "apt:python3-venv",
+        "apt:rsync",
+        "apt:tree",
+        "apt:unzip",
+        "apt:wget",
+        "apt:xz-utils",
+        "apt:zip"
+      ],
+      "nix": [
+        "nix:cacert",
+        "nix:ccache",
+        "nix:clang",
+        "nix:cmake",
+        "nix:curl",
+        "nix:file",
+        "nix:git-lfs",
+        "nix:gnumake",
+        "nix:gnupg",
+        "nix:jq",
+        "nix:ninja",
+        "nix:openssh",
+        "nix:pkg-config",
+        "nix:python313",
+        "nix:rsync",
+        "nix:tree",
+        "nix:unzip",
+        "nix:uv",
+        "nix:wget",
+        "nix:xz",
+        "nix:zip"
+      ],
+      "workstation": [
+        "nix:cacert",
+        "nix:ccache",
+        "nix:clang",
+        "nix:cmake",
+        "nix:curl",
+        "nix:file",
+        "nix:git-lfs",
+        "nix:gnumake",
+        "nix:gnupg",
+        "nix:jq",
+        "nix:ninja",
+        "nix:openssh",
+        "nix:pkg-config",
+        "nix:python313",
+        "nix:rsync",
+        "nix:tree",
+        "nix:unzip",
+        "nix:uv",
+        "nix:wget",
+        "nix:xz",
+        "nix:zip"
+      ]
+    },
+    "artifacts": [
+      {
+        "name": "python",
+        "version": "3.13.7",
+        "source": "https://github.com/python/cpython@bcee1c322115c581da27600f2ae55e5439c027eb",
+        "capability": "python-toolchain"
+      }
+    ],
+    "tools": [
+      {
+        "id": "python",
+        "license": "PSF-2.0",
+        "owner": "egohygiene/realm",
+        "source": "https://github.com/python/cpython@bcee1c322115c581da27600f2ae55e5439c027eb",
+        "stable_capability": "python-toolchain"
+      }
+    ]
+  },
+  "support": [
+    {
+      "platform": "linux/amd64",
+      "projections": [
+        "docker",
+        "devcontainer",
+        "nix",
+        "workstation"
+      ]
+    },
+    {
+      "platform": "linux/arm64",
+      "projections": [
+        "docker",
+        "devcontainer",
+        "nix",
+        "workstation"
+      ]
+    }
+  ],
+  "size": {
+    "status": "unmeasured",
+    "metric": "expanded OCI image bytes",
+    "owner": "Realm issue #6",
+    "command": "task image:size ARCH=\"<amd64|arm64>\" IMAGE=\"<published-image>\"",
+    "reason": "No profile OCI image has been built or published. Do not infer an image size from declared package names."
+  },
+  "sbom": {
+    "format": "SPDX-2.3 declared-intent",
+    "path": "sbom.spdx.json",
+    "sha256": "sha256:477190ab9cd745bddee6658fd549420d46d55ab9389479076bace3e214ad7d00"
+  }
+}

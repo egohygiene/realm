@@ -1,0 +1,99 @@
+{
+  "schema_version": "1.0.0",
+  "publication_version": "1.0.0",
+  "profile": "services",
+  "description": "Explicit opt-in host/service capabilities; never inherited by full",
+  "catalog_checksum": "sha256:ad15bb347eea66d9d89bb7c0d9d8f4e2cfe6d024b6eaf253af8f263b3a6c7a82",
+  "registry_checksum": "sha256:2ec2581ab7ebe4c4b898abe139f8ac8dd0b3b9b69e89a04f9ac81ff5df988c16",
+  "profile_checksum": "sha256:9901a75cf0d4fb43538c1b55504ccdc8bebd14eae0f95ea453870233c5fdfab9",
+  "cache_key": "sha256:af9be85a42684ceb2a04ef1cb394ff11d431ebbdf19040bea17c00ec84b3bd54",
+  "contents": {
+    "capabilities": [
+      "realm-base",
+      "common-cli",
+      "container-host"
+    ],
+    "packages": {
+      "devcontainer": [
+        "apt:ca-certificates",
+        "apt:curl",
+        "apt:docker.io",
+        "apt:file",
+        "apt:git-lfs",
+        "apt:gnupg",
+        "apt:jq",
+        "apt:openssh-client",
+        "apt:rsync",
+        "apt:tree",
+        "apt:unzip",
+        "apt:wget",
+        "apt:xz-utils",
+        "apt:zip"
+      ],
+      "nix": [
+        "nix:cacert",
+        "nix:curl",
+        "nix:docker",
+        "nix:file",
+        "nix:git-lfs",
+        "nix:gnupg",
+        "nix:jq",
+        "nix:openssh",
+        "nix:rsync",
+        "nix:tree",
+        "nix:unzip",
+        "nix:wget",
+        "nix:xz",
+        "nix:zip"
+      ],
+      "workstation": [
+        "nix:cacert",
+        "nix:curl",
+        "nix:docker",
+        "nix:file",
+        "nix:git-lfs",
+        "nix:gnupg",
+        "nix:jq",
+        "nix:openssh",
+        "nix:rsync",
+        "nix:tree",
+        "nix:unzip",
+        "nix:wget",
+        "nix:xz",
+        "nix:zip"
+      ]
+    },
+    "artifacts": [],
+    "tools": []
+  },
+  "support": [
+    {
+      "platform": "linux/amd64",
+      "projections": [
+        "devcontainer",
+        "nix",
+        "workstation"
+      ]
+    },
+    {
+      "platform": "linux/arm64",
+      "projections": [
+        "devcontainer",
+        "nix",
+        "workstation"
+      ]
+    }
+  ],
+  "size": {
+    "status": "unmeasured",
+    "metric": "expanded OCI image bytes",
+    "owner": "Realm issue #6",
+    "command": "task image:size ARCH=\"<amd64|arm64>\" IMAGE=\"<published-image>\"",
+    "reason": "No profile OCI image has been built or published. Do not infer an image size from declared package names."
+  },
+  "sbom": {
+    "format": "SPDX-2.3 declared-intent",
+    "path": "sbom.spdx.json",
+    "sha256": "sha256:d3d192eef1229bd103024217e244d592e71f9b9667f4e5696a7393dfa247cbe6"
+  }
+}

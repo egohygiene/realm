@@ -1,0 +1,136 @@
+{
+  "schema_version": "1.0.0",
+  "publication_version": "1.0.0",
+  "profile": "media",
+  "description": "Base environment plus bounded media inspection and conversion tools",
+  "catalog_checksum": "sha256:ad15bb347eea66d9d89bb7c0d9d8f4e2cfe6d024b6eaf253af8f263b3a6c7a82",
+  "registry_checksum": "sha256:2ec2581ab7ebe4c4b898abe139f8ac8dd0b3b9b69e89a04f9ac81ff5df988c16",
+  "profile_checksum": "sha256:4e175176bdb0af711311a51c2bee875ca454b5536a8a127d634bdaa6d876f2da",
+  "cache_key": "sha256:fb3b69b61f9c16c75a6fbf41b632fc2e4c465cdd74fa61f6a8a23839f92001c2",
+  "contents": {
+    "capabilities": [
+      "realm-base",
+      "common-cli",
+      "media-toolchain"
+    ],
+    "packages": {
+      "docker": [
+        "apt:ca-certificates",
+        "apt:curl",
+        "apt:ffmpeg",
+        "apt:file",
+        "apt:git-lfs",
+        "apt:gnupg",
+        "apt:imagemagick",
+        "apt:jq",
+        "apt:openssh-client",
+        "apt:rsync",
+        "apt:tree",
+        "apt:unzip",
+        "apt:wget",
+        "apt:xz-utils",
+        "apt:zip"
+      ],
+      "devcontainer": [
+        "apt:ca-certificates",
+        "apt:curl",
+        "apt:ffmpeg",
+        "apt:file",
+        "apt:git-lfs",
+        "apt:gnupg",
+        "apt:imagemagick",
+        "apt:jq",
+        "apt:openssh-client",
+        "apt:rsync",
+        "apt:tree",
+        "apt:unzip",
+        "apt:wget",
+        "apt:xz-utils",
+        "apt:zip"
+      ],
+      "nix": [
+        "nix:cacert",
+        "nix:curl",
+        "nix:ffmpeg",
+        "nix:file",
+        "nix:git-lfs",
+        "nix:gnupg",
+        "nix:imagemagick",
+        "nix:jq",
+        "nix:openssh",
+        "nix:rsync",
+        "nix:tree",
+        "nix:unzip",
+        "nix:wget",
+        "nix:xz",
+        "nix:zip"
+      ],
+      "workstation": [
+        "nix:cacert",
+        "nix:curl",
+        "nix:ffmpeg",
+        "nix:file",
+        "nix:git-lfs",
+        "nix:gnupg",
+        "nix:imagemagick",
+        "nix:jq",
+        "nix:openssh",
+        "nix:rsync",
+        "nix:tree",
+        "nix:unzip",
+        "nix:wget",
+        "nix:xz",
+        "nix:zip"
+      ]
+    },
+    "artifacts": [],
+    "tools": [
+      {
+        "id": "ffmpeg",
+        "license": "LGPL-2.1-or-later / GPL-2.0-or-later depending on build",
+        "owner": "egohygiene/realm",
+        "source": "https://snapshot.debian.org/archive/debian/20260829T120000Z/",
+        "stable_capability": "media-toolchain"
+      },
+      {
+        "id": "imagemagick",
+        "license": "ImageMagick",
+        "owner": "egohygiene/realm",
+        "source": "https://snapshot.debian.org/archive/debian/20260829T120000Z/",
+        "stable_capability": "media-toolchain"
+      }
+    ]
+  },
+  "support": [
+    {
+      "platform": "linux/amd64",
+      "projections": [
+        "docker",
+        "devcontainer",
+        "nix",
+        "workstation"
+      ]
+    },
+    {
+      "platform": "linux/arm64",
+      "projections": [
+        "docker",
+        "devcontainer",
+        "nix",
+        "workstation"
+      ]
+    }
+  ],
+  "size": {
+    "status": "unmeasured",
+    "metric": "expanded OCI image bytes",
+    "owner": "Realm issue #6",
+    "command": "task image:size ARCH=\"<amd64|arm64>\" IMAGE=\"<published-image>\"",
+    "reason": "No profile OCI image has been built or published. Do not infer an image size from declared package names."
+  },
+  "sbom": {
+    "format": "SPDX-2.3 declared-intent",
+    "path": "sbom.spdx.json",
+    "sha256": "sha256:21f2ce6cc6768d3d3c882f7ff80b146a50c9d752e69f367dc8fbd4232a672392"
+  }
+}
