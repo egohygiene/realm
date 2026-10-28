@@ -5,8 +5,8 @@
 - Objective: review the 2026-10-28 engineering-readiness audit and execute one bounded next checkpoint.
 - Audited base: `d66a0e4d5a100d287a9745f4c45f055e0a78948b` on `main`.
 - Candidate branch: `docs/engineering-readiness-audit-2026-10-28`.
-- Draft PR: not yet created at this checkpoint; resolve the candidate branch before resuming.
-- Live source/work-tracker verification: 2026-10-28T07:17:36.481Z; no pre-existing open PR was observed.
+- Draft PR: https://github.com/egohygiene/realm/pull/52 (open, draft, unmerged when observed at 2026-10-28T07:27:48.187Z).
+- Live source/work-tracker verification: 2026-10-28T07:27:48.187Z; audited main unchanged, with this draft as the current candidate.
 - Roadmap: https://github.com/egohygiene/realm/issues/25.
 - Inventory: 39 work issues: 9 ready, 30 gated; parent and PRs excluded.
 - Report: [engineering-readiness audit](audits/realm-engineering-readiness-20261028T064323Z.md).
@@ -28,6 +28,10 @@ only. It implements no product/CI fix and authorizes no merge, tag, release,
 deployment, history rewrite, dependency update, or creative-material change.
 
 ## Verification and limits
+
+Artifact validation passed: local links, JSON/ledger counts, native hierarchy,
+original issue preservation, continuity size, and documentation-only diff scope.
+The live draft PR is linked above; its head identifies the candidate revision.
 
 `task check` passed: 55 Python tests, catalogs/profiles/publications, apt locks, shell syntax/ShellCheck, compilation, diff checks. Synthetic probes separately reproduced #50/#51; no committed profile is malformed.
 
