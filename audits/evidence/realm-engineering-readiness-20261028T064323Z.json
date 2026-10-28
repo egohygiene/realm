@@ -1050,5 +1050,17 @@
         "profile base references unknown capabilities: missing-capability"
       ]
     }
-  ]
+  ],
+  "delivery": {
+    "observed_at": "2026-10-28T07:27:48.187Z",
+    "branch": "docs/engineering-readiness-audit-2026-10-28",
+    "draft_pr": "https://github.com/egohygiene/realm/pull/52",
+    "pr_number": 52,
+    "pr_state": "open",
+    "draft": true,
+    "merged": false,
+    "initial_artifact_commit": "91e25dc28d3bddb664f6b9b846d408ec1eb383a7",
+    "artifact_validation": "passed: local links, JSON counts, original-body/metadata preservation, native hierarchy, continuity limits, and diff scope",
+    "authority": "audit artifacts only; no product changes, closure, merge or publication"
+  }
 }
