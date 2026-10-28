@@ -1,0 +1,1054 @@
+{
+  "audit": "engineering-readiness",
+  "date": "2026-10-28",
+  "observed_at": "2026-10-28T07:10:18.869Z",
+  "repository": "egohygiene/realm",
+  "source_revision": "d66a0e4d5a100d287a9745f4c45f055e0a78948b",
+  "source_ref": "refs/heads/main",
+  "candidate_branch": "docs/engineering-readiness-audit-2026-10-28",
+  "status": "audit complete; validation partial",
+  "guidance": {
+    "aether": {
+      "revision": "dc8a16851f452763ef4f7fbe4bf057d4500b1921",
+      "auditor_spec": "approved 2.0.0",
+      "audit_skill": "draft 1.1.0",
+      "issue_authoring_skill": "experimental 1.2.0",
+      "continuity_skill": "draft 1.1.0"
+    },
+    "hygiene": {
+      "revision": "aa6a5e25ea3ef80e4dcc15570a1ea166b9f4af3d",
+      "continuity_policy": "proposed 1.0.0-alpha.1; observe"
+    },
+    "organization": {
+      "revision": "ac2e4035173ed252d71d6655e723964ef93684df",
+      "title_contract": "1.0.1; explicit adoption; observe",
+      "primary_type_labels": "not provisioned in either repository"
+    }
+  },
+  "environment": {
+    "os": "Ubuntu 24.04.3 LTS",
+    "architecture": "x86_64",
+    "python": "3.12.14",
+    "bash": "5.2.21",
+    "bats": null,
+    "task": "3.53.1",
+    "shellcheck": "0.10.0",
+    "shfmt": "3.8.0",
+    "unavailable": [
+      "Docker",
+      "native ARM64/macOS/Windows",
+      "Fish",
+      "shdoc",
+      "native Fastfetch",
+      "Ruby/Gem"
+    ]
+  },
+  "initial": {
+    "open_issues": 38,
+    "roadmap_parent": 25,
+    "open_prs": 0
+  },
+  "final": {
+    "open_issues": 40,
+    "roadmap_parent": 25,
+    "new_followups": [
+      50,
+      51
+    ],
+    "new_coordination_parent": null,
+    "work_items": 39,
+    "ready": 9,
+    "gated": 30
+  },
+  "work": [
+    {
+      "n": 50,
+      "gated": false,
+      "lane": "core",
+      "subject": "Fix invalid-inheritance resolution",
+      "gate": null
+    },
+    {
+      "n": 51,
+      "gated": false,
+      "lane": "core",
+      "subject": "Enforce catalog/profile schema parity",
+      "gate": null
+    },
+    {
+      "n": 8,
+      "gated": true,
+      "lane": "core",
+      "subject": "Integrate the verified Mantle runtime",
+      "gate": "Mantle has no published release. Full released integration waits for Mantle #26 plus separately approved publication; documentation and a pinned-source synthetic activation canary can start now. Current Mantle is sourced into Bash/Zsh or native Fish, not a login-shell executable: reconcile docs/mantle-shell.md with that public contract before any chsh or Docker SHELL change."
+    },
+    {
+      "n": 39,
+      "gated": true,
+      "lane": "core-slice",
+      "subject": "Prove the portable Dev Container boundary",
+      "gate": "The standards/mapping comparison can start now. Full local/VS Code/Codespaces/additional-host proof needs an emitted #10 projection and explicit authorization for any paid or remote Codespaces resources. Define the mapping first, generate the #10 canary second, and return here for host proof; do not make whole-issue closure a circular prerequisite."
+    },
+    {
+      "n": 10,
+      "gated": true,
+      "lane": "core-slice",
+      "subject": "Deliver the first Dev Container projection",
+      "gate": "Use the mapping checkpoint in #39 and verified Mantle activation from #8 for the first local Dev Container canary. Full outcome also includes Nix/workstation adapters and their conformance evidence. Ship the bounded Dev Container slice first; the remaining adapters stay open and do not block comic content."
+    },
+    {
+      "n": 7,
+      "gated": true,
+      "lane": "distribution",
+      "subject": "Produce image SBOM, provenance, and signing evidence",
+      "gate": "Native base-image build/smoke jobs passed at the audited source, but installed-image SBOM/vulnerability evidence, signed published digests, channel/rollback/retention, and a released consumer are absent. Prepare evidence locally now; final publication requires the #17 adapter/review boundary and explicit maintainer publication approval. Declarations in dist/profiles are not installed-image SBOMs."
+    },
+    {
+      "n": 17,
+      "gated": true,
+      "lane": "distribution",
+      "subject": "Adopt the reviewed container release path",
+      "gate": "Current-v1 source foundations Aether #61, Hygiene #27, and Relay #47 are closed; that is not proof of compatible released inputs or publication. Egolint #29 remains open (fixture/dogfood closeout). Bounded declaration/changelog/manual plan/verification work can start against exact inspected inputs. Full closeout needs verified compatible producer evidence, #7 image evidence, and explicit publication approval. Hygiene #65 is the separate successor-policy lane; do not impose all of its future scope on a current-v1 preparation checkpoint."
+    },
+    {
+      "n": 6,
+      "gated": true,
+      "lane": "optional",
+      "subject": "Build the measured full development image",
+      "gate": "Profile declarations exist; the full OCI union, measured size/build/download budgets, and clean Dev Container/CI proof do not. Full outcome requires a renderer/canary from #10 and verified Mantle integration #8. A contents/budget proposal can start now. The comprehensive full image is optional after a minimal usable baseline; keep all original acceptance criteria."
+    },
+    {
+      "n": 48,
+      "gated": false,
+      "lane": "optional",
+      "subject": "Package act and the bounded local validation sweep",
+      "gate": null
+    },
+    {
+      "n": 47,
+      "gated": true,
+      "lane": "optional",
+      "subject": "Package release-authoring tools",
+      "gate": "Hygiene #65 is still open and the reviewed successor preparation adapter is not established by a closed old foundation issue. Inventory/package planning can start; complete the outcome only against the accepted compatible tool contract and verified artifact. Preserve the existing .github#20 program/parent relationship; the local roadmap references this work without duplicating its implementation."
+    },
+    {
+      "n": 19,
+      "gated": true,
+      "lane": "optional",
+      "subject": "Consume released Ego Hygiene tools",
+      "gate": "The audit found no GitHub Releases for Renderflow or Mantle. The required released Renderflow-plus-one canary therefore has a confirmed producer-publication gate. Resolver/model work and synthetic unavailable/fallback cases can start now. Do not substitute a sibling checkout and call the released-tool criterion met."
+    },
+    {
+      "n": 40,
+      "gated": false,
+      "lane": "optional",
+      "subject": "Add the pinned cheat CLI and completions",
+      "gate": null
+    },
+    {
+      "n": 44,
+      "gated": true,
+      "lane": "optional",
+      "subject": "Add the document-authoring capability",
+      "gate": "The first-version Realm baseline does not need full TeX. Admission, license/cache design, and synthetic Markdown fixtures can start now. Complete supported image/Dev Container/workstation behavior against the applicable #10 renderer and record real cold/warm/architecture evidence; no existing image publication declaration establishes those results."
+    },
+    {
+      "n": 46,
+      "gated": true,
+      "lane": "optional",
+      "subject": "Add the reproducible Nix media capability",
+      "gate": "Package/delegate requirements and migration mapping can start now, preserving the recovered prototype evidence. Full conformance requires the #10 Nix projection, real supported-architecture checks, and an explicit reviewed codec/license feature selection. Do not delete or replace creative/source material while gathering equivalence evidence."
+    },
+    {
+      "n": 9,
+      "gated": true,
+      "lane": "optional",
+      "subject": "Establish the optional service-profile foundation",
+      "gate": "Start with one small versioned service/lifecycle contract independently of the comprehensive workstation. The added comprehensive composition ultimately needs #6 and #20 plus the lifecycle/control slices in #34/#43. Those final integration outcomes are gated; do not make their whole-issue closure prerequisites for writing this foundational contract. No AI service is required for the minimal baseline."
+    },
+    {
+      "n": 13,
+      "gated": true,
+      "lane": "optional",
+      "subject": "Evaluate optional orchestration and review services",
+      "gate": "Candidate comparison and synthetic local-model review can start now. An adopted reproducible service profile consumes the #9 service/lifecycle contract; bounded research may still recommend defer/reject. Keep Aether reviewer semantics and Relay GitHub automation outside Realm; do not enable these services in the baseline."
+    },
+    {
+      "n": 15,
+      "gated": false,
+      "lane": "optional",
+      "subject": "Evaluate AgentPrism ownership and value",
+      "gate": null
+    },
+    {
+      "n": 21,
+      "gated": false,
+      "lane": "optional",
+      "subject": "Evaluate CodeGraph with measured local fixtures",
+      "gate": null
+    },
+    {
+      "n": 22,
+      "gated": false,
+      "lane": "optional",
+      "subject": "Evaluate whether Cog has a current workload",
+      "gate": null
+    },
+    {
+      "n": 23,
+      "gated": false,
+      "lane": "optional",
+      "subject": "Evaluate Langfuse with synthetic traces",
+      "gate": null
+    },
+    {
+      "n": 24,
+      "gated": false,
+      "lane": "optional",
+      "subject": "Evaluate/package optional Context7 documentation access",
+      "gate": null
+    },
+    {
+      "n": 26,
+      "gated": true,
+      "lane": "optional",
+      "subject": "Generate the organization workspace",
+      "gate": "Workspace-plan/schema and non-destructive clone-reuse work can start now. Full integrated outcome consumes the #10 environment/workspace seam and the compatible pinned catalog/guidance contracts. Preserve the body’s explicit child relationship to #10; unavailable repositories or producer artifacts remain partial rather than success."
+    },
+    {
+      "n": 36,
+      "gated": true,
+      "lane": "optional",
+      "subject": "Generalize organization workspaces",
+      "gate": "Full external/multi-organization proof follows the #26 generator and a validated Hygiene #42 consumer-organization profile. Synthetic identity/collision/privacy fixtures can be prepared now. Private canary metadata must remain private and is not audit evidence for public output."
+    },
+    {
+      "n": 27,
+      "gated": true,
+      "lane": "optional",
+      "subject": "Provide the local model gateway",
+      "gate": "A pinned runtime/model-admission design and CPU-only/missing-model fixture can start now. The complete service lifecycle consumes #9; supported consumer capability claims need the actual Aether #64 contract/evidence rather than an installed executable. No model download or gateway is a minimal-baseline prerequisite."
+    },
+    {
+      "n": 20,
+      "gated": true,
+      "lane": "optional",
+      "subject": "Compose the knowledge workspace",
+      "gate": "No Mindgarden GitHub Release was found. Full released composition waits for compatible published Mindgarden/Aether inputs and the #9/#13/#19 integration seams. Synthetic fixtures and lifecycle/resource planning can start now. The ordinary Realm/Mantle baseline remains usable without any garden or model."
+    },
+    {
+      "n": 28,
+      "gated": true,
+      "lane": "optional",
+      "subject": "Select and define the encrypted vault contract",
+      "gate": "Candidate comparison and contract drafting can start now. The full selected-adapter outcome needs explicit human disposition of the encryption/key-broker choice and compatible Hygiene #39/#40 and Mindgarden scope contracts. Do not infer accepted confidentiality policy from architecture drafts or store any real key/document material."
+    },
+    {
+      "n": 29,
+      "gated": true,
+      "lane": "optional",
+      "subject": "Implement the selected vault adapter",
+      "gate": "The selected/accepted #28 contract and compatible Mindgarden local/confidential document seams are full-outcome gates. Prepare synthetic lifecycle/failure fixtures now; do not choose a cryptographic backend or claim unsupported host guarantees through implementation accident."
+    },
+    {
+      "n": 30,
+      "gated": true,
+      "lane": "optional",
+      "subject": "Prove the confidential workspace",
+      "gate": "Full proof needs the #20 ordinary workspace, #27 local gateway, #29 vault, and compatible approved session/scoped-query/isolation contracts. Prepare a synthetic negative-case matrix now. This is a later opt-in environment and is not required to draw, write, or publish a comic."
+    },
+    {
+      "n": 31,
+      "gated": true,
+      "lane": "optional",
+      "subject": "Implement the one-way context import",
+      "gate": "The complete imported-into-confidential-workspace outcome depends on #30 plus compatible Aether #70 / Akashic source-packet contracts. Some producer foundation issues are closed; require exact usable artifacts and validation evidence, not closure alone. Schema/digest/path/freshness negative fixtures can start without private data."
+    },
+    {
+      "n": 32,
+      "gated": true,
+      "lane": "optional",
+      "subject": "Evaluate the local chat surface",
+      "gate": "Compare candidates and current licensing now. Full confidential-mode integration requires #27/#30 and scoped Mindgarden/Aether seams; an installed UI is not confidential-support evidence. A defer/reject result remains legitimate where supported by the original evaluation criteria."
+    },
+    {
+      "n": 33,
+      "gated": true,
+      "lane": "optional",
+      "subject": "Package the optional ComfyUI profile",
+      "gate": "Model/plugin license and resource planning can start now. An adopted profile consumes the #9 service contract and compatible Renderflow/Aether integration seams. Acquire no model weights implicitly; use synthetic/public fixtures and keep all generated media, caches, and models outside Git."
+    },
+    {
+      "n": 37,
+      "gated": true,
+      "lane": "optional",
+      "subject": "Evaluate the local agent runtime",
+      "gate": "Research and define the frozen canary tasks now. The full no-paid-provider engineering loop needs the #27 gateway/runtime seam and actual Aether #73 model/agent evaluation evidence. Do not infer quality from local installation or make this optional agent a workstation prerequisite."
+    },
+    {
+      "n": 38,
+      "gated": true,
+      "lane": "optional",
+      "subject": "Evaluate the VS Code agent/chat surface",
+      "gate": "The configuration-boundary comparison can start now. The full model-backed engineering/review canary follows #27 plus compatible Aether capability/evaluation evidence (including #73). Preserve repository versus machine configuration and do not broaden agent authority."
+    },
+    {
+      "n": 34,
+      "gated": true,
+      "lane": "optional",
+      "subject": "Prove the complete agent workstation lifecycle",
+      "gate": "Final integration follows the actual #26/#27/#20/#30/#31/#32 outputs and compatible Aether/Mindgarden contracts. Design the shared lifecycle interface incrementally with #9 without requiring whole-issue closure in both directions. The engineering-only minimal baseline is a smaller checkpoint; it does not close this issue’s confidential/recovery acceptance."
+    },
+    {
+      "n": 43,
+      "gated": true,
+      "lane": "optional",
+      "subject": "Evaluate a local service-control dashboard",
+      "gate": "Adapter comparison can start now. Full discovery/control requires the #9 managed-service contract and #34 lifecycle seam. Keep it optional, loopback/private, and a projection over declared configuration; no management UI is required for v1."
+    },
+    {
+      "n": 41,
+      "gated": true,
+      "lane": "optional",
+      "subject": "Run the isolated Papra evaluation",
+      "gate": "Research and synthetic-corpus planning can start now. Full disposable Compose integration consumes #9’s service/lifecycle boundary and requires explicit review before copying any AGPL code/assets. Do not use private documents or make Papra canonical; it is optional after the baseline."
+    },
+    {
+      "n": 45,
+      "gated": true,
+      "lane": "decision",
+      "subject": "Resolve UBI versus Mantle ownership before a new shell",
+      "gate": "The current Mantle source already owns portable sourceable Bash/Zsh/Fish startup, guards, profile/config policy, and public CLI boundaries. This issue’s recovered UBI shell/bootstrap tree overlaps that ownership. Preserve the captured requirements, but obtain an explicit owner decision before implementing a second shell framework. Recommended: reuse Mantle for runtime behavior, retain only Realm-owned environment/system/home plan/apply/doctor seams here. #8 is the integration owner; this audit does not ratify a new runtime or rewrite this issue’s scope."
+    },
+    {
+      "n": 35,
+      "gated": true,
+      "lane": "optional",
+      "subject": "Publish the accepted-architecture infographic pair",
+      "gate": "Final selected-technology visuals require the accepted #34 architecture/journey and actual compatibility evidence. A vendor-neutral information hierarchy/text equivalent can be prepared now. Do not treat a design draft or generated image as proof of selected runtime support."
+    },
+    {
+      "n": 42,
+      "gated": true,
+      "lane": "optional",
+      "subject": "Backfill ADR history after shared adoption is ready",
+      "gate": "Hygiene #15 and Holon #6 are closed, but Relay #5/#27/#33 and Pace #5 remain open. The original explicit shared-system scheduling gate therefore remains. Preserve DECISIONS.md and all source/history; do not migrate or retrospectively accept records in this audit. No ADR-history backfill is needed to use the current baseline."
+    }
+  ],
+  "existing_issue_preservation": [
+    {
+      "n": 48,
+      "title_unchanged": true,
+      "labels_unchanged": true,
+      "assignees_unchanged": true,
+      "state_unchanged": true,
+      "original_body_preserved": true,
+      "initial_body_sha256": "a5a3f4c26ad31fafca0f45c74c3f9715e2960a3a2238f1318cf03b1729602022",
+      "initial_title": "feat(local-ci): package act and enable repeatable local repository validation sweeps"
+    },
+    {
+      "n": 47,
+      "title_unchanged": true,
+      "labels_unchanged": true,
+      "assignees_unchanged": true,
+      "state_unchanged": true,
+      "original_body_preserved": true,
+      "initial_body_sha256": "4d1a89d941fea801d92f0a06eee5317004c756746ee83fc96a1fff4685da1ec6",
+      "initial_title": "🧰 [Release checkpoint 7] Provide pinned local release-authoring tools"
+    },
+    {
+      "n": 46,
+      "title_unchanged": true,
+      "labels_unchanged": true,
+      "assignees_unchanged": true,
+      "state_unchanged": true,
+      "original_body_preserved": true,
+      "initial_body_sha256": "37b5e99f1c4b23219cd07e3c7f9bd8c0cf579f532bef7c1e961a9d4b52cc1c7a",
+      "initial_title": "feat(media): define reproducible Nix media-toolchain capabilities and delegate verification"
+    },
+    {
+      "n": 45,
+      "title_unchanged": true,
+      "labels_unchanged": true,
+      "assignees_unchanged": true,
+      "state_unchanged": true,
+      "original_body_preserved": true,
+      "initial_body_sha256": "5459946d55f833a577dae8901e8f7f7cdf2aa719aa1052603ba31705a8c4807c",
+      "initial_title": "feat(shell): add a portable shell runtime and explicit UBI environment control plane"
+    },
+    {
+      "n": 44,
+      "title_unchanged": true,
+      "labels_unchanged": true,
+      "assignees_unchanged": true,
+      "state_unchanged": true,
+      "original_body_preserved": true,
+      "initial_body_sha256": "2d2c8bb3bba4d22cbdd216ae8502eabbe5c7146a382d67c8f66e475f5df6ac98",
+      "initial_title": "feat(documents): add a cached TeX, Pandoc, and emoji rendering capability"
+    },
+    {
+      "n": 43,
+      "title_unchanged": true,
+      "labels_unchanged": true,
+      "assignees_unchanged": true,
+      "state_unchanged": true,
+      "original_body_preserved": true,
+      "initial_body_sha256": "b9bbd1c58ae9b5418af451b964596c8d6014af59e770090c8ce6472d01947ecf",
+      "initial_title": "Add a local service-control dashboard for Realm Compose profiles"
+    },
+    {
+      "n": 42,
+      "title_unchanged": true,
+      "labels_unchanged": true,
+      "assignees_unchanged": true,
+      "state_unchanged": true,
+      "original_body_preserved": true,
+      "initial_body_sha256": "459df17d620ddf1dee5b8124dec604878bf8e8a4159fd6ab7610af7f5d2029b5",
+      "initial_title": "Backfill repository ADR history and enable continuous decision capture"
+    },
+    {
+      "n": 41,
+      "title_unchanged": true,
+      "labels_unchanged": true,
+      "assignees_unchanged": true,
+      "state_unchanged": true,
+      "original_body_preserved": true,
+      "initial_body_sha256": "6251ac37652641e6b46377225e0f8e76ec6499ac791bcbff84c340b05d98e4d4",
+      "initial_title": "Add an isolated Papra evaluation profile for Mindgarden document workflows"
+    },
+    {
+      "n": 40,
+      "title_unchanged": true,
+      "labels_unchanged": true,
+      "assignees_unchanged": true,
+      "state_unchanged": true,
+      "original_body_preserved": true,
+      "initial_body_sha256": "eeb9cd4b150c780b7e118a4171959cd0ea727f128c949be45eb9790ba411bb95",
+      "initial_title": "Add cheat CLI to the Realm environment with Bash completions"
+    },
+    {
+      "n": 39,
+      "title_unchanged": true,
+      "labels_unchanged": true,
+      "assignees_unchanged": true,
+      "state_unchanged": true,
+      "original_body_preserved": true,
+      "initial_body_sha256": "2fcddc81a0736b556b6bb8305f4eaa9f5f73bdce470ac2e22ef14ccb4846f254",
+      "initial_title": "architecture(devcontainer): make the Dev Container Specification the portable environment boundary"
+    },
+    {
+      "n": 38,
+      "title_unchanged": true,
+      "labels_unchanged": true,
+      "assignees_unchanged": true,
+      "state_unchanged": true,
+      "original_body_preserved": true,
+      "initial_body_sha256": "7091afdae1b4c1c7d191514da0589b65b4924470ddf9a79c977845d24c82d57d",
+      "initial_title": "Evaluate a repository-portable VS Code agent/chat surface for the local-first workstation"
+    },
+    {
+      "n": 37,
+      "title_unchanged": true,
+      "labels_unchanged": true,
+      "assignees_unchanged": true,
+      "state_unchanged": true,
+      "original_body_preserved": true,
+      "initial_body_sha256": "b0a4ee38f8ebeee169c456607dab8949f5362c0381bde66bafcab25d4a49bafc",
+      "initial_title": "Evaluate OpenClaw as a local-first agent runtime and development profile"
+    },
+    {
+      "n": 36,
+      "title_unchanged": true,
+      "labels_unchanged": true,
+      "assignees_unchanged": true,
+      "state_unchanged": true,
+      "original_body_preserved": true,
+      "initial_body_sha256": "e36adda2dba919e34b1741ee86fd07c081f5e6c817018e55184bc63b813ae489",
+      "initial_title": "Generalize catalog-driven workspaces to external organization profiles"
+    },
+    {
+      "n": 35,
+      "title_unchanged": true,
+      "labels_unchanged": true,
+      "assignees_unchanged": true,
+      "state_unchanged": true,
+      "original_body_preserved": true,
+      "initial_body_sha256": "57dd4dbcba943834f6259b359bf78e52f1676957a0b6439c7ff9581d2f4a09ab",
+      "initial_title": "Publish the agent workstation architecture infographic pair"
+    },
+    {
+      "n": 34,
+      "title_unchanged": true,
+      "labels_unchanged": true,
+      "assignees_unchanged": true,
+      "state_unchanged": true,
+      "original_body_preserved": true,
+      "initial_body_sha256": "a079b27215999a59236def57832672fc8dd9f1b31e4be1b617b76c46dbf95a9f",
+      "initial_title": "Prove the one-command local agent workstation lifecycle"
+    },
+    {
+      "n": 33,
+      "title_unchanged": true,
+      "labels_unchanged": true,
+      "assignees_unchanged": true,
+      "state_unchanged": true,
+      "original_body_preserved": true,
+      "initial_body_sha256": "9a120cfa4bceff571b7dfbe8713bfa16a37cc546b7e6e22f09c7429fef3f0329",
+      "initial_title": "Package ComfyUI as an optional local media-AI profile"
+    },
+    {
+      "n": 32,
+      "title_unchanged": true,
+      "labels_unchanged": true,
+      "assignees_unchanged": true,
+      "state_unchanged": true,
+      "original_body_preserved": true,
+      "initial_body_sha256": "5a0fe360e75aa94ff43b0c0d1e32cc349a06da8a9305d658229817462b5a7d82",
+      "initial_title": "Evaluate local chat interfaces for the knowledge workspace"
+    },
+    {
+      "n": 31,
+      "title_unchanged": true,
+      "labels_unchanged": true,
+      "assignees_unchanged": true,
+      "state_unchanged": true,
+      "original_body_preserved": true,
+      "initial_body_sha256": "0a88a7b45cd0af5a9bc8187c1cfd29d56dcb8ba91dea27bed8a2e74a30ac6e50",
+      "initial_title": "Implement one-way public context packet import"
+    },
+    {
+      "n": 30,
+      "title_unchanged": true,
+      "labels_unchanged": true,
+      "assignees_unchanged": true,
+      "state_unchanged": true,
+      "original_body_preserved": true,
+      "initial_body_sha256": "918d9d47257cd7edb697688a752f49c76bfce871ea63fccb7d5cf17bc1e34554",
+      "initial_title": "Add a fail-closed confidential knowledge-workspace profile"
+    },
+    {
+      "n": 29,
+      "title_unchanged": true,
+      "labels_unchanged": true,
+      "assignees_unchanged": true,
+      "state_unchanged": true,
+      "original_body_preserved": true,
+      "initial_body_sha256": "ca902f1a10b17149647769517ecf53b4f53e0eabab2c323c819a6a3c2ac09462",
+      "initial_title": "Implement the first encrypted garden vault adapter"
+    },
+    {
+      "n": 28,
+      "title_unchanged": true,
+      "labels_unchanged": true,
+      "assignees_unchanged": true,
+      "state_unchanged": true,
+      "original_body_preserved": true,
+      "initial_body_sha256": "7483d1cf172dfc5735fc9f328b6f798fec161e445f2443c93c3677afd6cc38de",
+      "initial_title": "Define the encrypted garden vault lifecycle and key-broker contract"
+    },
+    {
+      "n": 27,
+      "title_unchanged": true,
+      "labels_unchanged": true,
+      "assignees_unchanged": true,
+      "state_unchanged": true,
+      "original_body_preserved": true,
+      "initial_body_sha256": "17c9f89e584d21af666c6c1b4d731c60da505012f3f944b039beef04fe20348e",
+      "initial_title": "Provide an OpenAI-compatible local model gateway profile"
+    },
+    {
+      "n": 26,
+      "title_unchanged": true,
+      "labels_unchanged": true,
+      "assignees_unchanged": true,
+      "state_unchanged": true,
+      "original_body_preserved": true,
+      "initial_body_sha256": "5b4187d8e3a3ee7e1d5b5ce779f12af8c796816af83d345a3926f761fdf0fb24",
+      "initial_title": "Generate organization workspaces from the live repository catalog"
+    },
+    {
+      "n": 25,
+      "title_unchanged": true,
+      "labels_unchanged": true,
+      "assignees_unchanged": true,
+      "state_unchanged": true,
+      "original_body_preserved": true,
+      "initial_body_sha256": "c0516ebd9b807a0b45768e320dc94aa647a0bc5c7ea59198d50dc766154f9aee",
+      "initial_title": "Roadmap: build the local-first agent workstation and confidential research environment"
+    },
+    {
+      "n": 24,
+      "title_unchanged": true,
+      "labels_unchanged": true,
+      "assignees_unchanged": true,
+      "state_unchanged": true,
+      "original_body_preserved": true,
+      "initial_body_sha256": "b89a62d4f24f739c96e0f118e758c8525dddc1aef06d34de44cb59e7a4047a0c",
+      "initial_title": "Add an optional Context7 documentation profile for coding agents"
+    },
+    {
+      "n": 23,
+      "title_unchanged": true,
+      "labels_unchanged": true,
+      "assignees_unchanged": true,
+      "state_unchanged": true,
+      "original_body_preserved": true,
+      "initial_body_sha256": "e1130d33f3d57efa19a0a7ecb6e8995a89fa81a1d3de912f14b6535141abafec",
+      "initial_title": "Evaluate Langfuse as an optional local AI engineering profile"
+    },
+    {
+      "n": 22,
+      "title_unchanged": true,
+      "labels_unchanged": true,
+      "assignees_unchanged": true,
+      "state_unchanged": true,
+      "original_body_preserved": true,
+      "initial_body_sha256": "5f980a97efa3e29235873793a886f80519cce50b32c2f9beef0bf8e6cb2d6a9f",
+      "initial_title": "Evaluate Cog for reproducible local ML model development and packaging"
+    },
+    {
+      "n": 21,
+      "title_unchanged": true,
+      "labels_unchanged": true,
+      "assignees_unchanged": true,
+      "state_unchanged": true,
+      "original_body_preserved": true,
+      "initial_body_sha256": "90f56d1e93f11d105e61673a587c709ab67aa8eac10e52aff0a9f0762ab4360e",
+      "initial_title": "Evaluate CodeGraph as an optional local agent code-intelligence profile"
+    },
+    {
+      "n": 20,
+      "title_unchanged": true,
+      "labels_unchanged": true,
+      "assignees_unchanged": true,
+      "state_unchanged": true,
+      "original_body_preserved": true,
+      "initial_body_sha256": "0c83fa0c00d554f2c3f3224e5ca787c00e2df83a7628e941f15d667ac012be94",
+      "initial_title": "Compose Mindgarden and local AI into an optional knowledge-workspace profile"
+    },
+    {
+      "n": 19,
+      "title_unchanged": true,
+      "labels_unchanged": true,
+      "assignees_unchanged": true,
+      "state_unchanged": true,
+      "original_body_preserved": true,
+      "initial_body_sha256": "09aabd04b575cf94b318dd4fdf521681867c6d6d6ad94a285fb333c627c9df5c",
+      "initial_title": "feat(tooling): consume Ego Hygiene tools from verified release and package-manager channels"
+    },
+    {
+      "n": 17,
+      "title_unchanged": true,
+      "labels_unchanged": true,
+      "assignees_unchanged": true,
+      "state_unchanged": true,
+      "original_body_preserved": true,
+      "initial_body_sha256": "77fe16e2e1a6e291b5f16322a2e9decab90a10c9c5a82bde6fa3c0c35f76c5d4",
+      "initial_title": "ci(releases): pilot the container-image release convention"
+    },
+    {
+      "n": 15,
+      "title_unchanged": true,
+      "labels_unchanged": true,
+      "assignees_unchanged": true,
+      "state_unchanged": true,
+      "original_body_preserved": true,
+      "initial_body_sha256": "2befceba78fe01148043440f2c58eeec146da736cbcac730cc518f737b82fc9c",
+      "initial_title": "Evaluate AgentPrism for agent-trace visualization and development profiles"
+    },
+    {
+      "n": 13,
+      "title_unchanged": true,
+      "labels_unchanged": true,
+      "assignees_unchanged": true,
+      "state_unchanged": true,
+      "original_body_preserved": true,
+      "initial_body_sha256": "dd156a386f6f15fb115a7e3d973bfcd9a64aa01dee58aa42572c6940e1fbf979",
+      "initial_title": "Add optional local AI orchestration and self-hosted code-review service profiles"
+    },
+    {
+      "n": 10,
+      "title_unchanged": true,
+      "labels_unchanged": true,
+      "assignees_unchanged": true,
+      "state_unchanged": true,
+      "original_body_preserved": true,
+      "initial_body_sha256": "d6c9e9a5b79b7af6894722b0b3339e18bc8527ea2eb2841968ffeac18a987a0d",
+      "initial_title": "Publish Dev Container, Nix, and workstation projections"
+    },
+    {
+      "n": 9,
+      "title_unchanged": true,
+      "labels_unchanged": true,
+      "assignees_unchanged": true,
+      "state_unchanged": true,
+      "original_body_preserved": true,
+      "initial_body_sha256": "b66b0d16c23e094e86064f51b3e940024bef204c7cebb061165cf6216baa264f",
+      "initial_title": "Define optional self-hosted service and local AI profiles"
+    },
+    {
+      "n": 8,
+      "title_unchanged": true,
+      "labels_unchanged": true,
+      "assignees_unchanged": true,
+      "state_unchanged": true,
+      "original_body_preserved": true,
+      "initial_body_sha256": "75062ee739c4386f3b6cbcfd58113d766084d4109551cf0a21ab8109cb867fa4",
+      "initial_title": "Integrate Mantle and define container shell activation semantics"
+    },
+    {
+      "n": 7,
+      "title_unchanged": true,
+      "labels_unchanged": true,
+      "assignees_unchanged": true,
+      "state_unchanged": true,
+      "original_body_preserved": true,
+      "initial_body_sha256": "01bebc9472b0e89b058919d11e2489f2050d0521990c5b881f84797f056d8e4b",
+      "initial_title": "Add multi-architecture builds, SBOMs, provenance, and signing"
+    },
+    {
+      "n": 6,
+      "title_unchanged": true,
+      "labels_unchanged": true,
+      "assignees_unchanged": true,
+      "state_unchanged": true,
+      "original_body_preserved": true,
+      "initial_body_sha256": "5b8e01e98df2db3800963e3fdb6715bd99ddd3a443daea2431ff984a2c173d23",
+      "initial_title": "Publish the full development profile with an explicit size budget"
+    }
+  ],
+  "native_hierarchy": [
+    {
+      "repository": "egohygiene/realm",
+      "parent": 26,
+      "children": [
+        {
+          "repository": "egohygiene/realm",
+          "number": 36,
+          "url": "https://github.com/egohygiene/realm/issues/36",
+          "state": "open"
+        }
+      ]
+    },
+    {
+      "repository": "egohygiene/realm",
+      "parent": 20,
+      "children": [
+        {
+          "repository": "egohygiene/realm",
+          "number": 32,
+          "url": "https://github.com/egohygiene/realm/issues/32",
+          "state": "open"
+        },
+        {
+          "repository": "egohygiene/realm",
+          "number": 30,
+          "url": "https://github.com/egohygiene/realm/issues/30",
+          "state": "open"
+        }
+      ]
+    },
+    {
+      "repository": "egohygiene/realm",
+      "parent": 9,
+      "children": [
+        {
+          "repository": "egohygiene/realm",
+          "number": 20,
+          "url": "https://github.com/egohygiene/realm/issues/20",
+          "state": "open"
+        },
+        {
+          "repository": "egohygiene/realm",
+          "number": 33,
+          "url": "https://github.com/egohygiene/realm/issues/33",
+          "state": "open"
+        },
+        {
+          "repository": "egohygiene/realm",
+          "number": 13,
+          "url": "https://github.com/egohygiene/realm/issues/13",
+          "state": "open"
+        },
+        {
+          "repository": "egohygiene/realm",
+          "number": 27,
+          "url": "https://github.com/egohygiene/realm/issues/27",
+          "state": "open"
+        },
+        {
+          "repository": "egohygiene/realm",
+          "number": 43,
+          "url": "https://github.com/egohygiene/realm/issues/43",
+          "state": "open"
+        },
+        {
+          "repository": "egohygiene/realm",
+          "number": 41,
+          "url": "https://github.com/egohygiene/realm/issues/41",
+          "state": "open"
+        }
+      ]
+    },
+    {
+      "repository": "egohygiene/realm",
+      "parent": 10,
+      "children": [
+        {
+          "repository": "egohygiene/realm",
+          "number": 26,
+          "url": "https://github.com/egohygiene/realm/issues/26",
+          "state": "open"
+        },
+        {
+          "repository": "egohygiene/realm",
+          "number": 39,
+          "url": "https://github.com/egohygiene/realm/issues/39",
+          "state": "open"
+        }
+      ]
+    },
+    {
+      "repository": "egohygiene/realm",
+      "parent": 28,
+      "children": [
+        {
+          "repository": "egohygiene/realm",
+          "number": 29,
+          "url": "https://github.com/egohygiene/realm/issues/29",
+          "state": "open"
+        }
+      ]
+    },
+    {
+      "repository": "egohygiene/realm",
+      "parent": 30,
+      "children": [
+        {
+          "repository": "egohygiene/realm",
+          "number": 31,
+          "url": "https://github.com/egohygiene/realm/issues/31",
+          "state": "open"
+        }
+      ]
+    },
+    {
+      "repository": "egohygiene/realm",
+      "parent": 25,
+      "children": [
+        {
+          "repository": "egohygiene/realm",
+          "number": 9,
+          "url": "https://github.com/egohygiene/realm/issues/9",
+          "state": "open"
+        },
+        {
+          "repository": "egohygiene/realm",
+          "number": 50,
+          "url": "https://github.com/egohygiene/realm/issues/50",
+          "state": "open"
+        },
+        {
+          "repository": "egohygiene/realm",
+          "number": 51,
+          "url": "https://github.com/egohygiene/realm/issues/51",
+          "state": "open"
+        },
+        {
+          "repository": "egohygiene/realm",
+          "number": 8,
+          "url": "https://github.com/egohygiene/realm/issues/8",
+          "state": "open"
+        },
+        {
+          "repository": "egohygiene/realm",
+          "number": 7,
+          "url": "https://github.com/egohygiene/realm/issues/7",
+          "state": "open"
+        },
+        {
+          "repository": "egohygiene/realm",
+          "number": 17,
+          "url": "https://github.com/egohygiene/realm/issues/17",
+          "state": "open"
+        },
+        {
+          "repository": "egohygiene/realm",
+          "number": 6,
+          "url": "https://github.com/egohygiene/realm/issues/6",
+          "state": "open"
+        },
+        {
+          "repository": "egohygiene/realm",
+          "number": 48,
+          "url": "https://github.com/egohygiene/realm/issues/48",
+          "state": "open"
+        },
+        {
+          "repository": "egohygiene/realm",
+          "number": 19,
+          "url": "https://github.com/egohygiene/realm/issues/19",
+          "state": "open"
+        },
+        {
+          "repository": "egohygiene/realm",
+          "number": 40,
+          "url": "https://github.com/egohygiene/realm/issues/40",
+          "state": "open"
+        },
+        {
+          "repository": "egohygiene/realm",
+          "number": 46,
+          "url": "https://github.com/egohygiene/realm/issues/46",
+          "state": "open"
+        },
+        {
+          "repository": "egohygiene/realm",
+          "number": 21,
+          "url": "https://github.com/egohygiene/realm/issues/21",
+          "state": "open"
+        },
+        {
+          "repository": "egohygiene/realm",
+          "number": 24,
+          "url": "https://github.com/egohygiene/realm/issues/24",
+          "state": "open"
+        },
+        {
+          "repository": "egohygiene/realm",
+          "number": 28,
+          "url": "https://github.com/egohygiene/realm/issues/28",
+          "state": "open"
+        },
+        {
+          "repository": "egohygiene/realm",
+          "number": 34,
+          "url": "https://github.com/egohygiene/realm/issues/34",
+          "state": "open"
+        },
+        {
+          "repository": "egohygiene/realm",
+          "number": 35,
+          "url": "https://github.com/egohygiene/realm/issues/35",
+          "state": "open"
+        },
+        {
+          "repository": "egohygiene/realm",
+          "number": 37,
+          "url": "https://github.com/egohygiene/realm/issues/37",
+          "state": "open"
+        },
+        {
+          "repository": "egohygiene/realm",
+          "number": 10,
+          "url": "https://github.com/egohygiene/realm/issues/10",
+          "state": "open"
+        },
+        {
+          "repository": "egohygiene/realm",
+          "number": 44,
+          "url": "https://github.com/egohygiene/realm/issues/44",
+          "state": "open"
+        },
+        {
+          "repository": "egohygiene/realm",
+          "number": 15,
+          "url": "https://github.com/egohygiene/realm/issues/15",
+          "state": "open"
+        },
+        {
+          "repository": "egohygiene/realm",
+          "number": 22,
+          "url": "https://github.com/egohygiene/realm/issues/22",
+          "state": "open"
+        },
+        {
+          "repository": "egohygiene/realm",
+          "number": 23,
+          "url": "https://github.com/egohygiene/realm/issues/23",
+          "state": "open"
+        },
+        {
+          "repository": "egohygiene/realm",
+          "number": 45,
+          "url": "https://github.com/egohygiene/realm/issues/45",
+          "state": "open"
+        },
+        {
+          "repository": "egohygiene/realm",
+          "number": 42,
+          "url": "https://github.com/egohygiene/realm/issues/42",
+          "state": "open"
+        },
+        {
+          "repository": "egohygiene/realm",
+          "number": 38,
+          "url": "https://github.com/egohygiene/realm/issues/38",
+          "state": "open"
+        }
+      ]
+    }
+  ],
+  "cross_program_parent": {
+    "issue": 47,
+    "parent": "https://github.com/egohygiene/.github/issues/20",
+    "reason": "Preserved original explicit program parent; local execution ledger counts this issue once."
+  },
+  "checks": [
+    {
+      "command": "task check",
+      "result": "passed",
+      "exit_code": 0,
+      "basis": "executed local repository tasks",
+      "details": "Catalog, profiles, tool registry, deterministic publications, apt locks, Bash syntax, ShellCheck, 55 Python unit tests, byte compilation, git diff --check."
+    },
+    {
+      "command": "In-memory negative probes using validate_catalog, validate_profiles and resolve_profile (script reproduced in report)",
+      "result": "confirmed defects",
+      "exit_code": 0,
+      "basis": "synthetic copies of checked-in data; not production corruption",
+      "details": "Unsupported capability kind accepted; string allow_privileged accepted; cyclic inheritance raises RecursionError; unknown capability correctly returns a diagnostic."
+    },
+    {
+      "command": "Inspect GitHub run 39167134555/jobs",
+      "result": "passed (observed hosted evidence)",
+      "basis": "remote evidence at exact source revision; not locally re-executed",
+      "details": "Offline contracts and native amd64/arm64 base-image replay/build/verify/smoke jobs passed."
+    },
+    {
+      "command": "task ci:architecture ARCH=amd64 / ARCH=arm64",
+      "result": "not-run locally",
+      "basis": "Docker unavailable; no native ARM64 host",
+      "details": "No local image build, online apt replay, SBOM/vulnerability scan, signing, or registry publication."
+    }
+  ],
+  "limits": [
+    "No product fixes, workflow repairs, dependency updates, merges, releases, tags, deployments, history rewriting, or creative-material changes.",
+    "No built-artifact vulnerability scan or exhaustive security certification.",
+    "No full fleet-policy adoption inferred from file presence or merged source.",
+    "No public raw sensitive logs, environment values, private paths, credentials, private issue text or creative data."
+  ],
+  "security_reporting": "No SECURITY.md found in either repository or recognized organization default locations inspected; existing egohygiene/.github#24 owns shared default guidance.",
+  "provider_labels": "Canonical title style used for new issues, with existing verified labels. Missing type:* labels mean complete title/label adoption is not claimed.",
+  "evidence_privacy": "Only command names, counts, diagnostics and digests retained; raw host/environment/network logs excluded.",
+  "negative_probes": [
+    {
+      "case": "invalid capability kind",
+      "validation_errors": []
+    },
+    {
+      "case": "string privilege flag",
+      "validation_errors": []
+    },
+    {
+      "case": "cycle resolution",
+      "exception": "RecursionError"
+    },
+    {
+      "case": "missing capability",
+      "errors": [
+        "profile base references unknown capabilities: missing-capability"
+      ]
+    }
+  ]
+}

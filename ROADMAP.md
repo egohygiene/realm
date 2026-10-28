@@ -26,6 +26,26 @@ supersedes: []
 
 # Realm Roadmap
 
+## Current audit execution handoff — 2026-10-28
+
+The current complete ordered work inventory is [roadmap #25](https://github.com/egohygiene/realm/issues/25):
+**39 work issues: 9 ready, 30 gated; parent and PRs excluded.** Asterisks there identify full-outcome gates; preparation
+and the first-version stopping boundary are recorded in the owning issues.
+
+Read the [source-revision audit](audits/realm-engineering-readiness-20261028T064323Z.md)
+and [current continuity](CONTINUITY.md) before choosing work. The next bounded
+checkpoint is #50 — stop resolver traversal after invalid inheritance validation; one bounded repair PR. No implementation or release was performed by the audit.
+
+The August execution snapshot below is historical: CI, immutable action pins and the minimal base Dockerfile now exist. Profile declarations still do not prove emitted Nix/workstation/Dev Container adapters or a published image.
+
+The recommended first-version scope is the existing minimal runtime/environment
+with credible checks, pinned Mantle activation and one local Dev Container
+canary where applicable. Distributed-release approval remains separate.
+Optional full images, services, models, knowledge/confidential environments,
+new dashboards and ADR-history migration do not block comic content. Original
+issue scopes and the longer-horizon strategy below are preserved.
+
+
 <!-- BEGIN ROADMAP EXECUTION SNAPSHOT -->
 <!-- roadmap-manifest
 schema: hygiene.roadmap/v1alpha1
