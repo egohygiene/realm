@@ -79,6 +79,14 @@ not advertised until it has its own tested platform contract.
 
 ## Deterministic resolver failures
 
+The [catalog schema](../schemas/capability-catalog.v1.schema.json) and
+[profile schema](../schemas/profile.v1.schema.json) define the v1 structural
+contract. The dependency-free validator checks required and allowed fields,
+nested object/array shapes, string forms, capability kinds, and constraint
+types before checking references and graph semantics. Privilege and service
+flags require actual JSON booleans: strings such as `"false"` and numbers such
+as `0` or `1` are rejected rather than coerced.
+
 Resolution fails for unknown or cyclic profile inheritance, missing or cyclic
 capability dependencies, explicit exclusions that break dependencies,
 capability conflicts, incompatible platforms/projections, forbidden service or
