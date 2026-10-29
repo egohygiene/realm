@@ -5,7 +5,10 @@ from __future__ import annotations
 import copy
 import json
 from pathlib import Path
+import subprocess
 import sys
+import tempfile
+from typing import Any
 import unittest
 
 
@@ -84,6 +87,117 @@ class RealmProfileTests(unittest.TestCase):
         profiles["base"]["extends"] = ["full"]
         errors = validate_profiles(self.catalog, profiles)
         self.assertTrue(any("profile inheritance cycle" in error for error in errors))
+
+    def invalid_resolution_cases(
+        self,
+    ) -> list[tuple[str, dict[str, Any], dict[str, dict[str, Any]], str]]:
+        """Build isolated inputs whose existing validator returns actionable errors."""
+        cases = []
+        for name, field, value, diagnostic in (
+            ("self-cycle", "extends", ["base"], "profile inheritance cycle: base -> base"),
+            (
+                "multi-profile-cycle",
+                "extends",
+                ["rust"],
+                "profile inheritance cycle: base -> rust -> base",
+            ),
+            ("invalid-extends", "extends", None, "profile base.extends must be an array"),
+            ("invalid-include", "include", None, "profile base.include must be an array"),
+        ):
+            profiles = copy.deepcopy(self.profiles)
+            profiles["base"][field] = value
+            cases.append((name, self.catalog, profiles, diagnostic))
+
+        profiles = copy.deepcopy(self.profiles)
+        del profiles["base"]["extends"]
+        cases.append(
+            ("missing-extends", self.catalog, profiles, "profile base.extends must be an array")
+        )
+        catalog = copy.deepcopy(self.catalog)
+        catalog["capabilities"]["realm-base"]["requires"] = None
+        cases.append(
+            ("invalid-requires", catalog, self.profiles, "realm-base.requires must be an array")
+        )
+        return cases
+
+    def run_resolution_cli(
+        self,
+        fixture_root: Path,
+        catalog: dict[str, Any],
+        profiles: dict[str, dict[str, Any]],
+        output_path: Path,
+    ) -> subprocess.CompletedProcess[str]:
+        """Invoke the real CLI against temporary contract files with a deadline."""
+        catalog_path = fixture_root / "catalog.json"
+        catalog_path.write_text(json.dumps(catalog), encoding="utf-8")
+        profiles_directory = fixture_root / "profiles"
+        profiles_directory.mkdir()
+        for name, profile in profiles.items():
+            (profiles_directory / f"{name}.profile.json").write_text(
+                json.dumps(profile), encoding="utf-8"
+            )
+        return subprocess.run(
+            [
+                sys.executable,
+                str(ROOT / "tools" / "realm_profiles.py"),
+                "--catalog",
+                str(catalog_path),
+                "--profiles",
+                str(profiles_directory),
+                "resolve",
+                "--profile",
+                "base",
+                "--platform",
+                "linux/amd64",
+                "--projection",
+                "docker",
+                "--output",
+                str(output_path),
+            ],
+            capture_output=True,
+            text=True,
+            timeout=5,
+            check=False,
+        )
+
+    def test_resolver_rejects_invalid_structures_before_traversal(self) -> None:
+        for name, catalog, profiles, diagnostic in self.invalid_resolution_cases():
+            with self.subTest(case=name):
+                validation_errors = validate_profiles(catalog, profiles)
+                self.assertIn(diagnostic, validation_errors)
+                resolved, errors = resolve_profile(
+                    catalog, profiles, "base", "linux/amd64", "docker"
+                )
+                self.assertIsNone(resolved)
+                self.assertEqual(errors, validation_errors)
+
+    def test_cli_rejects_invalid_structures_without_partial_output(self) -> None:
+        for name, catalog, profiles, diagnostic in self.invalid_resolution_cases():
+            with self.subTest(case=name), tempfile.TemporaryDirectory() as directory:
+                fixture_root = Path(directory)
+                output_path = fixture_root / "output" / "resolved.json"
+                result = self.run_resolution_cli(fixture_root, catalog, profiles, output_path)
+                self.assertEqual(result.returncode, 1, result.stderr)
+                self.assertEqual(result.stdout, "")
+                self.assertIn(f"contract validation failed: {diagnostic}", result.stderr)
+                self.assertNotIn("Traceback", result.stderr)
+                self.assertNotIn("RecursionError", result.stderr)
+                self.assertLess(len(result.stderr), 2048)
+                self.assertFalse(output_path.exists())
+                self.assertFalse(output_path.parent.exists())
+
+    def test_cli_preserves_existing_output_when_resolution_is_invalid(self) -> None:
+        profiles = copy.deepcopy(self.profiles)
+        profiles["base"]["extends"] = ["base"]
+        with tempfile.TemporaryDirectory() as directory:
+            fixture_root = Path(directory)
+            output_path = fixture_root / "resolved.json"
+            output_path.write_text("existing manifest\n", encoding="utf-8")
+            result = self.run_resolution_cli(fixture_root, self.catalog, profiles, output_path)
+            self.assertEqual(result.returncode, 1, result.stderr)
+            self.assertEqual(result.stdout, "")
+            self.assertNotIn("Traceback", result.stderr)
+            self.assertEqual(output_path.read_text(encoding="utf-8"), "existing manifest\n")
 
     def test_capability_cycle_is_rejected(self) -> None:
         catalog = copy.deepcopy(self.catalog)

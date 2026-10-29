@@ -84,6 +84,10 @@ capability dependencies, explicit exclusions that break dependencies,
 capability conflicts, incompatible platforms/projections, forbidden service or
 privileged capabilities, mutable sources, and secret-bearing data.
 
+Reported contract errors stop resolution before profile inheritance is traversed.
+The CLI prints validation diagnostics to standard error and exits nonzero without
+creating or replacing the requested manifest when resolution fails.
+
 ## Release path
 
 1. Replace fixture pins with verified revisions.
