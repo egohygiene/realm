@@ -301,6 +301,10 @@ def resolve_profile(
     if projection not in catalog.get("projections", []):
         errors.append(f"unknown projection: {projection}")
 
+    # Invalid inheritance and metadata must never reach graph traversal.
+    if errors:
+        return None, sorted(set(errors))
+
     lineage: list[str] = []
     seen_profiles: set[str] = set()
 
