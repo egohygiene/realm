@@ -1,0 +1,43 @@
+{
+  "artifacts": [],
+  "capabilities": [
+    "realm-base",
+    "common-cli"
+  ],
+  "catalog_version": "1.2.0",
+  "constraints": {
+    "privileged": false,
+    "secrets": "forbidden",
+    "services": false
+  },
+  "lineage": [
+    "base"
+  ],
+  "packages": [
+    "apt:ca-certificates",
+    "apt:curl",
+    "apt:file",
+    "apt:git-lfs",
+    "apt:gnupg",
+    "apt:jq",
+    "apt:openssh-client",
+    "apt:rsync",
+    "apt:tree",
+    "apt:unzip",
+    "apt:wget",
+    "apt:xz-utils",
+    "apt:zip"
+  ],
+  "platform": "linux/amd64",
+  "profile": "base",
+  "projection": "devcontainer",
+  "schema_version": "1.0.0",
+  "source_pins": {
+    "debian": "https://snapshot.debian.org/archive/debian/20260829T120000Z/",
+    "debian-security": "https://snapshot.debian.org/archive/debian-security/20260829T120000Z/",
+    "devcontainers-base": "mcr.microsoft.com/devcontainers/base:2.1.15-trixie@sha256:b8c3669fb4cc652621b3386517c40ab3e151e827de958d6fe75528798ffb5727",
+    "dockerfile-frontend": "docker/dockerfile:1.10@sha256:865e5dd094beca432e8c0a1d5e1c465db5f998dca4e439981029b3b81fb39ed5",
+    "homebrew-core": "github:Homebrew/homebrew-core@acaaa48453c4ddd45f1086e8166dfe7940b8f098",
+    "nixpkgs": "github:NixOS/nixpkgs@ac62194c3917d5f474c1a844b6fd6da2db95077d"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "build": {
+    "args": {
+      "IMAGE_REVISION": "source-input-sha256:1dee4c41aa78bda50b6446424f33d69e143fc972dee7fa2bea365130ce5d046f",
+      "IMAGE_VERSION": "0.0.0-dev"
+    },
+    "context": "..",
+    "dockerfile": "../images/base/Dockerfile",
+    "options": [
+      "--platform=linux/arm64"
+    ]
+  },
+  "name": "Realm base (linux/arm64; generated source)",
+  "remoteUser": "vscode",
+  "updateRemoteUserUID": false
+}

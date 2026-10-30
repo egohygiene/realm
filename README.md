@@ -42,6 +42,9 @@ truth.
   profile publication evidence, cache identity, and the built-image boundary.
 - [`docs/mantle-shell.md`](docs/mantle-shell.md) explains build-time `SHELL`,
   sourced Bash/Zsh and native Fish activation, and the pinned-source canary.
+- [`docs/devcontainer-projection.md`](docs/devcontainer-projection.md) documents
+  generated local base Dev Container bundles, source/lock bindings, offline drift
+  checks and remaining Feature/host/publication boundaries.
 - [`docs/apt-package-locks.md`](docs/apt-package-locks.md) documents the apt
   lock design, maintenance workflow, review gates, and limitations.
 - [`images/base/README.md`](images/base/README.md) defines the minimal base image

@@ -2,66 +2,63 @@
 
 ## Current checkpoint
 
-Observed 2026-10-30. This repository-owned prose snapshot records context, not
-permission or a machine-enforced continuity contract. Live instructions,
-canonical sources and verified work-tracker state outrank this handoff.
+Observed 2026-10-30. This repository-owned prose handoff records context, not
+permission or a new machine-enforced continuity contract. Live instructions,
+canonical source and verified work-tracker state outrank this snapshot.
 
-- Objective: review bounded installed-image evidence for [#7](https://github.com/egohygiene/realm/issues/7), [draft PR #58](https://github.com/egohygiene/realm/pull/58).
-- Independent base: main `0ebdc4d3562a0af0f806876c5dd81d60e79f9e27`.
-- Candidate: `feat/7-image-evidence`; the PR records its final pushed head.
-- Reviewed producer source: `9e1a5151e0bc5b0729aae5f46cc3e5eb232cf47a`, SHA-256 `6bbeb3b54193f9319f3a45d984929b35f6cf4cb4426988df8ea82a789ebe84d2`.
-- Canonical context: docs/image-evidence.md, tool pins, closed receipt schema, image scripts/locks, Taskfile.yml and [roadmap #25](https://github.com/egohygiene/realm/issues/25).
+- Main includes generated Dev Container [PR #57](https://github.com/egohygiene/realm/pull/57), merged at `3154e80e2a3903555f791dc3c80e33af6100d126` from reviewed head `d9030a6aa33f12746af77d57321888d340e16e3f`.
+- Installed-image evidence [PR #58](https://github.com/egohygiene/realm/pull/58), branch `feat/7-image-evidence`, is reconciled with that main for merge. Reviewed source head: `5042d4d05a9b1e9f31e69a50612abaf6f41bfe53`; its PR records the containing reconciled head.
+- Release preparation [PR #59](https://github.com/egohygiene/realm/pull/59) remains open/draft at `3c5cd1c7a360acef46b9cf273250a2cca403551b`. It targets #58's branch; after #58 merges, retarget it to main before its own reconciliation and merge.
+- Canonical sources: [roadmap #25](https://github.com/egohygiene/realm/issues/25), owning issues #10/#7/#17, docs/devcontainer-projection.md, docs/image-evidence.md, Taskfile.yml and the source-bound receipts below.
 
-## Material behavior and boundaries
+## Integrated source and ownership
 
-The explicit stdlib producer binds actual native image/configuration identity to
-selected source inputs, runs installed-lock/non-root smoke checks, uses pinned
-Syft/Grype bytes and an existing fresh database, and atomically publishes a new
-limited evidence directory without replacement. The read-only API
-`verify_evidence(directory)` hashes and re-derives available facts from the same
-checked bytes; it authenticates no producer or registry. Configuration IDs,
-scanner manifests and published registry digests remain distinct.
+The deterministic base generator preserves resolved-profile v1 and emits faithful
+AMD64/ARM64 local Dev Container bundles from the existing recipe/locks. It bounds
+source graphs and checks exact source bytes plus Git executable roles. Unsupported
+profiles and unsafe/overwriting output reject. The generated receipt records
+source/input/generator hashes; generation does not install other profiles or
+publish Features. The optional caller-reviewed BuildKit CA secret affects only
+build transport and leaves no CA/configuration in the finished layer.
 
-Producer bytes are frozen during capture. Container creation has its own deadline,
-returns a full ID before the execution deadline starts, and actual exit status is
-checked. Cleanup requires exact name/nonce/image/ID proof. Indeterminate creation
-uses bounded scoped polling and remains non-success with an owned-name recovery
-action; immediate absence cannot prove a queued create will never complete.
-All package/finding/ignored-match data survives runtime-configuration redaction.
+The image-evidence producer accepts an exact local image configuration ID, binds
+selected immutable source inputs and installed locks, and runs pinned Syft/Grype
+with a separately selected fresh database. Its offline verifier re-derives local
+facts from the exact checked artifact bytes. Config IDs, scanner manifests and
+registry index/platform digests have distinct meanings. The local contract keeps
+registry identity null and release readiness false.
 
-## Actual validation and review
+Creation and execution have separate deadlines. A full container ID and exact
+name/nonce/image ownership precede start/attach; cleanup removes only the verified
+ID. Indeterminate creation uses bounded scoped recovery and remains non-success.
+Producer bytes are frozen across capture; an ordinary mid-run edit rejects before
+publishing a final local directory. All findings survive runtime-data redaction.
 
-- Baseline 97 tests passed. The first four regressions exposed the missing producer/schema (one expected failure, three expected missing-file errors); all are repaired.
-- Implementation check passed 114 tests. Further review guards passed 122 tests; the final source-bound observation test adds one method. Exact final Task and lint results are recorded in PR #58.
-- Independent reviews cleared the original implementation and the exact final create/start producer. Reviewer replayed focused tests and actual-artifact positives plus rehashed SPDX/Grype/source-lock/overflow/malformed/auth-promotion negatives. Review repairs retain positive controls.
-- Initial unmodified Docker build failed apt TLS verification. Standalone commit `d6f3604d0f787cc8a2b6c97d70bd3122f81a8203` adds optional ephemeral BuildKit CA trust. Its clean native AMD64 image build, installed-version/lock/snapshot verification, default-user smoke, source metadata and CA/config absence probes passed. Locks, pins and base policy are preserved.
-- Actual resource probing exposed late daemon creation after a short run-client timeout. Two newly owned Created sleep containers were verified and removed; the failed observation is retained. The repair then passed actual explicit-create/start testing: full ID before execution, Running observed before the two-second command deadline, matching running container removed after client timeout, and final absence. Network none, read-only root, non-root UID 1000 and dropped capabilities were used.
-- Final actual producer capture at `2026-10-30T20:00:56Z` exited zero, bound the exact reviewed producer hash above, verified all artifacts and recorded 293 installed packages, 294 SPDX packages including the container root, and 13 locked roots.
-- Grype reported 1,689 matches and 3,015 ignored matches: 76 Critical, 412 High, 276 Medium, 77 Low, 799 Negligible, 49 Unknown. This is not a clean-image verdict or exploitability assessment. Database v6.1.10 was built `2026-10-30T06:23:28Z`; its exact file/archive hashes and age are recorded.
-- A separate actual capture in an owned three-file code capsule received an ordinary comment edit after capture began. It rejected with controlled exit 1, published no final directory, cleaned temporary staging and left canonical source unchanged. It did not relabel old running code with new source bytes.
-- Independent Draft202012/meta/registered-format checks pass for the closed receipt; the actual installed-image SPDX passes the immutable official SPDX 2.3 Draft7 schema and formats. All nine exported files pass private-path/runtime-marker checks. Python 3.9 grammar checks pass; actual runtime qualification is Linux AMD64 only.
+## Actual qualification
 
-The safe [observation receipt](docs/evidence/image-local-capture.v1.json) binds the
-source, producer, tools and artifact hashes. It is an index, not the full portable
-bundle or authentication. Full actual artifacts remain with validation evidence.
-Official tool archive checksums were verified; Sigstore/provenance were not.
+- Exact independent #57/#58/#59 source heads previously passed combined `task check`: 162 tests and all offline gates. All three had independent final source/metadata review with no remaining source blocker. Operational handoffs were checked separately.
+- Fresh pre-merge #57 replay passed all 110 tests and offline gates. Its merged main tree equals the reviewed candidate tree. The #58 reconciliation passed all 136 tests and offline gates; its 43 changed source files outside README/Task/handoff match the qualified source bytes and Git roles, the Task/README union is preserved, and 39 original canonical/audit/lock files remain unchanged. PR #58 records the exact reconciled head.
+- The generated configuration passed the exact official schema and CLI interpretation, actual native AMD64 image build/start, installed-lock/default-user smoke, 109 Task tests and 24 real Bash/Zsh/Fish Mantle source cases inside its container. Reopen/recreation and owned-container cleanup passed. Three failed qualification-environment attempts remain recorded. Python/Fish/ShellCheck and pinned Task were explicit disposable qualification inputs, not installed base capabilities.
+- Independent #7 final checks passed 123 Task tests, including 26 focused methods. Actual clean source `d6f3604d0f787cc8a2b6c97d70bd3122f81a8203` built and passed installed-lock/non-root/source/CA-cleanup probes. The actual producer SHA-256 is `6bbeb3b54193f9319f3a45d984929b35f6cf4cb4426988df8ea82a789ebe84d2`.
+- Its actual native image capture, running-before-deadline removal and mid-capture source-edit rejection passed. The closed receipt and official SPDX schema validate; 293 installed packages, 294 SPDX entries and 13 locked roots are bound to the captured subject.
+- Grype retains 1,689 matches and 3,015 ignored matches, including 76 Critical and 412 High. This observation is not a clean-image or exploitability verdict. Snapshot/database hashes and capture-time freshness remain in the evidence.
 
-## Parallel work, gates and recovery
+Safe records: docs/evidence/devcontainer-generated-base.v1.json and
+docs/evidence/image-local-capture.v1.json. Raw logs and full artifacts remain
+outside public source. The two observed images are distinct local subjects.
 
-[#10 / draft PR #57](https://github.com/egohygiene/realm/pull/57) owns the generated
-Dev Container slice and reuses the exact CA commit. [#17 / draft PR #59](https://github.com/egohygiene/realm/pull/59)
-stacks on #7 and consumes the same artifact verifier. Reconcile Taskfile and
-competing handoffs semantically; preserve historical audit and creative bytes.
+## Acceptance, preservation and next action
 
-Keep full #7 open for native ARM64 scanner/build qualification, reviewed finding
-disposition, accepted producer compatibility, real image signatures/provenance
-and separately approved registry distribution. Hosted Actions remain deferred.
-No merge, release/tag, signing, publication, workflow dispatch, bot review request,
-paid resource or manual issue closure occurred. Every new checkpoint uses
-`[skip ci]`.
+Keep #10 open for Features distribution, Nix/workstation adapters and broader
+conformance. Keep #7 open for native ARM64 scanner/build proof, finding
+disposition, compatible producer evidence, cryptographic authentication and
+approved distribution. #8/#39 retain published Mantle and remaining host gates;
+source-only Mantle activation is not a released integration. Hosted Actions
+qualification remains deferred; every new commit uses `[skip ci]`.
 
-Next: verify final remote heads, review #57 then #58 then stacked #59 and their
-combined checks. Before later image/source changes, refresh source-bound local
-capture; before publication, satisfy the owning release/crypto/host gates.
-Keep private paths, credentials, environment values and raw logs out of public
-source. This handoff grants no additional authority.
+Finish #58's checked merge, retarget #59 to resulting main, reconcile its handoff
+and complete the ordered source merge. No further implementation batch is selected.
+Merging source performs no release, tag, workflow dispatch, signing or registry
+publication. Preserve historical audits, creative bytes, canonical profile
+identity and package locks. Keep credentials, private paths, environment values
+and raw logs out of public repository content.
