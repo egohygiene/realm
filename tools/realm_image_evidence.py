@@ -20,6 +20,7 @@ import signal
 import stat
 import subprocess
 import tempfile
+import uuid
 from collections import Counter
 from pathlib import Path
 from typing import Any
@@ -788,7 +789,84 @@ def file_hash(path: Path, limit: int = 4 * 1024 * 1024 * 1024) -> str:
     return result.hexdigest()
 
 
+def run_container(
+    docker: list[str],
+    options: list[str],
+    image: str,
+    command: list[str],
+    env: dict[str, str],
+    timeout: int = 120,
+) -> bytes:
+    """Clean up only this invocation's container if a Docker client times out."""
+    token = uuid.uuid4().hex
+    name = "realm-evidence-" + token
+    label = "io.egohygiene.realm.evidence-invocation"
+    argv = (
+        docker
+        + ["run", "--rm", "--name", name, "--label", label + "=" + token]
+        + options
+        + [image]
+        + command
+    )
+
+    def present() -> bool:
+        result = run(
+            docker
+            + [
+                "container",
+                "ls",
+                "--all",
+                "--filter",
+                "name=^/" + name + "$",
+                "--format",
+                "{{.ID}}",
+            ],
+            env,
+            30,
+        )
+        return bool(result.strip())
+
+    try:
+        return run(argv, env, timeout)
+    finally:
+        try:
+            details = decode(
+                run(
+                    docker + ["container", "inspect", name, "--format", "{{json .}}"],
+                    env,
+                    30,
+                )
+            )
+        except ValueError:
+            # --rm commonly removed a completed container already. A successful
+            # filtered read must establish absence before accepting that case.
+            if present():
+                raise ValueError(
+                    "owned container cleanup identity is unavailable"
+                ) from None
+        else:
+            identifier = details.get("Id") if isinstance(details, dict) else None
+            config = details.get("Config") if isinstance(details, dict) else None
+            labels = config.get("Labels") if isinstance(config, dict) else None
+            if (
+                not isinstance(identifier, str)
+                or not re.fullmatch(r"[a-f0-9]{64}", identifier)
+                or details.get("Name") != "/" + name
+                or not isinstance(labels, dict)
+                or labels.get(label) != token
+            ):
+                raise ValueError("container ownership did not match; cleanup refused")
+            try:
+                run(docker + ["container", "rm", "--force", identifier], env, 30)
+            except ValueError:
+                if present():
+                    raise ValueError(
+                        "owned container cleanup did not complete"
+                    ) from None
+
+
 def collect(args: argparse.Namespace) -> dict:
+    producer_bytes = read_bytes(Path(__file__), 1048576)
     build_plan(args.image, args.source_revision)
     if args.output.exists() or args.output.is_symlink():
         raise ValueError("output already exists")
@@ -898,9 +976,7 @@ def collect(args: argparse.Namespace) -> dict:
             "execution": "native",
         }
         (directory / "identity.json").write_bytes(encode(identity))
-        prefix = docker + [
-            "run",
-            "--rm",
+        root_options = [
             "--network",
             "none",
             "--cap-drop",
@@ -910,30 +986,29 @@ def collect(args: argparse.Namespace) -> dict:
             "--user",
             "root",
         ]
-        run(
-            prefix
+        run_container(
+            docker,
+            root_options
             + [
                 "--entrypoint",
                 "/usr/local/libexec/realm/verify-apt-packages",
-                args.image,
             ],
+            args.image,
+            [],
             env,
-            120,
         )
         # The image's non-root smoke deliberately tests its documented sudo boundary.
-        run(
-            docker
-            + [
-                "run",
-                "--rm",
+        run_container(
+            docker,
+            [
                 "--network",
                 "none",
                 "--entrypoint",
                 "/usr/local/libexec/realm/smoke",
-                args.image,
             ],
+            args.image,
+            [],
             env,
-            120,
         )
         verification = {
             name: {"status": "passed", "exit_code": 0}
@@ -941,14 +1016,15 @@ def collect(args: argparse.Namespace) -> dict:
         }
         (directory / "verification.json").write_bytes(encode(verification))
         for name in ("apt-lock.json", "apt-installed.tsv", "build-metadata.json"):
-            data = run(
-                prefix
+            data = run_container(
+                docker,
+                root_options
                 + [
                     "--entrypoint",
                     "/bin/cat",
-                    args.image,
-                    "/usr/local/share/realm/packages/" + name,
                 ],
+                args.image,
+                ["/usr/local/share/realm/packages/" + name],
                 env,
                 30,
             )
@@ -1055,7 +1131,7 @@ def collect(args: argparse.Namespace) -> dict:
             "producer": {
                 "name": "realm-image-evidence",
                 "version": "1.0.0",
-                "sha256": digest(read_bytes(Path(__file__))),
+                "sha256": digest(producer_bytes),
             },
             "tools": tool_records,
             **derived,
@@ -1068,6 +1144,10 @@ def collect(args: argparse.Namespace) -> dict:
         }
         (directory / "image-evidence.json").write_bytes(encode(receipt))
         verify_evidence(directory)
+        if read_bytes(Path(__file__), 1048576) != producer_bytes:
+            raise ValueError(
+                "producer source changed during capture; no evidence was published"
+            )
         publish_directory(directory, args.output)
     return receipt
 

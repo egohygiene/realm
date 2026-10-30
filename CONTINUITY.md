@@ -23,12 +23,16 @@ All findings and ignored matches remain visible. Runtime configuration and
 private paths are removed from portable tool reports; raw hashes remain labelled.
 
 The four first-checkpoint regressions failed as expected (one failure, three
-missing-file errors); baseline 97 tests had passed. Implementation guards now
-pass all 17 methods, with positive and synthetic malformed/tampering controls.
+missing-file errors); baseline 97 tests had passed. Implementation checkpoint guards passed 17 methods; review hardening now passes
+23 methods, including actual no-replace filesystem and owned-child deadline
+controls plus synthetic container ownership/timeout seams.
 Ruff check/format pass after initial routine context-manager/import corrections.
 Early independent review found finite-overflow/type seams and deeper package/
 source bindings; the implementation repairs them and adds focused regressions.
-Full offline and final committed-head review results are recorded in PR #58.
+The reviewed implementation checkpoint passed 114 full Task tests. Review
+hardening freezes producer bytes during capture and cleans only uniquely owned
+containers after client deadlines. Exact current full checks are recorded in
+PR #58; code changes require a fresh actual capture before the final receipt.
 
 Initial actual unmodified Docker build failed apt TLS verification. A standalone
 Dockerfile-only repair `d6f3604d0f787cc8a2b6c97d70bd3122f81a8203` supplies optional
