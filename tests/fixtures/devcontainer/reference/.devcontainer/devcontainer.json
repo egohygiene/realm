@@ -1,0 +1,19 @@
+{
+  "name": "Realm authored boundary reference",
+  "image": "mcr.microsoft.com/devcontainers/base:2.1.15-trixie@sha256:b8c3669fb4cc652621b3386517c40ab3e151e827de958d6fe75528798ffb5727",
+  "remoteUser": "vscode",
+  "updateRemoteUserUID": false,
+  "containerEnv": {
+    "REALM_REFERENCE": "authored-reference-only"
+  },
+  "remoteEnv": {
+    "REALM_PROJECTION": "not-emitted-by-realm-10"
+  },
+  "forwardPorts": [],
+  "hostRequirements": {
+    "cpus": 2,
+    "memory": "4gb",
+    "storage": "8gb"
+  },
+  "customizations": {}
+}

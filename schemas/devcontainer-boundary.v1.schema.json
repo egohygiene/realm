@@ -1,0 +1,348 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.egohygiene.io/realm/devcontainer-boundary.v1.schema.json",
+  "title": "Realm Dev Container boundary mapping v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "contract",
+    "canonical_input",
+    "projection_issue",
+    "spec",
+    "cli",
+    "reference",
+    "capabilities",
+    "hosts"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "contract": {
+      "const": "realm.devcontainer-boundary/v1"
+    },
+    "canonical_input": {
+      "const": "resolved-profile.v1"
+    },
+    "projection_issue": {
+      "const": "https://github.com/egohygiene/realm/issues/10"
+    },
+    "spec": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "repository",
+        "revision",
+        "schema_path",
+        "sha256",
+        "license"
+      ],
+      "properties": {
+        "repository": {
+          "const": "devcontainers/spec"
+        },
+        "revision": {
+          "const": "c95ffeed1d059abfe9ffbe79762dc2fa4e7c2421"
+        },
+        "schema_path": {
+          "const": "vendor/devcontainers/devContainer.base.schema.json"
+        },
+        "sha256": {
+          "const": "a0883c0405ff433db188849d458fb20b9c0d73e0ba1a6e44c1d83f3b485408dd"
+        },
+        "license": {
+          "const": "CC-BY-4.0"
+        }
+      }
+    },
+    "cli": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "version",
+        "revision",
+        "source"
+      ],
+      "properties": {
+        "version": {
+          "const": "0.90.0"
+        },
+        "revision": {
+          "const": "d807cb27c195b6bc0e89d893fc20f44a30bf27ee"
+        },
+        "source": {
+          "const": "https://github.com/devcontainers/cli/tree/d807cb27c195b6bc0e89d893fc20f44a30bf27ee"
+        }
+      }
+    },
+    "reference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "kind",
+        "realm_profile_applied"
+      ],
+      "properties": {
+        "path": {
+          "const": "tests/fixtures/devcontainer/reference/.devcontainer/devcontainer.json"
+        },
+        "kind": {
+          "const": "authored-reference-only"
+        },
+        "realm_profile_applied": {
+          "const": false
+        }
+      }
+    },
+    "capabilities": {
+      "type": "array",
+      "minItems": 13,
+      "maxItems": 13,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "owner",
+          "spec_properties",
+          "realm_inputs",
+          "handling",
+          "limitations"
+        ],
+        "properties": {
+          "id": {
+            "enum": [
+              "images",
+              "dockerfiles",
+              "compose",
+              "features",
+              "environment",
+              "users",
+              "mounts",
+              "lifecycle",
+              "ports",
+              "host-requirements",
+              "editor-customizations",
+              "host-customizations",
+              "prebuild-cache"
+            ]
+          },
+          "owner": {
+            "enum": [
+              "realm",
+              "consumer",
+              "host",
+              "relay"
+            ]
+          },
+          "spec_properties": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "realm_inputs": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "handling": {
+            "type": "string",
+            "minLength": 1
+          },
+          "limitations": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      }
+    },
+    "hosts": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "expected",
+          "limitations"
+        ],
+        "properties": {
+          "id": {
+            "enum": [
+              "devcontainer-cli",
+              "vscode",
+              "codespaces",
+              "devpod"
+            ]
+          },
+          "expected": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "images",
+              "dockerfiles",
+              "compose",
+              "features",
+              "environment",
+              "users",
+              "mounts",
+              "lifecycle",
+              "ports",
+              "host-requirements",
+              "editor-customizations",
+              "host-customizations",
+              "prebuild-cache"
+            ],
+            "properties": {
+              "images": {
+                "enum": [
+                  "supported",
+                  "degraded",
+                  "ignored",
+                  "host-specific",
+                  "unavailable"
+                ]
+              },
+              "dockerfiles": {
+                "enum": [
+                  "supported",
+                  "degraded",
+                  "ignored",
+                  "host-specific",
+                  "unavailable"
+                ]
+              },
+              "compose": {
+                "enum": [
+                  "supported",
+                  "degraded",
+                  "ignored",
+                  "host-specific",
+                  "unavailable"
+                ]
+              },
+              "features": {
+                "enum": [
+                  "supported",
+                  "degraded",
+                  "ignored",
+                  "host-specific",
+                  "unavailable"
+                ]
+              },
+              "environment": {
+                "enum": [
+                  "supported",
+                  "degraded",
+                  "ignored",
+                  "host-specific",
+                  "unavailable"
+                ]
+              },
+              "users": {
+                "enum": [
+                  "supported",
+                  "degraded",
+                  "ignored",
+                  "host-specific",
+                  "unavailable"
+                ]
+              },
+              "mounts": {
+                "enum": [
+                  "supported",
+                  "degraded",
+                  "ignored",
+                  "host-specific",
+                  "unavailable"
+                ]
+              },
+              "lifecycle": {
+                "enum": [
+                  "supported",
+                  "degraded",
+                  "ignored",
+                  "host-specific",
+                  "unavailable"
+                ]
+              },
+              "ports": {
+                "enum": [
+                  "supported",
+                  "degraded",
+                  "ignored",
+                  "host-specific",
+                  "unavailable"
+                ]
+              },
+              "host-requirements": {
+                "enum": [
+                  "supported",
+                  "degraded",
+                  "ignored",
+                  "host-specific",
+                  "unavailable"
+                ]
+              },
+              "editor-customizations": {
+                "enum": [
+                  "supported",
+                  "degraded",
+                  "ignored",
+                  "host-specific",
+                  "unavailable"
+                ]
+              },
+              "host-customizations": {
+                "enum": [
+                  "supported",
+                  "degraded",
+                  "ignored",
+                  "host-specific",
+                  "unavailable"
+                ]
+              },
+              "prebuild-cache": {
+                "enum": [
+                  "supported",
+                  "degraded",
+                  "ignored",
+                  "host-specific",
+                  "unavailable"
+                ]
+              }
+            }
+          },
+          "limitations": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      }
+    }
+  }
+}

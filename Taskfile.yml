@@ -30,6 +30,12 @@ tasks:
       - '"{{.PYTHON}}" tools/realm_tool_registry.py validate'
       - '"{{.PYTHON}}" tools/realm_mantle.py check'
       - task: profiles:check
+      - task: devcontainer:check
+
+  devcontainer:check:
+    desc: Check the static Dev Container mapping and authored-reference policy without running a host.
+    cmds:
+      - '"{{.PYTHON}}" tools/realm_devcontainer_boundary.py check'
 
   mantle:fetch:
     desc: Explicitly acquire the checksum-pinned unreleased Mantle source canary.

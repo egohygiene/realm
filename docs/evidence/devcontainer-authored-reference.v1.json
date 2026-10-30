@@ -1,0 +1,81 @@
+{
+  "schema_version": "1.0.0",
+  "contract": "realm.devcontainer-reference-evidence/v1",
+  "state": "limited",
+  "observed_at": "2026-10-30T17:06:44.006738+00:00",
+  "scope": "authored-reference-only/local-linux-amd64",
+  "subject": {
+    "reference_path": "tests/fixtures/devcontainer/reference/.devcontainer/devcontainer.json",
+    "reference_sha256": "8dfee6fd919c7aad21ebdf31a97e3008b1c6a6110b9f8b84a48c44d8984adc26",
+    "image": "mcr.microsoft.com/devcontainers/base:2.1.15-trixie@sha256:b8c3669fb4cc652621b3386517c40ab3e151e827de958d6fe75528798ffb5727"
+  },
+  "official_schema": {
+    "repository": "devcontainers/spec",
+    "revision": "c95ffeed1d059abfe9ffbe79762dc2fa4e7c2421",
+    "path": "vendor/devcontainers/devContainer.base.schema.json",
+    "sha256": "a0883c0405ff433db188849d458fb20b9c0d73e0ba1a6e44c1d83f3b485408dd",
+    "draft": "2019-09",
+    "meta_validation": "passed",
+    "reference_validation": "passed",
+    "external_reference_resolution": "not-needed/all-refs-local"
+  },
+  "tools": {
+    "cli": {
+      "version": "0.90.0",
+      "source_revision": "d807cb27c195b6bc0e89d893fc20f44a30bf27ee",
+      "package_tarball_sha256": "b3d40fec9d274a303a29ea91a24852887cf287701bc8d340bfc1cf970542495a",
+      "npm_integrity": "sha512-A4ceztBMlNzd1MUlQNel0dWxnkDlE83+WsgS4JOZfeBkbO0QUKEzBpd3UQ7Xqf7s0KzJaAj+Udnp4E8I3oqK3w==",
+      "package_signature_provenance": "not-verified"
+    },
+    "docker": {
+      "version": "28.4.0",
+      "os": "linux",
+      "architecture": "amd64"
+    }
+  },
+  "observations": {
+    "cli_interpretation": "passed",
+    "container_start": "passed",
+    "exec_checks": "passed",
+    "reopen_existing_container": "passed/same-container",
+    "recreate_same_configuration": "passed/new-container",
+    "remote_user": "vscode",
+    "uid_update": false,
+    "container_environment": "REALM_REFERENCE=authored-reference-only",
+    "remote_environment": "REALM_PROJECTION=not-emitted-by-realm-10",
+    "workspace_files": "configuration-and-temporary-sentinel-present"
+  },
+  "commands": {
+    "notation": "Sanitized actual command templates. devcontainer invokes the isolated official CLI package with Node; variables stand for disposable workspace and unique ownership label, not repository settings.",
+    "read_configuration": "devcontainer read-configuration --workspace-folder \"$REFERENCE_WORKSPACE\" --mount-workspace-git-root false --include-merged-configuration --oci-auth-hardening",
+    "up": "devcontainer up --workspace-folder \"$REFERENCE_WORKSPACE\" --mount-workspace-git-root false --id-label \"$OWNED_REFERENCE_LABEL\" --default-user-env-probe none --update-remote-user-uid-default never --skip-post-create --skip-post-attach --oci-auth-hardening --include-configuration",
+    "exec": "devcontainer exec --workspace-folder \"$REFERENCE_WORKSPACE\" --mount-workspace-git-root false --id-label \"$OWNED_REFERENCE_LABEL\" --default-user-env-probe none --oci-auth-hardening bash --noprofile --norc -c 'test \"$(id -un)\" = vscode && test \"$REALM_REFERENCE\" = authored-reference-only && test \"$REALM_PROJECTION\" = not-emitted-by-realm-10 && test -f .devcontainer/devcontainer.json && test -f reference.txt && printf \"realm-reference-ok\\n\"'",
+    "reopen": "Repeat up with --expect-existing-container, then repeat exec; existing container identity retained.",
+    "recreate": "Remove only the container carrying the unique owned reference label; repeat identical up and exec; new container identity observed."
+  },
+  "cleanup": {
+    "source_json_unchanged": true,
+    "owned_containers_removed": true
+  },
+  "unproven": [
+    "realm-profile-generation",
+    "task-workflow",
+    "mantle-integration",
+    "features",
+    "forwarded-ports",
+    "gpu",
+    "lifecycle",
+    "vscode",
+    "codespaces",
+    "devpod",
+    "dockerfile-rebuild",
+    "codespaces-rebuild"
+  ],
+  "limitations": [
+    "Authored image-only reference on one local Linux AMD64 engine; no Realm #10 projection was emitted.",
+    "Host requirements were interpreted as data; no machine allocation, GPU or port forwarding was tested.",
+    "No package signature or provenance verification is claimed for the reference CLI package.",
+    "Container recreation with identical configuration is not a Dockerfile rebuild or Codespaces rebuild.",
+    "This independent observation receipt is not consumed as authentication or qualification by the static boundary checker."
+  ]
+}

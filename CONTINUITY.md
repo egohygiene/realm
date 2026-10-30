@@ -2,66 +2,62 @@
 
 ## Current checkpoint
 
-- Objective: review the bounded Mantle source activation candidate for [#8](https://github.com/egohygiene/realm/issues/8); released integration remains gated.
-- Verified base: main `ef018932ac6c5096295aeee11beeb45ea0299184`, observed 2026-10-30.
-- Candidate: `fix/8-mantle-activation`, [draft PR #55](https://github.com/egohygiene/realm/pull/55); open, draft and unmerged when checked. The PR records the final pushed head.
-- Canonical context: issue #8 audit note, [roadmap #25](https://github.com/egohygiene/realm/issues/25), `ARCHITECTURE.md`, accepted ADR-0003 in `DECISIONS.md`, `Taskfile.yml` and `docs/mantle-shell.md`.
+Observed 2026-10-30. This repository-owned prose handoff records context, not
+permission or a new machine-enforced continuity contract. Live repository state,
+applicable instructions and canonical sources outrank this snapshot.
 
-No root AGENTS.md or CONTINUITY.md was present at this base. This concise
-repository-owned handoff does not adopt an organization machine contract or
-grant authority. Historical audit [draft PR #52](https://github.com/egohygiene/realm/pull/52)
-and head `1fdd8dd402fc2f559af8b63cb8bc3290479d5412` remain untouched.
-Parallel [#39](https://github.com/egohygiene/realm/issues/39) prepares the Dev
-Container mapping independently; reconcile README, Taskfile and continuity
-semantically before any later merge. No historical audit evidence is rewritten.
+- Main includes [PR #55](https://github.com/egohygiene/realm/pull/55) at merge `19dc1faf978a2135fd9b2bc4c89f9c9da89964df`: bounded Mantle source activation preparation for #8.
+- [PR #56](https://github.com/egohygiene/realm/pull/56), branch `feat/39-devcontainer-boundary`, is being reconciled onto that main for merge. Reviewed source head: `09f8dd6f571762c1411c9b428000d00e1c72390a`. Its PR records the reconciled pushed head.
+- Historical audit [PR #52](https://github.com/egohygiene/realm/pull/52) remains open at `1fdd8dd402fc2f559af8b63cb8bc3290479d5412`, next in the merge sequence. Preserve its report and evidence bytes when refreshing operational pointers.
+- Canonical context: [roadmap #25](https://github.com/egohygiene/realm/issues/25), owning issues #8/#39/#10, ARCHITECTURE.md, DECISIONS.md, Taskfile.yml and the guides below.
 
-## Material changes and ownership
+## Integrated source and ownership
 
-`config/mantle-source-canary.json` binds Mantle commit
-`0f54fa6e100c5b86af64aa383e41eed8c64e363a` to its immutable source archive
-and SHA-256. `tools/realm_mantle.py` owns explicit no-overwrite acquisition and
-isolated real-shell checks. Bytes are verified before parsing or execution;
-complete gzip expansion is bounded before tar metadata parsing. Traversal,
-links, special/duplicate members and inventory excess reject. Owned process
-groups are terminated on deadlines. No sibling implementation is vendored.
+`docs/mantle-shell.md` uses the actual public Bash/Zsh `.shellrc` and native Fish
+entrypoints. Mantle is sourced, never substituted for a login-shell executable.
+`config/mantle-source-canary.json` pins Mantle source
+`0f54fa6e100c5b86af64aa383e41eed8c64e363a`; `tools/realm_mantle.py` verifies its
+archive before bounded parsing or isolated activation, publishes acquisition
+without replacement and terminates owned process groups on deadlines.
+Task check validates the pin offline; acquisition and canary are explicit Tasks.
+The source/adapter-bound receipt is `evidence/mantle-source-canary.json`.
 
-The guide uses public Bash/Zsh `.shellrc` and native Fish activation. Mantle
-is a sourced environment and CLI, never a replacement login executable.
-Docker SHELL, account shells, base image, catalog declaration and host startup
-remain unchanged. Task check validates the pin offline; fetch/canary are explicit.
-The safe local [receipt](evidence/mantle-source-canary.json) binds the reviewed
-adapter checksum and actual results, without raw logs or machine paths.
+The #39 standards checkpoint adds proposed ADR-0004, parallel projection
+architecture, thirteen property families and four documented host expectations
+in `catalog/devcontainer-boundary.v1.json`. The bounded stdlib checker verifies
+Realm's own closed mapping and reference policy, plus exact official base-schema
+bytes. It does not implement an emitter or a complete Dev Container schema engine.
+Profiles and resolved-profile v1 remain canonical; missing overlay fields are
+not invented. Issue #10 owns generation and the first generated Task/Mantle
+canary; subsequent host qualification returns to #39.
 
-## Actual checks and independent review
+The authored reference and typed limited receipt under `docs/evidence` bind
+fixture SHA-256 `8dfee6fd919c7aad21ebdf31a97e3008b1c6a6110b9f8b84a48c44d8984adc26`,
+CLI 0.90.0 and the immutable base schema/image. The offline checker never imports
+that external receipt as authentication and reports unperformed layers honestly.
 
-- Unchanged-base `task check`: all offline checks and 65 tests passed.
-- Regression checkpoint: four expected failures demonstrated the incorrect guide and absent adapter/pin; all now pass.
-- Final `task check`: all offline gates and 77 Python tests passed, including 12 focused Mantle tests. Byte-compilation, shell syntax/ShellCheck, catalogs/profiles/publications, apt locks and whitespace passed.
-- Review repaired hidden PAX/GNU metadata expansion and malformed DEFLATE handling. Metadata-heavy, truncated, malformed-deflate and oversized-header controls reject cleanly before writes. The actual checksum-matching archive still unpacks.
-- Acquisition guards cover corrupt bytes, preexisting/racing output, unsafe members, mutable pins and missing Fish. Synthetic inputs and deterministic collision injection do not claim product activation or real concurrency. An actual harmless owned-child timeout control passes.
-- Actual explicit fetch verified the exact source bytes. Actual Linux AMD64 canary passed 24 process checks with Bash 5.2.37, Zsh 5.9 and Fish 4.0.2: copy install, native interactive hooks without TTY, explicit noninteractive/container and CI activation, status 23, invalid-profile status 64, all-shell missing-runtime/disabled-hook recovery and plain Bash recovery.
-- Actual inherited startup/config/home/profile pollution control passed; its supplied synthetic hook was not executed. An independent replay also passed all 12 focused tests and 24 native cases at the receipt's adapter hash.
-- Actual local Docker process canary passed seven checks against the existing exact Realm base-image pin, with network disabled, read-only root/source, non-root UID 1000 and restricted capabilities: Bash/Zsh positives, status 23 and invalid-profile status 64, plus plain Bash recovery. This image lacks Fish/Python; it was not a Realm image build or Feature/projection test.
-- Python 3.9 grammar, receipt checksum binding, JSON and whitespace checks passed. Independent review found no remaining source blocker after the bounded repairs.
+## Verification
 
-## Gates and limitations
+- Reviewed #8 source passed 77 tests and all offline gates; a fresh pre-merge replay also passed. Reviewed #39 source passed 85 tests and all offline gates.
+- Exact original heads `276467eebe9da3586f1bb2d53ffdbeb0d31aa29d` and `09f8dd6f571762c1411c9b428000d00e1c72390a` passed a combined 97-test qualification. Both source candidates had independent review with no remaining source blocker.
+- The real reconciliation retains that qualified source byte-for-byte outside the operational handoff. The Taskfile retains both new checks and all existing tasks; its union is compared to the qualified integration. Fresh merge checks are recorded in PR #56.
+- Earlier actual #8 evidence: 24 Linux AMD64 Bash 5.2.37/Zsh 5.9/Fish 4.0.2 process checks, hostile inherited-startup isolation and seven restricted local Docker checks. This is source qualification, not a published Mantle release or Realm image build.
+- Earlier actual #39 evidence: official Draft 2019-09 schema validation and CLI interpretation/start/exec/reopen/recreate of the unchanged authored reference, including user/environment/workspace observations and owned-container cleanup. Recreation is not a Dockerfile/Codespaces rebuild.
+- Own schema definitions, mapping/report states, limited receipt and source bindings passed independent JSON Schema checks. Review corrected unsafe archive metadata/DEFLATE handling, root aliases, OCI grammar, property paths and host expectations. Unsupported proof requests remain nonzero/unavailable.
 
-Mantle releases API returned no releases when checked on 2026-10-30. A reviewed
-source checksum proves bytes, not release signatures, provenance or published
-acceptance. Full #8 still needs a separately approved published verified Mantle
-release, accepted release selection and actual image/projection/supported-platform
-evidence. The catalog's existing artifact remains declared intent.
+## Remaining acceptance and next action
 
-No native macOS/ARM64/Windows, real TTY/signal behavior, VS Code, Codespaces,
-remote/paid host or hosted qualification is claimed. No release, signing,
-publication, tag, dispatch, account/default-shell change, host startup edit,
-system package install, audit/creative change, issue closure or merge occurred.
+Keep #8 open for a reviewed published Mantle release, independent artifact
+verification, accepted release selection and actual image/projection/platform
+qualification. Keep #39 open for #10's generated-profile canary, actual IDE/cloud
+host proof and sibling adoption. Authored-reference execution establishes no
+Task/Mantle/Feature/lifecycle/forwarding/GPU or VS Code/Codespaces/DevPod outcome.
+Native macOS/ARM64/Windows, Nix/workstation, signatures/provenance and hosted
+qualification remain separate gates. Hosted Actions are deferred; checkpoint and
+merge messages include `[skip ci]`. No release, tag or paid resource was created.
 
-## Next action and privacy
-
-Review PR #55 alongside #39's mapping and retain the release gate before #10
-projection work consumes Mantle. Reconcile continuity by live evidence at merge;
-keep #8 open for its unreleased-artifact and external acceptance criteria.
-Exclude credentials, private paths, environment values and raw logs from public
-evidence. Refresh after checks and before the next PR handoff. This file records
-context, not permission or proof of later mutable state.
+Finish PR #56's checked reconciliation, merge it, then reconcile audit PR #52
+against the resulting main while preserving historical report/evidence. Refresh
+this handoff and the dated roadmap pointer before the next batch. Do not turn
+source preparation into issue acceptance or publication claims. Keep credentials,
+private paths, environment values and raw logs out of public evidence.
