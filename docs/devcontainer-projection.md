@@ -109,6 +109,35 @@ and the verified #8 source archive, then run the same repository Task and native
 Mantle paths. It must distinguish installed packages from test/source overlays;
 it proves neither a released Mantle integration nor stable Feature installation.
 
+## Recorded generated local observation
+
+The [limited receipt](evidence/devcontainer-generated-base.v1.json) follows a
+[closed observation schema](../schemas/devcontainer-generated-evidence.v1.schema.json).
+It binds reviewed source `03d9e436a5b4c8c73560e10d6d82476d3533f346`, generator
+and generated configuration/bundle hashes, official CLI 0.90.0, Docker 28.4.0 and
+the separately hashed local consumer overlay. Both generated architecture
+configurations and that overlay passed official schema validation.
+
+Actual Linux AMD64 CLI interpretation, generated build/start, non-root workspace
+smoke, installed package/lock verification, same-container reopen and a new
+container after identical-configuration recreation passed. The original emitted
+JSON and source clone stayed unchanged; owned containers were cleaned. The
+overlay used equivalent absolute context/recipe paths, optional CA transport and
+a read-only qualification-input bind, preserving the emitted build arguments.
+
+The same canonical `task check` passed all 109 tests in that reviewed container
+snapshot. Explicit disposable prerequisites were Task 3.53.1 and signed-snapshot
+Python/Fish/ShellCheck packages; they are not installed base capabilities. The
+verified unreleased Mantle source passed 24 actual Bash/Zsh/Fish activation,
+status and recovery cases in temporary homes. The later source-binding receipt
+guard is a separate local check, preserving the observed snapshot's test count.
+
+Three harness environment attempts failed before successful replay: sudo stripped
+the proxy; restrictive staging permissions blocked apt's CA read; direct sudo
+to the apt sandbox user required a password. Corrected scoped proxy preservation,
+public-input permissions and root-runuser preflight required no generator, lock
+or image input change. No TLS verification was disabled.
+
 Full #10 remains open for reviewed Feature/template distribution, Nix/workstation
 dry-run/uninstall adapters and broad same-manifest conformance. Return to #39
 for actual VS Code, Codespaces, DevPod and sibling-consumer proof. Native

@@ -1,0 +1,207 @@
+{
+  "schema_version": "1.0.0",
+  "contract": "realm.devcontainer-generated-evidence/v1",
+  "state": "limited",
+  "scope": "generated-base/local-linux-amd64",
+  "observed_at": "2026-10-30T19:43:29+00:00",
+  "source": {
+    "qualified_revision": "03d9e436a5b4c8c73560e10d6d82476d3533f346",
+    "generator_sha256": "d074299f13b5a66737c147f79521c85fdf2b764e450306f6c3c8d77c60830748",
+    "bundle_manifest_path": "dist/devcontainers/base-linux-amd64/projection.v1.json",
+    "bundle_manifest_sha256": "7cb55299a9c54089ef61e68359242f1a38f440bc1e4b28c6452c85ddf7908f30",
+    "generated_configuration_sha256": "de6c2ce8cd21ff5fdef0ceda1a356b9bf72940f8b91548e719da193b07c0c169",
+    "resolved_manifest_sha256": "78852eff7b9056f1eb9e41221b67c62227d7e56dad8fa78e1008ca7bc1163bc6",
+    "source_identity": "sha256:d7d673fb20c1d2be54faab4ceaa80d4c0b69ef359f4499e3d35d10ad618e25a6",
+    "recipe_sha256": "3f33b7b838ad9c1c12ae5b27facec3d371842c93a764acb2c560a7ee9c10e6f6",
+    "selected_lock_sha256": "515bd4e107ef6965a3b50c2c0c0caac8fa35461cdbf37aa6407471d42094c1e8",
+    "official_schema_sha256": "a0883c0405ff433db188849d458fb20b9c0d73e0ba1a6e44c1d83f3b485408dd"
+  },
+  "consumer_overlay": {
+    "configuration_sha256": "cdf0352b41c027d529c485b10205bba7b388ace518d89346fe59370f7e491a38",
+    "changes": [
+      "absolute-equivalent-build-paths",
+      "explicit-buildkit-ca-secret",
+      "read-only-qualification-input-bind"
+    ],
+    "generated_source_unchanged": true
+  },
+  "tools": {
+    "cli": {
+      "version": "0.90.0",
+      "source_revision": "d807cb27c195b6bc0e89d893fc20f44a30bf27ee",
+      "package_tarball_sha256": "b3d40fec9d274a303a29ea91a24852887cf287701bc8d340bfc1cf970542495a",
+      "package_signature_provenance": "not-verified"
+    },
+    "docker": {
+      "version": "28.4.0",
+      "platform": "linux/amd64",
+      "image_config_id": "sha256:4f22baca07412bad09a04dbe35c2c05b1597f596834aaee5f6ed329e5de2c00c",
+      "published": false
+    }
+  },
+  "attempt_history": [
+    {
+      "number": 1,
+      "result": "environment-failed",
+      "stage": "qualification-tool-provisioning",
+      "reason": "sudo dropped the inherited proxy after generated build/start and base checks had passed.",
+      "correction": "Preserve only the six inherited proxy variables for explicit provisioning.",
+      "same_generated_source": true
+    },
+    {
+      "number": 2,
+      "result": "environment-failed",
+      "stage": "qualification-tool-provisioning",
+      "reason": "The apt sandbox could not read the public CA under the staging directory restrictive umask.",
+      "correction": "Make only owned public qualification inputs readable and add an apt-user readability preflight.",
+      "same_generated_source": true
+    },
+    {
+      "number": 3,
+      "result": "environment-failed",
+      "stage": "qualification-tool-preflight",
+      "reason": "Direct sudo to the apt sandbox user required a password in this image.",
+      "correction": "Use the permitted noninteractive root-runuser readability preflight.",
+      "same_generated_source": true
+    },
+    {
+      "number": 4,
+      "result": "passed",
+      "stage": "complete-local-canary",
+      "reason": "The unchanged reviewed generated source and consumer configuration passed all recorded local checks.",
+      "correction": null,
+      "same_generated_source": true
+    }
+  ],
+  "observations": {
+    "official_schema": {
+      "result": "passed",
+      "details": "Both generated architecture configurations and the consumer overlay passed the exact official Draft201909 schema with registered formats.",
+      "checks": 3
+    },
+    "generated_cli_interpretation": {
+      "result": "passed",
+      "details": "Official CLI interpreted the original emitted configuration before the separately identified local consumer overlay.",
+      "checks": 1
+    },
+    "generated_build": {
+      "result": "passed",
+      "details": "CLI built the generated AMD64 recipe with exact emitted arguments and source-input revision label; all nine recipe inputs match shared reviewed source.",
+      "checks": 1
+    },
+    "container_start": {
+      "result": "passed",
+      "details": "A local container started from the generated build. The recorded identifier is a local image configuration ID, not a published OCI digest.",
+      "checks": 1
+    },
+    "base_package_verification": {
+      "result": "passed",
+      "details": "Installed package/lock/provenance verification passed before qualification tools and after apt cache/list cleanup.",
+      "checks": 2
+    },
+    "nonroot_workspace_exec": {
+      "result": "passed",
+      "details": "vscode stayed non-root; workspace files, canonical smoke and absence of build CA/config paths passed initially, after reopen and after recreation.",
+      "checks": 3
+    },
+    "task_workflow": {
+      "result": "passed",
+      "details": "The canonical task check passed all 109 tests and offline gates at the reviewed source, using explicit disposable prerequisites.",
+      "checks": 109
+    },
+    "mantle_source_canary": {
+      "result": "passed",
+      "details": "Verified unreleased source passed actual Bash/Zsh/Fish copy-install, hook/CI/noninteractive, status23/64 and recovery controls in temporary homes; no TTY.",
+      "checks": 24
+    },
+    "reopen_existing": {
+      "result": "passed",
+      "details": "Identical configuration with expect-existing-container reused the same container; smoke repeated.",
+      "checks": 1
+    },
+    "recreate_same_configuration": {
+      "result": "passed",
+      "details": "Only the uniquely owned container was removed; identical configuration created another container and repeated smoke. This is not a no-cache rebuild.",
+      "checks": 1
+    },
+    "owned_cleanup": {
+      "result": "passed",
+      "details": "Generated JSON and clone stayed unchanged; only containers carrying the unique invocation label were removed.",
+      "checks": 1
+    }
+  },
+  "qualification_overlay": {
+    "role": "disposable-qualification-inputs",
+    "package_scope": "direct-qualification-roots-not-complete-inventory",
+    "packages": [
+      {
+        "name": "fish",
+        "version": "4.0.2-1",
+        "architecture": "amd64"
+      },
+      {
+        "name": "python3",
+        "version": "3.13.5-1",
+        "architecture": "amd64"
+      },
+      {
+        "name": "shellcheck",
+        "version": "0.10.0-1",
+        "architecture": "amd64"
+      }
+    ],
+    "task": {
+      "version": "3.53.1",
+      "binary_sha256": "48fc3727244d39e0fe04f99c512d0a6eaabf12be376828d96ad1545054523aeb"
+    },
+    "mantle": {
+      "source_revision": "0f54fa6e100c5b86af64aa383e41eed8c64e363a",
+      "archive_sha256": "9461d47e66e274e6bdaeb04b77eb069a82d5e5a528139e765211c01c477449ca",
+      "released_integration": false
+    },
+    "installed_base_capability_claim": false
+  },
+  "commands": [
+    "Sanitized actual templates: variables denote the disposable clone, original generated config, separate consumer overlay, local Docker selector wrapper and unique owned label.",
+    "devcontainer read-configuration --workspace-folder \"$SOURCE\" --config \"$GENERATED_CONFIG\" --docker-path \"$LOCAL_DOCKER_WRAPPER\" --include-merged-configuration --oci-auth-hardening",
+    "devcontainer up --workspace-folder \"$SOURCE\" --override-config \"$CONSUMER_OVERLAY\" --docker-path \"$LOCAL_DOCKER_WRAPPER\" --mount-workspace-git-root false --id-label \"$OWNED_LABEL\" --default-user-env-probe none --update-remote-user-uid-default never --skip-post-create --skip-post-attach --oci-auth-hardening --include-configuration",
+    "devcontainer exec with the same selectors ran non-root identity, workspace and smoke checks and sudo --non-interactive /usr/local/libexec/realm/verify-apt-packages.",
+    "Preflight: sudo --non-interactive runuser --user _apt -- test -r /realm-qualification/ca-bundle.pem; install python3=3.13.5-1 fish=4.0.2-1 shellcheck=0.10.0-1 from the existing signed snapshot with no-remove/no-upgrade.",
+    "devcontainer exec with the same selectors ran bash --noprofile --norc -c 'export PATH=\"/realm-qualification/bin:$PATH\"; task check'",
+    "devcontainer exec with the same selectors ran python3 tools/realm_mantle.py canary --archive /realm-qualification/mantle-source.tar.gz",
+    "Clean apt caches/lists and reverify installed roots; repeat identical up with --expect-existing-container and smoke; remove only the owned container, repeat identical up/smoke, then clean unique invocation-label containers."
+  ],
+  "cleanup": {
+    "generated_configuration_unchanged": true,
+    "owned_containers_removed": true,
+    "transport_secret_not_baked": true
+  },
+  "unproven": [
+    "arm64-runtime",
+    "features",
+    "forwarded-ports",
+    "gpu",
+    "lifecycle",
+    "nix-adapter",
+    "workstation-adapter",
+    "released-mantle",
+    "vscode",
+    "codespaces",
+    "devpod",
+    "sibling-adoption",
+    "signatures-provenance",
+    "registry-publication",
+    "hosted-qualification",
+    "dockerfile-no-cache-rebuild"
+  ],
+  "limitations": [
+    "Actual generated local Linux AMD64 proof; native ARM64 and actual IDE/cloud hosts remain unqualified.",
+    "Execution used a separately hashed consumer overlay: equivalent absolute context/recipe paths, optional CA secret transport and a read-only qualification-input bind. Unchanged emitted JSON has a separate digest.",
+    "Task and signed-snapshot Python/Fish/ShellCheck packages are disposable test inputs, not capabilities of the built thirteen-root base. Direct package roots are not a complete added-dependency inventory.",
+    "Mantle evidence is checksum-pinned unreleased source in temporary homes, not published integration, signed authentication or login-shell substitution.",
+    "Source identity, local image configuration ID and authenticated published OCI digest are distinct. No registry digest, signature or publication was produced.",
+    "Identical-configuration recreation and cached build inputs do not establish a no-cache Dockerfile/Codespaces rebuild.",
+    "The offline generator does not consume this receipt as authentication. Its observed runtime snapshot passed 109 tests; the later receipt-binding guard runs separately.",
+    "Three qualification-harness environment failures preceded success; no generator, package-lock or image input fix was required for them."
+  ]
+}

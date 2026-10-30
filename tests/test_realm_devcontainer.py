@@ -325,6 +325,61 @@ class RealmDevcontainerTests(unittest.TestCase):
                 )
             )
 
+    def test_limited_runtime_receipt_is_bound_to_generated_source(self) -> None:
+        proof = json.loads(
+            (ROOT / "docs/evidence/devcontainer-generated-base.v1.json").read_text()
+        )
+        bundle = ROOT / "dist/devcontainers/base-linux-amd64"
+        manifest = json.loads((bundle / "projection.v1.json").read_text())
+        paths = {
+            "generator_sha256": ROOT / "tools/realm_devcontainer.py",
+            "bundle_manifest_sha256": bundle / "projection.v1.json",
+            "generated_configuration_sha256": bundle
+            / ".devcontainer/devcontainer.json",
+            "resolved_manifest_sha256": bundle / "resolved-profile.v1.json",
+            "recipe_sha256": bundle / "images/base/Dockerfile",
+            "selected_lock_sha256": bundle
+            / "images/base/packages/locks/debian-trixie-amd64.lock.json",
+            "official_schema_sha256": ROOT
+            / "vendor/devcontainers/devContainer.base.schema.json",
+        }
+        for field, path in paths.items():
+            self.assertEqual(
+                proof["source"][field],
+                hashlib.sha256(path.read_bytes()).hexdigest(),
+                field,
+            )
+        self.assertEqual(
+            proof["source"]["source_identity"], manifest["source_identity"]
+        )
+        self.assertEqual(proof["state"], "limited")
+        self.assertEqual(proof["scope"], "generated-base/local-linux-amd64")
+        self.assertFalse(proof["tools"]["docker"]["published"])
+        self.assertFalse(
+            proof["qualification_overlay"]["installed_base_capability_claim"]
+        )
+        self.assertFalse(
+            proof["qualification_overlay"]["mantle"]["released_integration"]
+        )
+        self.assertNotEqual(
+            proof["consumer_overlay"]["configuration_sha256"],
+            proof["source"]["generated_configuration_sha256"],
+        )
+        self.assertTrue(
+            {
+                "arm64-runtime",
+                "features",
+                "nix-adapter",
+                "workstation-adapter",
+                "released-mantle",
+                "vscode",
+                "codespaces",
+                "registry-publication",
+            }.issubset(proof["unproven"])
+        )
+        self.assertEqual(manifest["status"], "generated-source")
+        self.assertFalse(manifest["published"])
+
     def test_clean_private_umask_keeps_git_executable_roles(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             output = Path(temporary) / "bundle"

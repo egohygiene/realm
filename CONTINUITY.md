@@ -2,69 +2,74 @@
 
 ## Current checkpoint
 
-Observed 2026-10-30. This repository-owned prose handoff records context, not
-permission or machine-contract adoption. Live state and canonical sources
-outrank it.
+Observed 2026-10-30. This repository-owned prose handoff is context, not permission
+or machine-contract adoption. Live state and canonical sources outrank it.
 
-- Objective: review the first generated base Dev Container slice for [#10](https://github.com/egohygiene/realm/issues/10).
+- Objective: review the bounded generated base Dev Container candidate for [#10](https://github.com/egohygiene/realm/issues/10).
 - Independent base: main `0ebdc4d3562a0af0f806876c5dd81d60e79f9e27`.
-- Candidate: `feat/10-devcontainer-projection`, draft [PR #57](https://github.com/egohygiene/realm/pull/57); independent-review repair checkpoint. The PR records its exact pushed head.
-- Parallel installed-image evidence is draft [PR #58](https://github.com/egohygiene/realm/pull/58), issue #7; #17 owns the manual release adapter. Reconcile Taskfile/README/continuity semantically.
+- Candidate: `feat/10-devcontainer-projection`, draft [PR #57](https://github.com/egohygiene/realm/pull/57); its description records the final pushed head/checkpoints.
+- Runtime/source qualification pin: `03d9e436a5b4c8c73560e10d6d82476d3533f346`; generator SHA-256 `d074299f13b5a66737c147f79521c85fdf2b764e450306f6c3c8d77c60830748` remains unchanged by receipt/handoff additions.
+- Parallel #7/[PR #58](https://github.com/egohygiene/realm/pull/58) owns installed-image evidence; #17 owns the manual release adapter. Reconcile shared Taskfile/README/continuity by live evidence.
 
-## Material changes and source ownership
+## Material changes and ownership
 
-`tools/realm_devcontainer.py` emits faithful base AMD64/ARM64 bundles under
-`dist/devcontainers`, using the unchanged resolved-profile v1 and existing
-resolver/configuration/lock validation. Each bundle carries exact Realm-owned
-recipe/scripts/selected lock/canonical inputs, resolved JSON, relative-path
-configuration and a closed source-bundle receipt. It rejects unsupported intent
-rather than dropping artifacts, language runtimes, services or privilege.
+`tools/realm_devcontainer.py` emits relocatable base AMD64/ARM64 source bundles
+from the existing resolver, configuration and lock contracts. Each carries the
+exact Realm-owned recipe/scripts/selected lock/canonical inputs/license, unchanged
+resolved-profile v1 JSON, relative-path configuration and a closed source receipt.
+Unsupported artifact/language/service intent fails rather than disappearing.
 
-The source receipt binds actual generator/resolver/validator bytes and input/file
-hashes; no time or machine path enters identity. Input and output mode checks
-follow Git's owner-executable role; special mode bits reject. Inventory and bytes
-are checked exactly, while host read/write/group permissions need runtime proof. Bounded
-strict JSON rejects duplicate/non-finite fields. Source/destination parents are
-opened without following symlinks, special files reject, and rendering exclusively
-creates a new directory. Interrupted new output is detectable, not auto-deleted.
-`check` writes nothing, contacts no host and executes no lifecycle/input commands.
-Source enumeration stops at 128 profile-directory entries and eight MiB of
-aggregate canonical inputs, including non-emitted profiles. Each input is at
-most one MiB. Output traversal/error collection stops at 64 members.
+Bounded strict JSON rejects duplicates/non-finite data; source reads cap individual
+files at one MiB, all canonical inputs at eight MiB and profile-directory entries
+at 128. Output traversal/errors cap at 64 members. Non-following handles reject
+symlinks/special files; rendering exclusively creates new output. Read-only checks
+compare exact inventory/bytes and Git owner-executable roles, rejecting special
+mode bits. Host read/write/group permissions remain separate runtime concerns.
 
-Shared optional BuildKit CA transport from #7 commit
+The shared optional CA transport patch from #7 source
 `d6f3604d0f787cc8a2b6c97d70bd3122f81a8203` is cherry-picked as
-`5130152b6063b1f7affbb485f730307735970333`. The exact same Dockerfile is copied
-into both generated bundles; package locks, image/frontend pins and package
-intent are unchanged. A local consumer supplies the optional secret explicitly;
-it is not copied into layers or silently embedded in generated JSON.
+`5130152b6063b1f7affbb485f730307735970333`; both bundles copy the exact recipe.
+Existing package locks, package intent and frontend/base-image pins are preserved.
+The source identity and local image configuration ID are not a Git commit or an
+authenticated published OCI digest.
 
-## Actual checks and limits
+## Actual validation and independent review
 
-- Original base `task check`: 97 tests and offline gates passed.
-- Stage-one generation regression failed as expected in both architecture subcases because the emitter was absent.
-- Implementation focused suite passed nine methods and `task check` passed 106 tests. The review repair passes all twelve focused methods and all 109 Task tests/offline gates, adding aggregate/entry-budget and restrictive-checkout/executable-role controls.
-- An initial Task invocation correctly stopped because ShellCheck was absent from its PATH; the existing pinned tool setup passed. Ruff check/format and whitespace checks pass on the repaired source.
-- Ruff check/format, Python 3.9 grammar, exact shared recipe equality, own Draft202012 schema/receipt validation and both generated configurations against the exact official Draft201909 base schema passed.
-- Review reproduced a valid 12-MiB non-emitted profile graph bypassing the output-only cap and a fresh restrictive-umask Git checkout failing literal output permission checks. Repairs add aggregate/enumeration budgets and compare owner-executable roles on both sides, with unchanged clean-checkout and actual role-drift controls. No canonical file mode is changed; independent replay of this repaired head is next.
+- The original base passed 97 tests; the generation regression initially failed as expected in both architecture subcases because no emitter existed.
+- Independent review reproduced and repaired two P2 defects: a 12,299,076-byte non-emitted graph bypassed the output-only cap, and clean restrictive-umask checkout modes falsely failed literal permission comparison. Aggregate/enumeration caps and Git owner-executable semantics now reject real drift while retaining clean controls.
+- Reviewed source passed all twelve focused methods and all 109 Task tests/offline gates. A fresh restrictive-umask independent checkout passed the same suite plus 22 additional schema/grammar/IO controls. The exact over-budget reproduction now rejects before output. No source blocker remained.
+- Final local `task check` passed all 110 tests, including the added receipt/source-binding guard, and every offline gate. Ruff check/format, Python 3.9 grammar, whitespace, own closed schemas and pinned official Draft201909 configuration validation passed. Initial Ruff/import and ShellCheck PATH setup failures were corrected and recorded in PR #57.
+- The typed limited receipt `docs/evidence/devcontainer-generated-base.v1.json` binds the source/configuration/bundle/overlay hashes, official CLI 0.90.0 and Docker 28.4.0. Both generated architecture configurations and the consumer overlay passed official schema validation.
+- Actual generated Linux AMD64 build/start, original emitted CLI interpretation, non-root workspace/runtime smoke, installed-lock verification, same-container reopen and different-container recreation passed. Original generated JSON and clone stayed unchanged; uniquely owned containers were cleaned.
+- Actual canonical Task workflow passed all 109 tests inside the reviewed container snapshot. The checksum-pinned unreleased Mantle source passed 24 actual Bash/Zsh/Fish install/activation/status/recovery cases in temporary homes. The later receipt-only guard is a separate local check, not an invented 110-test container result.
 
-No generated runtime or host proof is claimed yet. Next: independently review the
-complete source, then qualify official CLI interpretation and actual native local
-start/exec/reopen/recreate using the exact generated bundle. Any private-CA or
-build-metadata consumer overlay and disposable Task/Mantle tooling must have
-separate identities and limitations, not masquerade as unchanged generated JSON
-or installed base capabilities.
+## Qualification overlays and limits
 
-## Remaining acceptance and preservation
+Execution used a separately hashed local consumer configuration: equivalent
+absolute recipe/context paths, optional BuildKit CA transport and a read-only
+qualification-input bind, retaining emitted build arguments. Explicit Task 3.53.1
+and exact signed-snapshot Python/Fish/ShellCheck packages were disposable test
+inputs, not capabilities of the thirteen-root built base. Direct tool roots are
+not a complete dependency inventory. CLI package signatures/provenance remain
+unverified; Mantle is unreleased source, not authenticated release integration.
 
-Full #10 remains open for reviewed Feature/template distribution, Nix/workstation
-dry-run/uninstall adapters and broad same-manifest conformance. Full #8 retains
-published verified Mantle; #39 retains actual supported-host/sibling proof. No
-ARM64 runtime, IDE/cloud, release authentication or hosted proof is inferred from
-source generation or schema checks. Hosted Actions are deferred; every checkpoint
-uses `[skip ci]`. No merge, tag, release, signing, publication, dispatch, paid
-resource or manual issue closure is performed.
+Three harness environment failures preceded success: sudo proxy stripping,
+restrictive staging permissions blocking apt's CA read, and password-requiring
+direct sudo to the apt user. Scoped proxy preservation, readable owned public
+inputs and root-runuser preflight fixed these without generator/lock/image input
+changes or disabled TLS. Raw logs and machine paths remain private.
 
-Preserve historical audit report/evidence, creative assets and canonical profile
-identities. Public records exclude credentials, private paths, environment values
-and raw logs. Refresh this snapshot after final validation and review.
+## Next action, preservation and acceptance
+
+Review PR #57's source and limited metadata, then validate the combined batch
+with #7/#17 and reconcile operational handoffs. Keep full #10 open for reviewed
+Feature/template distribution, Nix/workstation dry-run/uninstall adapters and
+broader same-manifest conformance. #8 retains published verified Mantle and #39
+actual supported-host/sibling proof. No native ARM64, IDE/cloud, lifecycle,
+forwarding/GPU, no-cache rebuild, signatures or registry publication is inferred.
+Hosted Actions remain deferred and all new commits include `[skip ci]`.
+
+No merge, release, tag, signing, registry write, workflow dispatch, bot review,
+paid resource or manual issue closure is performed. Preserve historical audit
+bytes, creative assets and canonical profile identities. Public evidence excludes
+credentials, private paths, environment values and raw logs.
