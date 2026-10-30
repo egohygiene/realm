@@ -1,0 +1,779 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.egohygiene.io/realm/image-evidence.v1.schema.json",
+  "title": "Realm limited local installed-image evidence v1",
+  "description": "Closed local observation receipt; config and scanner manifest identities are not registry publication, crypto authentication or release readiness.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "contract",
+    "state",
+    "release_ready",
+    "observed_at",
+    "source",
+    "subject",
+    "producer",
+    "tools",
+    "database",
+    "artifacts",
+    "inventory",
+    "vulnerabilities",
+    "verification",
+    "authentication",
+    "limitations"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "contract": {
+      "const": "realm.image-evidence/v1"
+    },
+    "state": {
+      "const": "limited"
+    },
+    "release_ready": {
+      "const": false
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time",
+      "maxLength": 64
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "repository",
+        "revision",
+        "inputs"
+      ],
+      "properties": {
+        "repository": {
+          "const": "egohygiene/realm"
+        },
+        "revision": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{40}$"
+        },
+        "inputs": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "images/base/Dockerfile",
+            "images/base/scripts/install-apt-packages",
+            "images/base/scripts/verify-apt-packages",
+            "images/base/scripts/realm-packages",
+            "images/base/tests/smoke.sh",
+            "catalog/capabilities.json",
+            "config/debian-trixie.json",
+            "profiles/base.profile.json"
+          ],
+          "minProperties": 9,
+          "maxProperties": 9,
+          "properties": {
+            "images/base/Dockerfile": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "images/base/scripts/install-apt-packages": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "images/base/scripts/verify-apt-packages": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "images/base/scripts/realm-packages": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "images/base/tests/smoke.sh": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "catalog/capabilities.json": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "config/debian-trixie.json": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "profiles/base.profile.json": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "images/base/packages/locks/debian-trixie-amd64.lock.json": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "images/base/packages/locks/debian-trixie-arm64.lock.json": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          }
+        }
+      }
+    },
+    "subject": {
+      "$ref": "#/$defs/subject"
+    },
+    "producer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "version",
+        "sha256"
+      ],
+      "properties": {
+        "name": {
+          "const": "realm-image-evidence"
+        },
+        "version": {
+          "const": "1.0.0"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      }
+    },
+    "tools": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "syft",
+        "grype"
+      ],
+      "properties": {
+        "syft": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "version",
+            "source_revision",
+            "archive_sha256",
+            "executable_sha256",
+            "signature_verification"
+          ],
+          "properties": {
+            "version": {
+              "const": "1.55.0"
+            },
+            "source_revision": {
+              "const": "f15c3343e29dfb20cf6d82c820e7090b49808c96"
+            },
+            "archive_sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "executable_sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "signature_verification": {
+              "const": "not-performed"
+            }
+          }
+        },
+        "grype": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "version",
+            "source_revision",
+            "archive_sha256",
+            "executable_sha256",
+            "signature_verification"
+          ],
+          "properties": {
+            "version": {
+              "const": "0.121.0"
+            },
+            "source_revision": {
+              "const": "afe2742527d98d822da06c9f32eed86fe3d193e0"
+            },
+            "archive_sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "executable_sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "signature_verification": {
+              "const": "not-performed"
+            }
+          }
+        }
+      }
+    },
+    "database": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "built",
+        "source_url",
+        "archive_sha256",
+        "database_sha256",
+        "reported_valid",
+        "maximum_age_hours",
+        "age_seconds"
+      ],
+      "properties": {
+        "schema_version": {
+          "type": "string",
+          "pattern": "^v6\\.[0-9]+\\.[0-9]+$"
+        },
+        "built": {
+          "type": "string",
+          "format": "date-time",
+          "maxLength": 64
+        },
+        "source_url": {
+          "type": "string",
+          "pattern": "^https://grype\\.anchore\\.io/databases/v6/[^ ]+$",
+          "maxLength": 1024
+        },
+        "archive_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "database_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "reported_valid": {
+          "const": true
+        },
+        "maximum_age_hours": {
+          "const": 120
+        },
+        "age_seconds": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 432000
+        }
+      }
+    },
+    "artifacts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "identity",
+        "syft",
+        "sbom",
+        "vulnerabilities",
+        "apt_lock",
+        "installed_packages",
+        "build_metadata",
+        "verification"
+      ],
+      "properties": {
+        "identity": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "path",
+            "sha256",
+            "bytes",
+            "format",
+            "raw_sha256"
+          ],
+          "properties": {
+            "path": {
+              "const": "identity.json"
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "bytes": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 134217728
+            },
+            "format": {
+              "const": "realm-local-image-identity/v1"
+            },
+            "raw_sha256": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          }
+        },
+        "syft": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "path",
+            "sha256",
+            "bytes",
+            "format",
+            "raw_sha256"
+          ],
+          "properties": {
+            "path": {
+              "const": "syft.json"
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "bytes": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 134217728
+            },
+            "format": {
+              "const": "syft-json/redacted-runtime-config"
+            },
+            "raw_sha256": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          }
+        },
+        "sbom": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "path",
+            "sha256",
+            "bytes",
+            "format",
+            "raw_sha256"
+          ],
+          "properties": {
+            "path": {
+              "const": "sbom.spdx.json"
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "bytes": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 134217728
+            },
+            "format": {
+              "const": "SPDX-2.3/installed-image"
+            },
+            "raw_sha256": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          }
+        },
+        "vulnerabilities": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "path",
+            "sha256",
+            "bytes",
+            "format",
+            "raw_sha256"
+          ],
+          "properties": {
+            "path": {
+              "const": "vulnerabilities.grype.json"
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "bytes": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 134217728
+            },
+            "format": {
+              "const": "grype-json/redacted-runtime-config"
+            },
+            "raw_sha256": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          }
+        },
+        "apt_lock": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "path",
+            "sha256",
+            "bytes",
+            "format",
+            "raw_sha256"
+          ],
+          "properties": {
+            "path": {
+              "const": "apt-lock.json"
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "bytes": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 134217728
+            },
+            "format": {
+              "const": "realm-apt-lock/v1"
+            },
+            "raw_sha256": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          }
+        },
+        "installed_packages": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "path",
+            "sha256",
+            "bytes",
+            "format",
+            "raw_sha256"
+          ],
+          "properties": {
+            "path": {
+              "const": "apt-installed.tsv"
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "bytes": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 134217728
+            },
+            "format": {
+              "const": "realm-installed-packages/tsv"
+            },
+            "raw_sha256": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          }
+        },
+        "build_metadata": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "path",
+            "sha256",
+            "bytes",
+            "format",
+            "raw_sha256"
+          ],
+          "properties": {
+            "path": {
+              "const": "build-metadata.json"
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "bytes": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 134217728
+            },
+            "format": {
+              "const": "realm-build-metadata/v1"
+            },
+            "raw_sha256": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          }
+        },
+        "verification": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "path",
+            "sha256",
+            "bytes",
+            "format",
+            "raw_sha256"
+          ],
+          "properties": {
+            "path": {
+              "const": "verification.json"
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "bytes": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 134217728
+            },
+            "format": {
+              "const": "realm-image-verification/v1"
+            },
+            "raw_sha256": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          }
+        }
+      }
+    },
+    "inventory": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "syft_packages",
+        "spdx_packages",
+        "locked_packages"
+      ],
+      "properties": {
+        "syft_packages": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10000000
+        },
+        "spdx_packages": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10000000
+        },
+        "locked_packages": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10000000
+        }
+      }
+    },
+    "vulnerabilities": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "matches",
+        "ignored_matches",
+        "severity_counts"
+      ],
+      "properties": {
+        "status": {
+          "const": "reported"
+        },
+        "matches": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10000000
+        },
+        "ignored_matches": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10000000
+        },
+        "severity_counts": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "Unknown",
+            "Negligible",
+            "Low",
+            "Medium",
+            "High",
+            "Critical"
+          ],
+          "properties": {
+            "Unknown": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 10000000
+            },
+            "Negligible": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 10000000
+            },
+            "Low": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 10000000
+            },
+            "Medium": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 10000000
+            },
+            "High": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 10000000
+            },
+            "Critical": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 10000000
+            }
+          }
+        }
+      }
+    },
+    "verification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "installed_lock",
+        "nonroot_smoke"
+      ],
+      "properties": {
+        "installed_lock": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "status",
+            "exit_code"
+          ],
+          "properties": {
+            "status": {
+              "const": "passed"
+            },
+            "exit_code": {
+              "const": 0
+            }
+          }
+        },
+        "nonroot_smoke": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "status",
+            "exit_code"
+          ],
+          "properties": {
+            "status": {
+              "const": "passed"
+            },
+            "exit_code": {
+              "const": 0
+            }
+          }
+        }
+      }
+    },
+    "authentication": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "image_signatures",
+        "provenance",
+        "registry_publication"
+      ],
+      "properties": {
+        "image_signatures": {
+          "const": "not-performed"
+        },
+        "provenance": {
+          "const": "not-performed"
+        },
+        "registry_publication": {
+          "const": "not-performed"
+        }
+      }
+    },
+    "limitations": {
+      "type": "array",
+      "uniqueItems": true,
+      "minItems": 5,
+      "maxItems": 5,
+      "items": {
+        "enum": [
+          "other-native-architectures",
+          "registry-publication",
+          "image-signatures",
+          "provenance-authentication",
+          "reproducible-multiarch-build"
+        ]
+      }
+    }
+  },
+  "$defs": {
+    "subject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "identity_kind",
+        "local_config_digest",
+        "scanner_manifest_digest",
+        "platform",
+        "execution",
+        "registry_reference",
+        "registry_manifest_digest",
+        "index_digest"
+      ],
+      "properties": {
+        "identity_kind": {
+          "const": "local-config"
+        },
+        "local_config_digest": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        },
+        "scanner_manifest_digest": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        },
+        "platform": {
+          "enum": [
+            "linux/amd64",
+            "linux/arm64"
+          ]
+        },
+        "execution": {
+          "const": "native"
+        },
+        "registry_reference": {
+          "type": "null"
+        },
+        "registry_manifest_digest": {
+          "type": "null"
+        },
+        "index_digest": {
+          "type": "null"
+        }
+      }
+    }
+  }
+}

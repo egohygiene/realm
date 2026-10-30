@@ -2,74 +2,63 @@
 
 ## Current checkpoint
 
-Observed 2026-10-30. This repository-owned prose handoff is context, not permission
-or machine-contract adoption. Live state and canonical sources outrank it.
+Observed 2026-10-30. This repository-owned prose handoff records context, not
+permission or a new machine-enforced continuity contract. Live instructions,
+canonical source and verified work-tracker state outrank this snapshot.
 
-- Objective: review the bounded generated base Dev Container candidate for [#10](https://github.com/egohygiene/realm/issues/10).
-- Independent base: main `0ebdc4d3562a0af0f806876c5dd81d60e79f9e27`.
-- Candidate: `feat/10-devcontainer-projection`, draft [PR #57](https://github.com/egohygiene/realm/pull/57); its description records the final pushed head/checkpoints.
-- Runtime/source qualification pin: `03d9e436a5b4c8c73560e10d6d82476d3533f346`; generator SHA-256 `d074299f13b5a66737c147f79521c85fdf2b764e450306f6c3c8d77c60830748` remains unchanged by receipt/handoff additions.
-- Parallel #7/[PR #58](https://github.com/egohygiene/realm/pull/58) owns installed-image evidence; #17 owns the manual release adapter. Reconcile shared Taskfile/README/continuity by live evidence.
+- Main includes generated Dev Container [PR #57](https://github.com/egohygiene/realm/pull/57), merged at `3154e80e2a3903555f791dc3c80e33af6100d126` from reviewed head `d9030a6aa33f12746af77d57321888d340e16e3f`.
+- Installed-image evidence [PR #58](https://github.com/egohygiene/realm/pull/58), branch `feat/7-image-evidence`, is reconciled with that main for merge. Reviewed source head: `5042d4d05a9b1e9f31e69a50612abaf6f41bfe53`; its PR records the containing reconciled head.
+- Release preparation [PR #59](https://github.com/egohygiene/realm/pull/59) remains open/draft at `3c5cd1c7a360acef46b9cf273250a2cca403551b`. It targets #58's branch; after #58 merges, retarget it to main before its own reconciliation and merge.
+- Canonical sources: [roadmap #25](https://github.com/egohygiene/realm/issues/25), owning issues #10/#7/#17, docs/devcontainer-projection.md, docs/image-evidence.md, Taskfile.yml and the source-bound receipts below.
 
-## Material changes and ownership
+## Integrated source and ownership
 
-`tools/realm_devcontainer.py` emits relocatable base AMD64/ARM64 source bundles
-from the existing resolver, configuration and lock contracts. Each carries the
-exact Realm-owned recipe/scripts/selected lock/canonical inputs/license, unchanged
-resolved-profile v1 JSON, relative-path configuration and a closed source receipt.
-Unsupported artifact/language/service intent fails rather than disappearing.
+The deterministic base generator preserves resolved-profile v1 and emits faithful
+AMD64/ARM64 local Dev Container bundles from the existing recipe/locks. It bounds
+source graphs and checks exact source bytes plus Git executable roles. Unsupported
+profiles and unsafe/overwriting output reject. The generated receipt records
+source/input/generator hashes; generation does not install other profiles or
+publish Features. The optional caller-reviewed BuildKit CA secret affects only
+build transport and leaves no CA/configuration in the finished layer.
 
-Bounded strict JSON rejects duplicates/non-finite data; source reads cap individual
-files at one MiB, all canonical inputs at eight MiB and profile-directory entries
-at 128. Output traversal/errors cap at 64 members. Non-following handles reject
-symlinks/special files; rendering exclusively creates new output. Read-only checks
-compare exact inventory/bytes and Git owner-executable roles, rejecting special
-mode bits. Host read/write/group permissions remain separate runtime concerns.
+The image-evidence producer accepts an exact local image configuration ID, binds
+selected immutable source inputs and installed locks, and runs pinned Syft/Grype
+with a separately selected fresh database. Its offline verifier re-derives local
+facts from the exact checked artifact bytes. Config IDs, scanner manifests and
+registry index/platform digests have distinct meanings. The local contract keeps
+registry identity null and release readiness false.
 
-The shared optional CA transport patch from #7 source
-`d6f3604d0f787cc8a2b6c97d70bd3122f81a8203` is cherry-picked as
-`5130152b6063b1f7affbb485f730307735970333`; both bundles copy the exact recipe.
-Existing package locks, package intent and frontend/base-image pins are preserved.
-The source identity and local image configuration ID are not a Git commit or an
-authenticated published OCI digest.
+Creation and execution have separate deadlines. A full container ID and exact
+name/nonce/image ownership precede start/attach; cleanup removes only the verified
+ID. Indeterminate creation uses bounded scoped recovery and remains non-success.
+Producer bytes are frozen across capture; an ordinary mid-run edit rejects before
+publishing a final local directory. All findings survive runtime-data redaction.
 
-## Actual validation and independent review
+## Actual qualification
 
-- The original base passed 97 tests; the generation regression initially failed as expected in both architecture subcases because no emitter existed.
-- Independent review reproduced and repaired two P2 defects: a 12,299,076-byte non-emitted graph bypassed the output-only cap, and clean restrictive-umask checkout modes falsely failed literal permission comparison. Aggregate/enumeration caps and Git owner-executable semantics now reject real drift while retaining clean controls.
-- Reviewed source passed all twelve focused methods and all 109 Task tests/offline gates. A fresh restrictive-umask independent checkout passed the same suite plus 22 additional schema/grammar/IO controls. The exact over-budget reproduction now rejects before output. No source blocker remained.
-- Final local `task check` passed all 110 tests, including the added receipt/source-binding guard, and every offline gate. Ruff check/format, Python 3.9 grammar, whitespace, own closed schemas and pinned official Draft201909 configuration validation passed. Initial Ruff/import and ShellCheck PATH setup failures were corrected and recorded in PR #57.
-- The typed limited receipt `docs/evidence/devcontainer-generated-base.v1.json` binds the source/configuration/bundle/overlay hashes, official CLI 0.90.0 and Docker 28.4.0. Both generated architecture configurations and the consumer overlay passed official schema validation.
-- Actual generated Linux AMD64 build/start, original emitted CLI interpretation, non-root workspace/runtime smoke, installed-lock verification, same-container reopen and different-container recreation passed. Original generated JSON and clone stayed unchanged; uniquely owned containers were cleaned.
-- Actual canonical Task workflow passed all 109 tests inside the reviewed container snapshot. The checksum-pinned unreleased Mantle source passed 24 actual Bash/Zsh/Fish install/activation/status/recovery cases in temporary homes. The later receipt-only guard is a separate local check, not an invented 110-test container result.
+- Exact independent #57/#58/#59 source heads previously passed combined `task check`: 162 tests and all offline gates. All three had independent final source/metadata review with no remaining source blocker. Operational handoffs were checked separately.
+- Fresh pre-merge #57 replay passed all 110 tests and offline gates. Its merged main tree equals the reviewed candidate tree. The #58 reconciliation passed all 136 tests and offline gates; its 43 changed source files outside README/Task/handoff match the qualified source bytes and Git roles, the Task/README union is preserved, and 39 original canonical/audit/lock files remain unchanged. PR #58 records the exact reconciled head.
+- The generated configuration passed the exact official schema and CLI interpretation, actual native AMD64 image build/start, installed-lock/default-user smoke, 109 Task tests and 24 real Bash/Zsh/Fish Mantle source cases inside its container. Reopen/recreation and owned-container cleanup passed. Three failed qualification-environment attempts remain recorded. Python/Fish/ShellCheck and pinned Task were explicit disposable qualification inputs, not installed base capabilities.
+- Independent #7 final checks passed 123 Task tests, including 26 focused methods. Actual clean source `d6f3604d0f787cc8a2b6c97d70bd3122f81a8203` built and passed installed-lock/non-root/source/CA-cleanup probes. The actual producer SHA-256 is `6bbeb3b54193f9319f3a45d984929b35f6cf4cb4426988df8ea82a789ebe84d2`.
+- Its actual native image capture, running-before-deadline removal and mid-capture source-edit rejection passed. The closed receipt and official SPDX schema validate; 293 installed packages, 294 SPDX entries and 13 locked roots are bound to the captured subject.
+- Grype retains 1,689 matches and 3,015 ignored matches, including 76 Critical and 412 High. This observation is not a clean-image or exploitability verdict. Snapshot/database hashes and capture-time freshness remain in the evidence.
 
-## Qualification overlays and limits
+Safe records: docs/evidence/devcontainer-generated-base.v1.json and
+docs/evidence/image-local-capture.v1.json. Raw logs and full artifacts remain
+outside public source. The two observed images are distinct local subjects.
 
-Execution used a separately hashed local consumer configuration: equivalent
-absolute recipe/context paths, optional BuildKit CA transport and a read-only
-qualification-input bind, retaining emitted build arguments. Explicit Task 3.53.1
-and exact signed-snapshot Python/Fish/ShellCheck packages were disposable test
-inputs, not capabilities of the thirteen-root built base. Direct tool roots are
-not a complete dependency inventory. CLI package signatures/provenance remain
-unverified; Mantle is unreleased source, not authenticated release integration.
+## Acceptance, preservation and next action
 
-Three harness environment failures preceded success: sudo proxy stripping,
-restrictive staging permissions blocking apt's CA read, and password-requiring
-direct sudo to the apt user. Scoped proxy preservation, readable owned public
-inputs and root-runuser preflight fixed these without generator/lock/image input
-changes or disabled TLS. Raw logs and machine paths remain private.
+Keep #10 open for Features distribution, Nix/workstation adapters and broader
+conformance. Keep #7 open for native ARM64 scanner/build proof, finding
+disposition, compatible producer evidence, cryptographic authentication and
+approved distribution. #8/#39 retain published Mantle and remaining host gates;
+source-only Mantle activation is not a released integration. Hosted Actions
+qualification remains deferred; every new commit uses `[skip ci]`.
 
-## Next action, preservation and acceptance
-
-Review PR #57's source and limited metadata, then validate the combined batch
-with #7/#17 and reconcile operational handoffs. Keep full #10 open for reviewed
-Feature/template distribution, Nix/workstation dry-run/uninstall adapters and
-broader same-manifest conformance. #8 retains published verified Mantle and #39
-actual supported-host/sibling proof. No native ARM64, IDE/cloud, lifecycle,
-forwarding/GPU, no-cache rebuild, signatures or registry publication is inferred.
-Hosted Actions remain deferred and all new commits include `[skip ci]`.
-
-No merge, release, tag, signing, registry write, workflow dispatch, bot review,
-paid resource or manual issue closure is performed. Preserve historical audit
-bytes, creative assets and canonical profile identities. Public evidence excludes
-credentials, private paths, environment values and raw logs.
+Finish #58's checked merge, retarget #59 to resulting main, reconcile its handoff
+and complete the ordered source merge. No further implementation batch is selected.
+Merging source performs no release, tag, workflow dispatch, signing or registry
+publication. Preserve historical audits, creative bytes, canonical profile
+identity and package locks. Keep credentials, private paths, environment values
+and raw logs out of public repository content.

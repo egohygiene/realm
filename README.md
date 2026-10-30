@@ -49,6 +49,8 @@ truth.
   lock design, maintenance workflow, review gates, and limitations.
 - [`images/base/README.md`](images/base/README.md) defines the minimal base image
   boundary and its runtime evidence.
+- [`docs/image-evidence.md`](docs/image-evidence.md) documents explicit installed-image
+  SBOM/vulnerability capture, immutable identity boundaries and local-only proof.
 
 ## Reproducible base image
 
