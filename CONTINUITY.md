@@ -1,75 +1,72 @@
 # Realm release checkpoint
 
 Observed 2026-10-30. This concise prose handoff records context, not authority or
-an adopted machine-enforced continuity contract. Live instructions, source and
-work-tracker evidence outrank this snapshot.
+an adopted machine-enforced continuity contract. Live instructions, canonical
+source and verified work-tracker evidence outrank this snapshot.
 
-## Current objective and dependency
+## Candidate and dependency
 
-Prepare the current-v1 container-image release convention for #17 in draft
+Prepare the current-v1 container-image release convention for #17 in open draft
 [PR #59](https://github.com/egohygiene/realm/pull/59), branch
 `feat/17-container-release`. It targets image-evidence
 [PR #58](https://github.com/egohygiene/realm/pull/58), branch
-`feat/7-image-evidence`, currently incorporated through
-`4106779538ccb82829bbacb73c2ceef8ee91bd8e` from main
-`0ebdc4d3562a0af0f806876c5dd81d60e79f9e27`. The PR records the exact pushed
-implementation head. The actual #7 verifier and its source-freeze/owned-container cleanup delta are
-incorporated in this reconciliation; final reviewed-code
-receipt validation and independent joined review remain pending.
+`feat/7-image-evidence`, incorporated through final reviewed head
+`5042d4d05a9b1e9f31e69a50612abaf6f41bfe53`. Original main is
+`0ebdc4d3562a0af0f806876c5dd81d60e79f9e27`. The PR records the containing final
+pushed head. Predecessor updates use ordinary merges; all checkpoint ancestry
+is preserved. Parallel #10 owns generated Dev Containers.
 
-## Implemented bounded source
+## Bounded implementation and owners
 
-The declaration selects an incubating/advisory, unreleased `container-image`
-profile with one `git-tag` authority and planned delivery channels. Root
-CHANGELOG keeps Unreleased. AGENTS and docs/releasing.md explain the actual
-scope, compatibility, immutable tags/digests, partial-publication recovery,
-rollback and retention. No version/tag or release history is invented.
+The declaration selects an incubating/advisory, unreleased container-image
+profile with one git-tag authority, Unreleased changelog and planned channels.
+AGENTS, Taskfile and docs/releasing.md own the local handoffs, compatibility,
+immutable-digest, rollback, partial-publication and retention guidance.
 
-`tools/realm_release.py` checks the narrow selected Realm profile and exact
-source-locked contract bytes, plans read-only, emits an exclusive review packet
-without applying the changelog patch, and maps verified #7 local evidence into
-checksum-complete portable Relay records. The root SPDX document indexes the
-exact per-platform installed SBOMs; it is not a merged package inventory.
-Verification reconstructs all root records from owner-verified receipts rather
-than trusting checksum-complete arbitrary JSON. Output creation is exclusive
-with cleanup, not atomic visibility; complete-inventory verification is required.
+The stdlib adapter checks this narrow Realm selection and exact contract bytes,
+plans read-only with HEAD separated from working-input checksums, and emits an
+exclusive review packet without applying source edits. It consumes #7's actual
+portable verifier and copies only a complete captured snapshot whose artifact
+hashes/sizes still match the owner-verified receipt. All root records are
+reconstructed from those bytes. The root SPDX document indexes actual platform
+SBOMs, with a bounded namespace policy; it is not a merged package inventory.
 
-The real manual workflow has only read permissions, checks exact current-main
-identity and writes bounded review evidence. The literal Task dispatch names
-that exact workflow. It is a review handoff, not a credentialed publisher.
-Local-only v1 evidence and all results keep release_ready false; requested
-release readiness remains nonzero/unavailable.
+The real manual workflow checks current-main identity with read-only permissions
+and preserves bounded review evidence. Literal Task dispatch names that exact
+workflow. It is a review handoff, not a credentialed publisher. Local-only v1
+records keep release_ready false; requested release readiness is unavailable.
+The typed limited record in docs/evidence/container-release-local.v1.json binds
+exact adapter/image-owner bytes and actual checks. The CLI never imports that
+record as authentication or release authority.
 
-## Actual checks and remaining validation
+## Actual validation and review
 
-- Original unchanged-main `task check`: all 97 tests and offline gates passed.
-- Regression checkpoint `c2579a50579c8bcb50654428cf6163c69f121a4d` is pushed and remote-verified. Its nine methods initially failed as expected (five assertions and ten subcase errors) because the adapter/assets were absent.
-- Current focused `python3 -m unittest discover --start-directory tests --pattern test_realm_release.py --verbose`: all 25 methods passed, including actual-owner fixture roundtrips, rewritten-root/owner contradictions, no-tool initialization traps and deterministic captured-copy mutation. Joined `task check` passed 143 tests before the final namespace controls; complete final-source qualification is still pending. New pure-mapping fixtures test bytes and contradictions only; they are not image-owner or authentication proof.
-- Exact Aether Draft 2020-12 validation of the declaration and own report/schema checks pass. Ruff check/format, Python 3.9 grammar and whitespace pass. Initial Ruff import/check flags and missing-yet-unimplemented functions were repaired; no checks were weakened.
-- Independent review confirmed pinned contracts and identified working-input provenance and lowercase timestamp seams. Plans now separate HEAD from clean/dirty working input checksums, bind the prepared patch to recorded bytes and normalize valid lowercase RFC3339. Focused controls pass. Independent review reproduced a copy-consistency defect after owner verification; the new regression failed before repair. Captured payload bytes now recheck every receipt hash/size and cached receipt/root metadata is decoded without rereading its path. Shared source-input hashes across platform records must agree. Valid escaped JSON receipt serialization is now accepted by decoding the fixed owner receipt path; the new control first failed before repair. The SPDX index requires distinct bounded HTTP(S)/URN namespace syntax and rejects malformed namespaces before output without echoing their values.
-- Actual large prototype image-owner evidence passed owner verification, portable bundle creation and verification; root SPDX index passed the exact official SPDX 2.3 schema. This prototype is attributed to its original producer bytes; final reviewed-code capture is pending. Required release readiness returns nonzero/unavailable.
-- Independent contract inspection confirms vendored bytes and highlights Relay's limited file/checksum boundary. The actual current EgoLint consumer reports advisory rollout with all seven release checks passed and zero release findings. Its aggregate exits 1 with thirteen portability findings, all matching the predecessor baseline; no aggregate clean claim is made. Final reviewed-code #7 bundle qualification, full Task and combined checks remain pending.
+- Final joined `task check`: 149 tests and every declared offline gate passed, including 26 focused release methods. Ruff check/format, Python 3.9 grammar, whitespace, manual-workflow YAML and three embedded Bash syntax checks passed.
+- Exact pinned Aether reference validator and Draft 2020-12 declaration validation passed. Own schemas/reports/limited receipt validate with registered formats; four prohibited evidence-claim controls reject.
+- Actual qualified native AMD64 image evidence at source `d6f3604d0f787cc8a2b6c97d70bd3122f81a8203`, producer SHA-256 `6bbeb3b54193f9319f3a45d984929b35f6cf4cb4426988df8ea82a789ebe84d2`, passed owner verification, bundle creation and portable verification. The complete bundle has 14 files, 13 verified payloads and 74,957,539 bytes. Actual published Relay v1.5.0 container-image mechanics pass. This establishes local joins/checksums, not cryptographic authentication.
+- The actual root SPDX index passes the immutable official SPDX 2.3 schema with registered formats; actual manifest and all result states pass their own schemas. Required release readiness returns exit 2/unavailable. The image's 1,689 matches and 3,015 ignored matches remain visible through owner evidence; no clean-image verdict is claimed.
+- Actual merged EgoLint `f14f7fd3ab0ce9e87c367352fcb3af11a32eda59`, rebuilt binary SHA-256 `993d1139e86169a48c43153fc16f9389c477f2093d90e4d3752db3f7ad73d7dd`, reports advisory release rollout with all seven checks passed/complete, release tool passed and zero release findings. Aggregate exit 1 retains thirteen portability findings, identical in rule/path/message/severity/location to the predecessor baseline. No aggregate clean claim is made.
+- Independent review repaired source-plan provenance, lowercase RFC3339, captured-copy consistency, escaped JSON serialization and namespace syntax/value-leak seams. The captured-copy and escaped-JSON controls failed before their repairs. Authored fixtures and deterministic injection prove their labelled seams; actual scanner/image evidence is recorded separately. Final exact-head review is recorded in the PR.
 
-## Pins, gates and next action
+## Authority, gates and recovery
 
-Current-v1 owner source selections remain Aether
-`8a2a3d08f3aa9da3847bd5277843506ab855192e` (draft) and Hygiene
-`28f9d6c7519d820644572634ba4476614f418d83` (proposed), with no GitHub Releases
-when checked. Published Relay v1.5.0 resolves to
-`1eada5142f7fc7da7862f335589e3b8f5884ffaf`; tag signature verification is
-unavailable. No successor Hygiene #65 authority is adopted.
+Aether `8a2a3d08f3aa9da3847bd5277843506ab855192e` remains a draft source input;
+Hygiene `28f9d6c7519d820644572634ba4476614f418d83` remains proposed. Neither has
+a GitHub Release when checked. Published Relay v1.5.0 resolves to
+`1eada5142f7fc7da7862f335589e3b8f5884ffaf`; tag signature verification is not
+established. No successor Hygiene #65 authority is adopted.
 
-Next: finish the ordinary #58 implementation reconciliation, exercise its final
-reviewed local receipt through bundle creation and portable verification, reject
-spoofed records with clean controls, finish full Task/native/schema checks and
-independent joined review, then push the final checkpoint. Parallel #10 owns generated
-Dev Containers; shared Task/README/handoff need semantic combined reconciliation.
+Next: verify final remote heads and independent review, then inspect the combined
+#10/#7/#17 qualification and review #58 before this stacked candidate. Reconcile
+shared Task/README/continuity semantically; consult the owning issue before any
+further implementation. Full #17 remains open for accepted compatible producer
+evidence, native ARM64, public registry manifest/index identity, verified
+signatures/provenance, the owner registry adapter and explicit publication
+approval. Hosted Actions remain deferred; all new commits include `[skip ci]`.
+No merge, tag, release, signing, publication, workflow dispatch, paid resource or
+manual issue closure is performed.
 
-Full #17 acceptance remains open for accepted compatible producer evidence,
-genuine native multiarch qualification, public registry manifest/index identity,
-verified signatures/provenance, the owner registry adapter and explicit
-publication approval. Hosted Actions are deferred; all new commits include
-`[skip ci]`. No merge, tag, release, signing, publication, workflow dispatch,
-paid resource or issue closure is performed. Preserve audit/assets/locks/profile
-identity; exclude credentials, private paths, environment values and raw logs.
-ADR not required: this consumes existing owner protocols and adapter boundaries.
+Preserve historical audit/creative bytes, locks and profile identity. Exclude
+private paths, credentials, environment values and raw logs from public content.
+ADR not required: existing owner protocols and adapter boundaries are consumed
+without ratifying a new architecture or rewriting historical decisions.

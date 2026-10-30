@@ -76,7 +76,8 @@ installed-image SBOMs, which remain in their evidence directories. It does not
 invent a merged installed inventory or reuse `dist/profiles` declared-intent
 SBOMs. This consumer requires distinct bounded HTTP(S)/URN document namespaces
 with supported URI syntax, without fragments, whitespace/control characters or
-invalid percent encoding. The check performs no network lookup and is not a
+invalid percent encoding. HTTP(S) authorities are canonical and credential-free.
+The check performs no network lookup and is not a
 full SPDX schema engine. `provenance.json` records local input mapping; `signature.json` records
 unavailable authentication. The complete sorted `SHA256SUMS` inventory covers
 every payload exactly once. The selected Relay `container-image` required paths
@@ -88,6 +89,11 @@ performed. `verify --require-release-ready` returns nonzero/unavailable. Editing
 JSON booleans, adding a recorded crypto file or renaming a config ID cannot
 promote local evidence. The v1 local receipt contract deliberately has no
 authenticated registry/publication path.
+
+The [limited local evidence record](evidence/container-release-local.v1.json)
+binds the reviewed adapter bytes, qualified image-owner receipt, actual bundle
+checks and their limitations. It is never imported by the CLI as authentication
+or release authority; a source-bound regression preserves that boundary.
 
 ## Manual review and future publication boundary
 

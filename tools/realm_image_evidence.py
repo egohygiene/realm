@@ -20,6 +20,7 @@ import signal
 import stat
 import subprocess
 import tempfile
+import time
 import uuid
 from collections import Counter
 from pathlib import Path
@@ -796,73 +797,125 @@ def run_container(
     command: list[str],
     env: dict[str, str],
     timeout: int = 120,
+    *,
+    creation_timeout: int = 120,
+    late_poll_seconds: float = 30,
 ) -> bytes:
-    """Clean up only this invocation's container if a Docker client times out."""
+    """Separate potentially slow daemon creation from a command deadline."""
     token = uuid.uuid4().hex
     name = "realm-evidence-" + token
     label = "io.egohygiene.realm.evidence-invocation"
-    argv = (
+
+    def lookup(reference: str) -> dict | None:
+        try:
+            result = run(
+                docker + ["container", "inspect", reference, "--format", "{{json .}}"],
+                env,
+                30,
+            )
+        except ValueError:
+            selector = (
+                "id=" + reference
+                if re.fullmatch(r"[a-f0-9]{64}", reference)
+                else "name=^/" + name + "$"
+            )
+            found = run(
+                docker
+                + [
+                    "container",
+                    "ls",
+                    "--all",
+                    "--no-trunc",
+                    "--filter",
+                    selector,
+                    "--format",
+                    "{{.ID}}",
+                ],
+                env,
+                30,
+            )
+            if found.strip():
+                raise ValueError("owned container identity is unavailable") from None
+            return None
+        return decode(result)
+
+    def identity(details: dict, expected: str | None = None) -> str:
+        identifier = details.get("Id") if isinstance(details, dict) else None
+        config = details.get("Config") if isinstance(details, dict) else None
+        labels = config.get("Labels") if isinstance(config, dict) else None
+        if (
+            not isinstance(identifier, str)
+            or not re.fullmatch(r"[a-f0-9]{64}", identifier)
+            or details.get("Name") != "/" + name
+            or details.get("Image") != image
+            or not isinstance(labels, dict)
+            or labels.get(label) != token
+            or (expected is not None and identifier != expected)
+        ):
+            raise ValueError("container ownership did not match; cleanup refused")
+        return identifier
+
+    def remove(reference: str, expected: str | None = None) -> None:
+        details = lookup(reference)
+        if details is None:
+            return
+        identifier = identity(details, expected)
+        try:
+            run(docker + ["container", "rm", "--force", identifier], env, 30)
+        except ValueError:
+            if lookup(identifier) is not None:
+                raise ValueError("owned container cleanup did not complete") from None
+        if lookup(identifier) is not None:
+            raise ValueError("owned container remains after cleanup")
+
+    def indeterminate_creation() -> str:
+        deadline = time.monotonic() + max(0, late_poll_seconds)
+        while True:
+            details = lookup(name)
+            if details is not None:
+                remove(identity(details))
+                return "late owned container removed"
+            if time.monotonic() >= deadline:
+                return "not observed within bounded polling; recheck owned name"
+            time.sleep(min(0.25, max(0, deadline - time.monotonic())))
+
+    create = (
         docker
-        + ["run", "--rm", "--name", name, "--label", label + "=" + token]
+        + ["container", "create", "--name", name, "--label", label + "=" + token]
         + options
         + [image]
         + command
     )
-
-    def present() -> bool:
-        result = run(
-            docker
-            + [
-                "container",
-                "ls",
-                "--all",
-                "--filter",
-                "name=^/" + name + "$",
-                "--format",
-                "{{.ID}}",
-            ],
-            env,
-            30,
-        )
-        return bool(result.strip())
-
     try:
-        return run(argv, env, timeout)
+        created = run(create, env, creation_timeout).decode("ascii").strip()
+        if not re.fullmatch(r"[a-f0-9]{64}", created):
+            raise ValueError("container creation did not return a full ID")
+    except (ValueError, OSError, UnicodeError) as exc:
+        outcome = indeterminate_creation()
+        raise ValueError(
+            "container creation unavailable; " + outcome + "; recovery name: " + name
+        ) from exc
+    try:
+        before = lookup(created)
+        if before is None:
+            raise ValueError("created container disappeared before execution")
+        identity(before, created)
+        stdout = run(docker + ["container", "start", "--attach", created], env, timeout)
+        after = lookup(created)
+        if after is None:
+            raise ValueError("container execution status is unavailable")
+        identity(after, created)
+        state = after.get("State")
+        if (
+            not isinstance(state, dict)
+            or state.get("Status") != "exited"
+            or type(state.get("ExitCode")) is not int
+            or state["ExitCode"] != 0
+        ):
+            raise ValueError("container execution failed or did not exit cleanly")
+        return stdout
     finally:
-        try:
-            details = decode(
-                run(
-                    docker + ["container", "inspect", name, "--format", "{{json .}}"],
-                    env,
-                    30,
-                )
-            )
-        except ValueError:
-            # --rm commonly removed a completed container already. A successful
-            # filtered read must establish absence before accepting that case.
-            if present():
-                raise ValueError(
-                    "owned container cleanup identity is unavailable"
-                ) from None
-        else:
-            identifier = details.get("Id") if isinstance(details, dict) else None
-            config = details.get("Config") if isinstance(details, dict) else None
-            labels = config.get("Labels") if isinstance(config, dict) else None
-            if (
-                not isinstance(identifier, str)
-                or not re.fullmatch(r"[a-f0-9]{64}", identifier)
-                or details.get("Name") != "/" + name
-                or not isinstance(labels, dict)
-                or labels.get(label) != token
-            ):
-                raise ValueError("container ownership did not match; cleanup refused")
-            try:
-                run(docker + ["container", "rm", "--force", identifier], env, 30)
-            except ValueError:
-                if present():
-                    raise ValueError(
-                        "owned container cleanup did not complete"
-                    ) from None
+        remove(created, created)
 
 
 def collect(args: argparse.Namespace) -> dict:

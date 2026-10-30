@@ -363,6 +363,8 @@ class RealmReleaseTests(unittest.TestCase):
             "urn::missing-nid",
             "https://example.invalid/[bad]",
             "file:///private/sbom",
+            "https://one@two@host/a",
+            "https://[::1]trailing/a",
         ):
             with self.subTest(value=value), self.assertRaises(ValueError):
                 tool.namespace_uri(value)
@@ -608,6 +610,7 @@ class RealmReleaseTests(unittest.TestCase):
                 "not a uri",
                 "https://example.invalid:private-port/sbom",
                 "https://example.invalid/a#fragment",
+                "https://one@two@host/a",
             )
         ):
             with self.subTest(number=number):
@@ -653,6 +656,44 @@ class RealmReleaseTests(unittest.TestCase):
         environment["PATH"] = str(trap)
         self.verify_local(output, environment=environment)
         self.assertFalse(marker.exists())
+
+    def test_limited_public_receipt_binds_sources_without_becoming_authority(
+        self,
+    ) -> None:
+        path = ROOT / "docs/evidence/container-release-local.v1.json"
+        record = json.loads(path.read_text())
+        self.assertFalse(record["release_ready"])
+        self.assertEqual(
+            record["adapter_sha256"], hashlib.sha256(SCRIPT.read_bytes()).hexdigest()
+        )
+        owner_path = ROOT / record["image_evidence"]["path"]
+        self.assertEqual(
+            record["image_evidence"]["sha256"],
+            hashlib.sha256(owner_path.read_bytes()).hexdigest(),
+        )
+        self.assertEqual(
+            record["image_evidence"]["producer_sha256"],
+            json.loads(owner_path.read_text())["producer"]["sha256"],
+        )
+        output = self.local_bundle()
+        forged = json.loads(json.dumps(record))
+        forged["release_ready"] = True
+        forged["checks"]["readiness_gate"] = "passed"
+        (self.repository / "docs/evidence/container-release-local.v1.json").write_text(
+            json.dumps(forged)
+        )
+        result = self.run_release(
+            "verify",
+            "--version",
+            "v0.1.0",
+            "--source-revision",
+            "b" * 40,
+            "--bundle",
+            str(output),
+            "--require-release-ready",
+            success=False,
+        )
+        self.assertEqual(result["status"], "unavailable")
 
     def test_bundle_output_cannot_be_nested_inside_its_image_inputs(self) -> None:
         evidence = self.directory / "owner-evidence"

@@ -130,6 +130,16 @@ def namespace_uri(value: Any) -> str:
     if parsed.scheme in {"http", "https"}:
         if not parsed.netloc or not parsed.hostname:
             fail("installed SBOM namespace requires an HTTP(S) authority")
+        if (
+            "@" in parsed.netloc
+            or parsed.username is not None
+            or parsed.password is not None
+        ):
+            fail("installed SBOM namespace requires a credential-free authority")
+        host = f"[{parsed.hostname}]" if ":" in parsed.hostname else parsed.hostname
+        authority = host + (f":{parsed.port}" if parsed.port is not None else "")
+        if parsed.netloc.lower() != authority.lower():
+            fail("installed SBOM namespace requires a supported canonical authority")
     elif parsed.scheme == "urn":
         if parsed.netloc or not re.fullmatch(
             r"[A-Za-z0-9][A-Za-z0-9-]{0,31}:.+", parsed.path
