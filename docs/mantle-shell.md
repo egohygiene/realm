@@ -40,12 +40,19 @@ It never falls back to another commit, release, local sibling checkout or shell.
 The canary uses the real pinned installer to copy into a temporary user prefix
 and create temporary hooks. Actual shell processes test Bash/Zsh/Fish interactive
 startup (without a TTY), explicit noninteractive activation, `ci` profiles,
-command status, invalid-profile rejection, missing-runtime Bash recovery and
+command status, invalid-profile rejection, all-shell missing-runtime recovery and
 disabled-hook recovery. Inherited HOME/XDG/startup variables are not forwarded.
 Results describe a synthetic filesystem with actual local processes; they do
 not prove a native macOS/ARM64/Windows host, TTY behavior, Docker build, VS Code,
 Codespaces, or a published release. Missing required shells fail the canary;
 offline unit fixtures are not reported as product activation.
+
+The [local validation receipt](../evidence/mantle-source-canary.json) records the
+reviewed adapter checksum, 24 actual host-process checks and seven separate
+network-disabled container checks against Realm's existing pinned base image.
+The container probe covers Bash/Zsh command activation, failure statuses and
+plain Bash recovery; that image lacks Fish/Python. It is a process canary, not
+a Realm image build or Dev Container projection.
 
 ## Docker RUN and process activation
 

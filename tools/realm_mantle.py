@@ -7,6 +7,7 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import argparse
+import gzip
 import hashlib
 import io
 import json
@@ -14,11 +15,13 @@ import os
 from pathlib import Path, PurePosixPath
 import re
 import shutil
+import signal
 import subprocess
 import sys
 import tarfile
 import tempfile
 import urllib.request
+import zlib
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -80,7 +83,16 @@ def unpack(data: bytes, pin: dict, destination: Path) -> Path:
     """Reject unsafe members before writing; no archive-controlled links or modes."""
     verify_bytes(data, pin)
     top = f'mantle-{pin["revision"]}'
-    with tarfile.open(fileobj=io.BytesIO(data), mode="r:gz") as archive:
+    # Tar parsers consume hidden PAX/GNU metadata before yielding members.
+    # Bound the complete expanded stream before handing any of it to tarfile.
+    try:
+        with gzip.GzipFile(fileobj=io.BytesIO(data)) as compressed:
+            expanded = compressed.read(MAX_BYTES + 1)
+    except (EOFError, OSError, zlib.error) as error:
+        raise ValueError("invalid or truncated gzip source archive") from error
+    if len(expanded) > MAX_BYTES:
+        raise ValueError("expanded source archive exceeds the bounded size")
+    with tarfile.open(fileobj=io.BytesIO(expanded), mode="r:") as archive:
         members = []
         total = 0
         for member in archive:
@@ -117,16 +129,32 @@ def unpack(data: bytes, pin: dict, destination: Path) -> Path:
 
 
 def run_case(name: str, arguments: list[str], environment: dict, checks: list,
-             expected: int = 0, marker: bool = True) -> None:
+             expected: int = 0, marker: bool = True, deadline: float = 30) -> None:
+    process = subprocess.Popen(arguments, env=environment, stdin=subprocess.DEVNULL,
+                               stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                               text=True, start_new_session=True)
     try:
-        result = subprocess.run(arguments, env=environment, stdin=subprocess.DEVNULL,
-                                capture_output=True, text=True, timeout=30, check=False)
+        stdout, _ = process.communicate(timeout=deadline)
     except subprocess.TimeoutExpired as error:
-        raise ValueError(f"{name}: exceeded the 30-second canary deadline") from error
-    if result.returncode != expected or (marker and result.stdout != "realm-mantle-ok\n"):
+        # Descendants may retain output pipes after the direct shell exits.
+        # Terminate only this newly created job, then collect its output.
+        try:
+            os.killpg(process.pid, signal.SIGTERM)
+        except ProcessLookupError:
+            pass
+        try:
+            process.communicate(timeout=0.5)
+        except subprocess.TimeoutExpired:
+            try:
+                os.killpg(process.pid, signal.SIGKILL)
+            except ProcessLookupError:
+                pass
+            process.communicate()
+        raise ValueError(f"{name}: exceeded the canary deadline") from error
+    if process.returncode != expected or (marker and stdout != "realm-mantle-ok\n"):
         # Shell output may include machine paths; keep it out of public receipts.
-        raise ValueError(f"{name}: unexpected process outcome (exit {result.returncode})")
-    checks.append({"case": name, "status": "passed", "exit_code": result.returncode})
+        raise ValueError(f"{name}: unexpected process outcome (exit {process.returncode})")
+    checks.append({"case": name, "status": "passed", "exit_code": process.returncode})
 
 
 def shell_command(shell: str, interactive: bool, body: str, home: Path) -> list[str]:
@@ -205,7 +233,10 @@ def canary(pin: dict, archive: Path) -> dict:
         displaced = base / "temporarily unavailable runtime"
         prefix.rename(displaced)
         recovery = 'test -z "${MANTLE_ROOT:-}" && printf "realm-mantle-ok\\n"'
-        run_case("bash-missing-runtime-recovery", shell_command("bash", True, recovery, home), environment, checks)
+        for shell in SHELLS:
+            body = ('not set -q MANTLE_ROOT; and printf "realm-mantle-ok\\n"'
+                    if shell == "fish" else recovery)
+            run_case(f"{shell}-missing-runtime-recovery", shell_command(shell, True, body, home), environment, checks)
         displaced.rename(prefix)
         run_case("disable-hooks", [shutil.which("bash"), str(prefix / "install.sh"), "--disable",
                  "--prefix", str(prefix), "--shell", "all"], environment, checks, marker=False)

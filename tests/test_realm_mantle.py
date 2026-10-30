@@ -2,6 +2,7 @@
 
 from pathlib import Path
 import hashlib
+import gzip
 import importlib.util
 import io
 import json
@@ -10,6 +11,7 @@ import subprocess
 import sys
 import tarfile
 import tempfile
+import time
 import unittest
 from unittest import mock
 
@@ -158,10 +160,58 @@ class RealmMantleTests(unittest.TestCase):
             archive = Path(temporary) / "archive.tar.gz"
             archive.write_bytes(data)
             with mock.patch.object(mantle.shutil, "which", side_effect=lambda name: None if name == "fish" else "/bin/" + name), \
-                    mock.patch.object(mantle.subprocess, "run") as execute:
+                    mock.patch.object(mantle.subprocess, "Popen") as execute:
                 with self.assertRaisesRegex(ValueError, "unavailable: fish"):
                     mantle.canary(pin, archive)
             execute.assert_not_called()
+
+    def test_hidden_tar_metadata_cannot_bypass_expansion_limit(self):
+        stream = io.BytesIO()
+        top = "mantle-" + mantle.load_pin()["revision"]
+        with tarfile.open(fileobj=stream, mode="w:gz", format=tarfile.PAX_FORMAT,
+                          pax_headers={"comment": "synthetic metadata " * 16384}) as archive:
+            member = tarfile.TarInfo(top + "/VERSION")
+            member.size = 10
+            archive.addfile(member, io.BytesIO(b"0.1.0-dev\n"))
+        data = stream.getvalue()
+        pin = dict(mantle.load_pin(), sha256=hashlib.sha256(data).hexdigest())
+        self.assertLess(len(data), 4096)
+        with tempfile.TemporaryDirectory() as temporary, mock.patch.object(mantle, "MAX_BYTES", 4096):
+            output = Path(temporary) / "source"
+            with self.assertRaisesRegex(ValueError, "expanded source archive"):
+                mantle.unpack(data, pin, output)
+            self.assertFalse(output.exists())
+
+    def test_malformed_gzip_and_oversized_tar_headers_reject_cleanly(self):
+        member = tarfile.TarInfo("mantle-" + mantle.load_pin()["revision"] + "/huge")
+        member.size = mantle.MAX_BYTES + 1
+        data, _ = self.synthetic_archive([])
+        invalid_deflate = bytes.fromhex("1f8b0800") + bytes(6) + bytes([255]) * 12 + bytes(8)
+        cases = (data[:-4], gzip.compress(member.tobuf()), invalid_deflate)
+        with tempfile.TemporaryDirectory() as temporary:
+            for index, malformed in enumerate(cases):
+                with self.subTest(case=index):
+                    pin = dict(mantle.load_pin(), sha256=hashlib.sha256(malformed).hexdigest())
+                    output = Path(temporary) / str(index)
+                    with self.assertRaises(ValueError):
+                        mantle.unpack(malformed, pin, output)
+                    self.assertFalse(output.exists())
+
+    @unittest.skipUnless(sys.platform.startswith("linux"), "owned Linux process-group probe")
+    def test_deadline_stops_owned_descendant_that_retains_output_pipes(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            pidfile = Path(temporary) / "child.pid"
+            started = time.monotonic()
+            with self.assertRaisesRegex(ValueError, "canary deadline"):
+                mantle.run_case("synthetic-owned-timeout", ["/bin/sh", "-c",
+                                'sleep 60 & printf "%s" "$!" >"$1"; wait', "fixture", str(pidfile)],
+                                {"PATH": os.defpath}, [], deadline=0.5)
+            self.assertLess(time.monotonic() - started, 4)
+            pid = int(pidfile.read_text())
+            process_status = Path(f"/proc/{pid}/stat")
+            if process_status.exists():
+                # A killed orphan can briefly await its parent's reaper.
+                self.assertEqual(process_status.read_text().split()[2], "Z")
 
 
 if __name__ == "__main__":
