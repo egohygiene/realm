@@ -1,0 +1,161 @@
+{
+  "schema_version": "1.0.0",
+  "contract": "realm.image-evidence/v1",
+  "state": "limited",
+  "release_ready": false,
+  "observed_at": "2026-10-30T20:00:56Z",
+  "source": {
+    "repository": "egohygiene/realm",
+    "revision": "d6f3604d0f787cc8a2b6c97d70bd3122f81a8203",
+    "inputs": {
+      "images/base/Dockerfile": "3f33b7b838ad9c1c12ae5b27facec3d371842c93a764acb2c560a7ee9c10e6f6",
+      "images/base/scripts/install-apt-packages": "9240853926e8f59b247fe44f25f0eeac1bcae16154f7453e70098f17dc4b564c",
+      "images/base/scripts/verify-apt-packages": "1692e1049b880b55a7b926468bf6a39d2429ff0522c66d202c17fbd54bf6322c",
+      "images/base/scripts/realm-packages": "d494fcadb9504b28e5dd1c3f069fa6a0bd0c391ffaf822f4a565aa158ba879ee",
+      "images/base/tests/smoke.sh": "5bbbdc6876772890099fb83215b79bb444be876fa274bdeda80484cb6e3f14ab",
+      "catalog/capabilities.json": "16c282cfba5d1b73ef60d2e6ecfe829ae9828197f6272edd377fbc5db7c3b20c",
+      "config/debian-trixie.json": "58485b52a3a5260e3f6988334281c5a1d180529c7f875feef2da09314a7b6a00",
+      "profiles/base.profile.json": "77a6ad9b5f13aaeece62c89bdfe9750637d1b15dd8682bd4d25a000dd34d77bf",
+      "images/base/packages/locks/debian-trixie-amd64.lock.json": "515bd4e107ef6965a3b50c2c0c0caac8fa35461cdbf37aa6407471d42094c1e8"
+    }
+  },
+  "producer": {
+    "name": "realm-image-evidence",
+    "version": "1.0.0",
+    "sha256": "6bbeb3b54193f9319f3a45d984929b35f6cf4cb4426988df8ea82a789ebe84d2"
+  },
+  "tools": {
+    "syft": {
+      "version": "1.55.0",
+      "source_revision": "f15c3343e29dfb20cf6d82c820e7090b49808c96",
+      "archive_sha256": "bb65249542db5fedeeb4d3f9b018b75e7264dbfbbb10486f044581a92f90490d",
+      "executable_sha256": "64c9631c3560336c55c549df0de08cd577d02399c9de807ac390960a4ed5c351",
+      "signature_verification": "not-performed"
+    },
+    "grype": {
+      "version": "0.121.0",
+      "source_revision": "afe2742527d98d822da06c9f32eed86fe3d193e0",
+      "archive_sha256": "64e07133d3486115de647a66581461dccf5c732748a0a3119077395565f15519",
+      "executable_sha256": "bd511334178bc3002eb9eb58880f89e01e35f7fed7cfbe671171127a8afa3596",
+      "signature_verification": "not-performed"
+    }
+  },
+  "subject": {
+    "identity_kind": "local-config",
+    "local_config_digest": "sha256:c3bb59a8ddbaac91ce808da1077b4704cdb3069f986cad0701a542d773a9ad7e",
+    "scanner_manifest_digest": "sha256:fa9d0cc51faa35ce5d6d0f17609740cf5ce3301b2b72d220642ffe15267b1866",
+    "platform": "linux/amd64",
+    "execution": "native",
+    "registry_reference": null,
+    "registry_manifest_digest": null,
+    "index_digest": null
+  },
+  "database": {
+    "schema_version": "v6.1.10",
+    "built": "2026-10-30T06:23:28Z",
+    "source_url": "https://grype.anchore.io/databases/v6/vulnerability-db_v6.1.10_2026-10-30T00:25:15Z_1793341408.tar.zst?checksum=sha256%3A1e1b9cf2cbfaf16b770e4d75d7beb4840dc4254ca2281682fe5ec3700a4251a8",
+    "archive_sha256": "1e1b9cf2cbfaf16b770e4d75d7beb4840dc4254ca2281682fe5ec3700a4251a8",
+    "database_sha256": "80515f7de59537f10d65256fb81923724147e0f1009a7cbfe12b00af43abd93f",
+    "reported_valid": true,
+    "maximum_age_hours": 120,
+    "age_seconds": 49048
+  },
+  "inventory": {
+    "syft_packages": 293,
+    "spdx_packages": 294,
+    "locked_packages": 13
+  },
+  "vulnerabilities": {
+    "status": "reported",
+    "matches": 1689,
+    "ignored_matches": 3015,
+    "severity_counts": {
+      "Unknown": 49,
+      "Negligible": 799,
+      "Low": 77,
+      "Medium": 276,
+      "High": 412,
+      "Critical": 76
+    }
+  },
+  "verification": {
+    "installed_lock": {
+      "status": "passed",
+      "exit_code": 0
+    },
+    "nonroot_smoke": {
+      "status": "passed",
+      "exit_code": 0
+    }
+  },
+  "artifacts": {
+    "identity": {
+      "path": "identity.json",
+      "sha256": "b1166cf5c52db143b7071c5ca9d651f3149fb9cc721571be6c5c09065006a224",
+      "bytes": 222,
+      "format": "realm-local-image-identity/v1",
+      "raw_sha256": null
+    },
+    "syft": {
+      "path": "syft.json",
+      "sha256": "c67168ece6f782bd6b93f287a86ec5a6cb17087bf0d47b925773e89cd3860494",
+      "bytes": 23501810,
+      "format": "syft-json/redacted-runtime-config",
+      "raw_sha256": "7b11f490b9bc5c45066f8ecc14121c070f2fdf06aa27a52604d8daa2c7a5a32a"
+    },
+    "sbom": {
+      "path": "sbom.spdx.json",
+      "sha256": "b7ddd95ee13c80561e2f12f5089d1c40222f2142c4982e4a3f2f4c345b929b83",
+      "bytes": 15753633,
+      "format": "SPDX-2.3/installed-image",
+      "raw_sha256": null
+    },
+    "vulnerabilities": {
+      "path": "vulnerabilities.grype.json",
+      "sha256": "053a7edbd6b4aadaa461ca113557e937b3e19c1d95ae49da4cc7f930d822f3b9",
+      "bytes": 35681657,
+      "format": "grype-json/redacted-runtime-config",
+      "raw_sha256": "98fa5e0c8b2c67bb3faac5deecda5ccbe8b901f8ca767b557a3a23f7e72a4443"
+    },
+    "apt_lock": {
+      "path": "apt-lock.json",
+      "sha256": "515bd4e107ef6965a3b50c2c0c0caac8fa35461cdbf37aa6407471d42094c1e8",
+      "bytes": 4450,
+      "format": "realm-apt-lock/v1",
+      "raw_sha256": null
+    },
+    "installed_packages": {
+      "path": "apt-installed.tsv",
+      "sha256": "7ebc18bcc5f5297bee0d0b254f8fad4187c98d317d3925021793e56b74be2e8a",
+      "bytes": 4622,
+      "format": "realm-installed-packages/tsv",
+      "raw_sha256": null
+    },
+    "build_metadata": {
+      "path": "build-metadata.json",
+      "sha256": "073a8e3261f6f954a34a33788fed6b325c73568026113c34a24ece2dc2b8bd6e",
+      "bytes": 466,
+      "format": "realm-build-metadata/v1",
+      "raw_sha256": null
+    },
+    "verification": {
+      "path": "verification.json",
+      "sha256": "dec9f4bb9ffc8ae518394f8380c27efba43c2e618f9a628337d65b42763238bf",
+      "bytes": 142,
+      "format": "realm-image-verification/v1",
+      "raw_sha256": null
+    }
+  },
+  "authentication": {
+    "image_signatures": "not-performed",
+    "provenance": "not-performed",
+    "registry_publication": "not-performed"
+  },
+  "limitations": [
+    "other-native-architectures",
+    "registry-publication",
+    "image-signatures",
+    "provenance-authentication",
+    "reproducible-multiarch-build"
+  ]
+}

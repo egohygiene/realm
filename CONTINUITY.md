@@ -2,70 +2,66 @@
 
 ## Current checkpoint
 
-Observed 2026-10-30. This repository-owned prose handoff records context, not
-permission or a new machine-enforced continuity contract. Live instructions,
-canonical sources and verified work-tracker state outrank it.
+Observed 2026-10-30. This repository-owned prose snapshot records context, not
+permission or a machine-enforced continuity contract. Live instructions,
+canonical sources and verified work-tracker state outrank this handoff.
 
-- Objective: prepare bounded installed-image evidence for [#7](https://github.com/egohygiene/realm/issues/7), [draft PR #58](https://github.com/egohygiene/realm/pull/58).
-- Base: main `0ebdc4d3562a0af0f806876c5dd81d60e79f9e27`.
-- Candidate: `feat/7-image-evidence`; the PR records exact pushed checkpoint heads.
-- Canonical context: docs/image-evidence.md, config/image-evidence-tools.v1.json, schemas/image-evidence.v1.schema.json, image scripts/locks, Taskfile.yml and [roadmap #25](https://github.com/egohygiene/realm/issues/25).
+- Objective: review bounded installed-image evidence for [#7](https://github.com/egohygiene/realm/issues/7), [draft PR #58](https://github.com/egohygiene/realm/pull/58).
+- Independent base: main `0ebdc4d3562a0af0f806876c5dd81d60e79f9e27`.
+- Candidate: `feat/7-image-evidence`; the PR records its final pushed head.
+- Reviewed producer source: `9e1a5151e0bc5b0729aae5f46cc3e5eb232cf47a`, SHA-256 `6bbeb3b54193f9319f3a45d984929b35f6cf4cb4426988df8ea82a789ebe84d2`.
+- Canonical context: docs/image-evidence.md, tool pins, closed receipt schema, image scripts/locks, Taskfile.yml and [roadmap #25](https://github.com/egohygiene/realm/issues/25).
 
-## Implemented boundary and actual checks
+## Material behavior and boundaries
 
-The stdlib producer validates exact source/build inputs, local configuration
-identity and native platform; runs installed lock/non-root smoke; uses exact
-pinned Syft/Grype executables and a fresh explicit database; and publishes a new
-checksummed limited bundle without replacement. The portable verifier re-derives
-available image/package/scanner/database facts from checked bytes. Declared-intent
-SPDX, mutable tags and configuration IDs cannot become registry/signature proof.
-All findings and ignored matches remain visible. Runtime configuration and
-private paths are removed from portable tool reports; raw hashes remain labelled.
+The explicit stdlib producer binds actual native image/configuration identity to
+selected source inputs, runs installed-lock/non-root smoke checks, uses pinned
+Syft/Grype bytes and an existing fresh database, and atomically publishes a new
+limited evidence directory without replacement. The read-only API
+`verify_evidence(directory)` hashes and re-derives available facts from the same
+checked bytes; it authenticates no producer or registry. Configuration IDs,
+scanner manifests and published registry digests remain distinct.
 
-The four first-checkpoint regressions failed as expected (one failure, three
-missing-file errors); baseline 97 tests had passed. Implementation checkpoint guards passed 17 methods; review hardening now passes
-25 methods, including actual no-replace filesystem and owned-child deadline
-controls plus synthetic creation/execution/ownership/late-timeout seams.
-Ruff check/format pass after initial routine context-manager/import corrections.
-Early independent review found finite-overflow/type seams and deeper package/
-source bindings; the implementation repairs them and adds focused regressions.
-The reviewed implementation checkpoint passed 114 full Task tests. Review
-hardening freezes producer bytes during capture and separates daemon creation
-from execution deadlines, retaining the full owned container ID for cleanup. Exact current full checks are recorded in
-PR #58; code changes require a fresh actual capture before the final receipt.
+Producer bytes are frozen during capture. Container creation has its own deadline,
+returns a full ID before the execution deadline starts, and actual exit status is
+checked. Cleanup requires exact name/nonce/image/ID proof. Indeterminate creation
+uses bounded scoped polling and remains non-success with an owned-name recovery
+action; immediate absence cannot prove a queued create will never complete.
+All package/finding/ignored-match data survives runtime-configuration redaction.
 
-Initial actual unmodified Docker build failed apt TLS verification. A standalone
-Dockerfile-only repair `d6f3604d0f787cc8a2b6c97d70bd3122f81a8203` supplies optional
-BuildKit CA trust for that RUN without persisting trust material or changing
-locks/source pins. Root's exact clean native AMD64 build and installed-lock,
-non-root smoke, CA/config absence and source-metadata probes passed.
+## Actual validation and review
 
-An actual timeout probe exposed late Docker creation after initial absence. Two
-newly owned Created sleep-test containers were verified and removed by exact
-name/nonce/image/command/ID; no unrelated resources were changed. The repaired
-create/start state machine requires fresh actual execution proof before its final
-receipt. Indeterminate creation remains non-success with bounded recovery.
+- Baseline 97 tests passed. The first four regressions exposed the missing producer/schema (one expected failure, three expected missing-file errors); all are repaired.
+- Implementation check passed 114 tests. Further review guards passed 122 tests; the final source-bound observation test adds one method. Exact final Task and lint results are recorded in PR #58.
+- Independent reviews cleared the original implementation and the exact final create/start producer. Reviewer replayed focused tests and actual-artifact positives plus rehashed SPDX/Grype/source-lock/overflow/malformed/auth-promotion negatives. Review repairs retain positive controls.
+- Initial unmodified Docker build failed apt TLS verification. Standalone commit `d6f3604d0f787cc8a2b6c97d70bd3122f81a8203` adds optional ephemeral BuildKit CA trust. Its clean native AMD64 image build, installed-version/lock/snapshot verification, default-user smoke, source metadata and CA/config absence probes passed. Locks, pins and base policy are preserved.
+- Actual resource probing exposed late daemon creation after a short run-client timeout. Two newly owned Created sleep containers were verified and removed; the failed observation is retained. The repair then passed actual explicit-create/start testing: full ID before execution, Running observed before the two-second command deadline, matching running container removed after client timeout, and final absence. Network none, read-only root, non-root UID 1000 and dropped capabilities were used.
+- Final actual producer capture at `2026-10-30T20:00:56Z` exited zero, bound the exact reviewed producer hash above, verified all artifacts and recorded 293 installed packages, 294 SPDX packages including the container root, and 13 locked roots.
+- Grype reported 1,689 matches and 3,015 ignored matches: 76 Critical, 412 High, 276 Medium, 77 Low, 799 Negligible, 49 Unknown. This is not a clean-image verdict or exploitability assessment. Database v6.1.10 was built `2026-10-30T06:23:28Z`; its exact file/archive hashes and age are recorded.
+- A separate actual capture in an owned three-file code capsule received an ordinary comment edit after capture began. It rejected with controlled exit 1, published no final directory, cleaned temporary staging and left canonical source unchanged. It did not relabel old running code with new source bytes.
+- Independent Draft202012/meta/registered-format checks pass for the closed receipt; the actual installed-image SPDX passes the immutable official SPDX 2.3 Draft7 schema and formats. All nine exported files pass private-path/runtime-marker checks. Python 3.9 grammar checks pass; actual runtime qualification is Linux AMD64 only.
 
-The first actual producer prototype then passed on that exact image with Syft
-1.55.0 and Grype 0.121.0: 293 installed packages plus the SPDX container root,
-1,689 reported matches and 3,015 ignored matches. This is not a clean-image or
-release verdict. Review changes require final committed-code capture before
-promoting a current receipt; the prototype remains attributed to its own code.
+The safe [observation receipt](docs/evidence/image-local-capture.v1.json) binds the
+source, producer, tools and artifact hashes. It is an index, not the full portable
+bundle or authentication. Full actual artifacts remain with validation evidence.
+Official tool archive checksums were verified; Sigstore/provenance were not.
 
-## Parallel work, remaining gates and next action
+## Parallel work, gates and recovery
 
-#10 owns generated Dev Container output and reuses the exact small CA commit.
-#17 stacks on #7's evidence interface, verifies its actual artifacts and keeps
-crypto/registry publication independent. Reconcile Taskfile and competing prose
-handoffs semantically at integration; preserve historical audit/creative bytes.
+[#10 / draft PR #57](https://github.com/egohygiene/realm/pull/57) owns the generated
+Dev Container slice and reuses the exact CA commit. [#17 / draft PR #59](https://github.com/egohygiene/realm/pull/59)
+stacks on #7 and consumes the same artifact verifier. Reconcile Taskfile and
+competing handoffs semantically; preserve historical audit and creative bytes.
 
-Next: remotely checkpoint the implementation, finish independent exact-head
-review, rerun actual capture at the reviewed code hash, add a safe limited
-receipt and final checks, then leave PR #58 draft for maintainer review.
-Full #7 remains open for native ARM64, signatures/provenance, accepted producer
-compatibility and actual approved distribution. Hosted Actions are deferred;
-every checkpoint includes `[skip ci]`. No release/tag/publication, signing,
-workflow dispatch, paid resource, issue closure or merge occurred.
+Keep full #7 open for native ARM64 scanner/build qualification, reviewed finding
+disposition, accepted producer compatibility, real image signatures/provenance
+and separately approved registry distribution. Hosted Actions remain deferred.
+No merge, release/tag, signing, publication, workflow dispatch, bot review request,
+paid resource or manual issue closure occurred. Every new checkpoint uses
+`[skip ci]`.
 
-Keep private paths, credentials, environment values and unrestricted logs out
-of public evidence. Refresh this snapshot after validation and before handoff.
+Next: verify final remote heads, review #57 then #58 then stacked #59 and their
+combined checks. Before later image/source changes, refresh source-bound local
+capture; before publication, satisfy the owning release/crypto/host gates.
+Keep private paths, credentials, environment values and raw logs out of public
+source. This handoff grants no additional authority.

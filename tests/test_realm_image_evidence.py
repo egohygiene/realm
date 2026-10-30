@@ -817,6 +817,22 @@ class PortableEvidenceTests(unittest.TestCase):
             )
         self.assertTrue(state["removed"])
 
+    def test_committed_capture_observation_binds_reviewed_source_and_producer(self):
+        tool = module()
+        receipt = json.loads(
+            (ROOT / "docs/evidence/image-local-capture.v1.json").read_text()
+        )
+        self.assertEqual(tool.validate_receipt(receipt), [])
+        self.assertEqual(
+            receipt["producer"]["sha256"],
+            tool.digest((ROOT / "tools/realm_image_evidence.py").read_bytes()),
+        )
+        for name, checksum in receipt["source"]["inputs"].items():
+            with self.subTest(source=name):
+                self.assertEqual(tool.digest((ROOT / name).read_bytes()), checksum)
+        # This checks the committed observation's freshness. Full artifact
+        # verification is separately exercised on the actual portable bundle.
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -169,3 +169,28 @@ publication authority. This local collector performs none of them.
 Full #7 acceptance remains open for supported native architecture evidence,
 cryptographic/signature/provenance verification, accepted producer/release
 compatibility and actual approved distribution. Hosted Actions remain deferred.
+
+## Recorded local qualification
+
+The [limited observation receipt](evidence/image-local-capture.v1.json) records
+actual capture on 2026-10-30 with Docker 28.4.0 on native Linux AMD64. The image
+was built from exact source `d6f3604d0f787cc8a2b6c97d70bd3122f81a8203`; the
+receipt binds the independently reviewed producer bytes and nine build inputs.
+The full portable bundle is retained with validation evidence rather than
+committed as a large source artifact. This receipt copy is an observation index;
+it cannot substitute for `verify` on the full directory or producer authentication.
+
+The actual capture verified 13 locked roots, inventoried 293 installed packages
+plus the SPDX container root, and retained 1,689 Grype matches plus 3,015 ignored
+matches. Reported severities were 76 Critical, 412 High, 276 Medium, 77 Low,
+799 Negligible and 49 Unknown. These are scanner observations requiring triage,
+not confirmed exploitability or a clean-image verdict. Registry publication,
+image signatures and provenance authentication were not performed.
+
+Independent validation checked the closed receipt with Draft 2020-12 registered
+formats and the actual installed-image SPDX with the immutable official SPDX 2.3
+schema from `spdx/spdx-spec@aadf3b0b8dbbabdb4d880b0fc714255fea436ff7`, path
+`schemas/spdx-schema.json`, SHA-256
+`3ec6cd5b8ba0c9a3e821da48536fa1b814567dc7e4376efe98d3e7b2a7a8d230`.
+That external development check does not add a runtime dependency or make the
+portable checker a general SPDX schema engine.
