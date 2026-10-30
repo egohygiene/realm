@@ -1,0 +1,164 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.egohygiene.io/realm/devcontainer-generated-evidence.v1.schema.json",
+  "title": "Realm limited generated base Dev Container evidence v1",
+  "description": "A typed observation of generated source, explicit qualification overlays and local execution; never authentication or full host/release conformance.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "contract", "state", "scope", "observed_at", "source", "consumer_overlay", "tools", "attempt_history", "observations", "qualification_overlay", "commands", "cleanup", "unproven", "limitations"],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "contract": {"const": "realm.devcontainer-generated-evidence/v1"},
+    "state": {"const": "limited"},
+    "scope": {"const": "generated-base/local-linux-amd64"},
+    "observed_at": {"type": "string", "format": "date-time"},
+    "source": {
+      "type": "object", "additionalProperties": false,
+      "required": ["qualified_revision", "generator_sha256", "bundle_manifest_path", "bundle_manifest_sha256", "generated_configuration_sha256", "resolved_manifest_sha256", "source_identity", "recipe_sha256", "selected_lock_sha256", "official_schema_sha256"],
+      "properties": {
+        "qualified_revision": {"type": "string", "pattern": "^[a-f0-9]{40}$"},
+        "generator_sha256": {"$ref": "#/$defs/sha256"},
+        "bundle_manifest_path": {"const": "dist/devcontainers/base-linux-amd64/projection.v1.json"},
+        "bundle_manifest_sha256": {"$ref": "#/$defs/sha256"},
+        "generated_configuration_sha256": {"$ref": "#/$defs/sha256"},
+        "resolved_manifest_sha256": {"$ref": "#/$defs/sha256"},
+        "source_identity": {"$ref": "#/$defs/digest"},
+        "recipe_sha256": {"$ref": "#/$defs/sha256"},
+        "selected_lock_sha256": {"$ref": "#/$defs/sha256"},
+        "official_schema_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "consumer_overlay": {
+      "type": "object", "additionalProperties": false,
+      "required": ["configuration_sha256", "changes", "generated_source_unchanged"],
+      "properties": {
+        "configuration_sha256": {"$ref": "#/$defs/sha256"},
+        "changes": {"const": ["absolute-equivalent-build-paths", "explicit-buildkit-ca-secret", "read-only-qualification-input-bind"]},
+        "generated_source_unchanged": {"const": true}
+      }
+    },
+    "tools": {
+      "type": "object", "additionalProperties": false,
+      "required": ["cli", "docker"],
+      "properties": {
+        "cli": {
+          "type": "object", "additionalProperties": false,
+          "required": ["version", "source_revision", "package_tarball_sha256", "package_signature_provenance"],
+          "properties": {
+            "version": {"const": "0.90.0"},
+            "source_revision": {"const": "d807cb27c195b6bc0e89d893fc20f44a30bf27ee"},
+            "package_tarball_sha256": {"const": "b3d40fec9d274a303a29ea91a24852887cf287701bc8d340bfc1cf970542495a"},
+            "package_signature_provenance": {"const": "not-verified"}
+          }
+        },
+        "docker": {
+          "type": "object", "additionalProperties": false,
+          "required": ["version", "platform", "image_config_id", "published"],
+          "properties": {
+            "version": {"type": "string", "minLength": 1, "maxLength": 64},
+            "platform": {"const": "linux/amd64"},
+            "image_config_id": {"$ref": "#/$defs/digest"},
+            "published": {"const": false}
+          }
+        }
+      }
+    },
+    "attempt_history": {
+      "type": "array", "minItems": 1, "maxItems": 8,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["number", "result", "stage", "reason", "correction", "same_generated_source"],
+        "properties": {
+          "number": {"type": "integer", "minimum": 1, "maximum": 8},
+          "result": {"enum": ["passed", "environment-failed"]},
+          "stage": {"type": "string", "minLength": 1, "maxLength": 128},
+          "reason": {"type": "string", "minLength": 1, "maxLength": 1024},
+          "correction": {"type": ["string", "null"], "maxLength": 1024},
+          "same_generated_source": {"const": true}
+        }
+      }
+    },
+    "observations": {
+      "type": "object", "additionalProperties": false,
+      "required": ["official_schema", "generated_cli_interpretation", "generated_build", "container_start", "base_package_verification", "nonroot_workspace_exec", "task_workflow", "mantle_source_canary", "reopen_existing", "recreate_same_configuration", "owned_cleanup"],
+      "properties": {
+        "official_schema": {"$ref": "#/$defs/observation"},
+        "generated_cli_interpretation": {"$ref": "#/$defs/observation"},
+        "generated_build": {"$ref": "#/$defs/observation"},
+        "container_start": {"$ref": "#/$defs/observation"},
+        "base_package_verification": {"$ref": "#/$defs/observation"},
+        "nonroot_workspace_exec": {"$ref": "#/$defs/observation"},
+        "task_workflow": {"$ref": "#/$defs/observation"},
+        "mantle_source_canary": {"$ref": "#/$defs/observation"},
+        "reopen_existing": {"$ref": "#/$defs/observation"},
+        "recreate_same_configuration": {"$ref": "#/$defs/observation"},
+        "owned_cleanup": {"$ref": "#/$defs/observation"}
+      }
+    },
+    "qualification_overlay": {
+      "type": "object", "additionalProperties": false,
+      "required": ["role", "package_scope", "packages", "task", "mantle", "installed_base_capability_claim"],
+      "properties": {
+        "role": {"const": "disposable-qualification-inputs"},
+        "package_scope": {"const": "direct-qualification-roots-not-complete-inventory"},
+        "packages": {
+          "type": "array", "uniqueItems": true,
+          "items": {
+            "type": "object", "additionalProperties": false,
+            "required": ["name", "version", "architecture"],
+            "properties": {
+              "name": {"type": "string", "minLength": 1, "maxLength": 128},
+              "version": {"type": "string", "minLength": 1, "maxLength": 128},
+              "architecture": {"enum": ["amd64", "all"]}
+            }
+          }
+        },
+        "task": {
+          "type": "object", "additionalProperties": false,
+          "required": ["version", "binary_sha256"],
+          "properties": {
+            "version": {"const": "3.53.1"},
+            "binary_sha256": {"$ref": "#/$defs/sha256"}
+          }
+        },
+        "mantle": {
+          "type": "object", "additionalProperties": false,
+          "required": ["source_revision", "archive_sha256", "released_integration"],
+          "properties": {
+            "source_revision": {"const": "0f54fa6e100c5b86af64aa383e41eed8c64e363a"},
+            "archive_sha256": {"const": "9461d47e66e274e6bdaeb04b77eb069a82d5e5a528139e765211c01c477449ca"},
+            "released_integration": {"const": false}
+          }
+        },
+        "installed_base_capability_claim": {"const": false}
+      }
+    },
+    "commands": {"type": "array", "minItems": 1, "maxItems": 24, "items": {"type": "string", "minLength": 1, "maxLength": 2048}},
+    "cleanup": {
+      "type": "object", "additionalProperties": false,
+      "required": ["generated_configuration_unchanged", "owned_containers_removed", "transport_secret_not_baked"],
+      "properties": {
+        "generated_configuration_unchanged": {"const": true},
+        "owned_containers_removed": {"const": true},
+        "transport_secret_not_baked": {"const": true}
+      }
+    },
+    "unproven": {
+      "const": ["arm64-runtime", "features", "forwarded-ports", "gpu", "lifecycle", "nix-adapter", "workstation-adapter", "released-mantle", "vscode", "codespaces", "devpod", "sibling-adoption", "signatures-provenance", "registry-publication", "hosted-qualification", "dockerfile-no-cache-rebuild"]
+    },
+    "limitations": {"type": "array", "minItems": 6, "uniqueItems": true, "items": {"type": "string", "minLength": 1, "maxLength": 1024}}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "digest": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"},
+    "observation": {
+      "type": "object", "additionalProperties": false,
+      "required": ["result", "details", "checks"],
+      "properties": {
+        "result": {"enum": ["passed", "failed", "unavailable", "not-performed"]},
+        "details": {"type": "string", "minLength": 1, "maxLength": 1024},
+        "checks": {"type": ["integer", "null"], "minimum": 0}
+      }
+    }
+  }
+}
