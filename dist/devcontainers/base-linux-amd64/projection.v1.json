@@ -3,7 +3,7 @@
     {
       "mode": "0644",
       "path": ".devcontainer/devcontainer.json",
-      "sha256": "e2b5768fedc2851d640037de0c73df9ee5e72927aa266c5bb822819f65c41c58"
+      "sha256": "de6c2ce8cd21ff5fdef0ceda1a356b9bf72940f8b91548e719da193b07c0c169"
     },
     {
       "mode": "0644",
@@ -75,7 +75,7 @@
     "id": "realm-devcontainer",
     "sources": {
       "tools/realm_apt_packages.py": "5e1c8dd551408bc73caedd818b63f50c7fe3ff2b5c1fc4cae1be5e770df9f406",
-      "tools/realm_devcontainer.py": "ff0d4831a7e2c67d0d73aea80d1cffe0a2959d3f664b9cec99b7f98c89c91cca",
+      "tools/realm_devcontainer.py": "d074299f13b5a66737c147f79521c85fdf2b764e450306f6c3c8d77c60830748",
       "tools/realm_profiles.py": "d031b61f955722ae84462dc3b554859212c7bfefceff3249bb2e57774b1cc83b"
     },
     "version": "1.0.0"
@@ -172,6 +172,6 @@
   "published": false,
   "resolved_sha256": "78852eff7b9056f1eb9e41221b67c62227d7e56dad8fa78e1008ca7bc1163bc6",
   "schema_version": "1.0.0",
-  "source_identity": "sha256:ec376d3fe3104679ceea0a23681b7c2803b0e601b3e7137f3ba90d4b2b00b21a",
+  "source_identity": "sha256:d7d673fb20c1d2be54faab4ceaa80d4c0b69ef359f4499e3d35d10ad618e25a6",
   "status": "generated-source"
 }

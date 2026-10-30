@@ -39,8 +39,11 @@ it into the image. Recipe and lock bytes remain part of bundle identity.
 
 Identity excludes timestamps and machine paths. It binds the executed
 generator/resolver/lock-validator bytes, full canonical profile graph, selected
-lock and other inputs. Git's executable role becomes 0644 or 0755 so checkout
-umasks do not change output. Checked output inventory, permissions and bytes are
+lock and other inputs. Git's owner-executable role becomes 0644 or 0755; input
+and checked output use that same role so checkout umasks do not cause drift.
+Owner-executable changes and special permission bits reject. Host read/write,
+group and other permission bits are outside Git's source contract; actual
+runtime access needs a separate user/container check. Inventory and bytes are
 compared exactly. No sibling implementation is vendored.
 
 This receipt is source identity, not an OCI digest, signature, release attestation
@@ -72,6 +75,12 @@ leave an incomplete new directory; `check` rejects it. No cleanup deletes prior
 output. To refresh examples, render fresh bundles, inspect replacement diffs and
 explicitly replace only reviewed generated content.
 
+Source reading permits at most 128 profile-directory entries and eight MiB of
+aggregate canonical inputs, including non-emitted profiles. Each source file is
+limited to one MiB; checked output traversal/error collection stops at 64 members.
+These bounds reject before rendering rather than treating a small output bundle
+as evidence that its complete source graph was small.
+
 On a matching native architecture, select the generated configuration and a
 workspace with the official Dev Container CLI:
 
@@ -90,7 +99,7 @@ machine paths or call modified JSON byte-identical generated configuration.
 
 Focused tests cover both architectures against the same resolver/recipe, target
 binding, deterministic relocation, no overwrite, malformed source/stale locks,
-symlinks and read-only rejection of damaged/missing/extra/permission-drifted
+symlinks and read-only rejection of damaged/missing/extra/executable-role-drifted
 output. Official schema and actual CLI/container observations are separate
 evidence. ARM64 generation does not establish a native ARM64 build or runtime.
 

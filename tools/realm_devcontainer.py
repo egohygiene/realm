@@ -24,6 +24,9 @@ VERSION = "1.0.0"
 PLATFORMS = ("linux/amd64", "linux/arm64")
 MAX_FILE_BYTES = 1024 * 1024
 MAX_BUNDLE_BYTES = 8 * MAX_FILE_BYTES
+MAX_SOURCE_ENTRIES = 128
+MAX_SOURCE_BYTES = 8 * MAX_FILE_BYTES
+MAX_BUNDLE_MEMBERS = 64
 COPY_PATHS = (
     "LICENSE",
     "catalog/capabilities.json",
@@ -89,7 +92,7 @@ def directory_fd(path: Path) -> Iterator[int]:
         os.close(descriptor)
 
 
-def read_regular(root: Path, relative: str, *, source_mode: bool = True) -> BundleFile:
+def read_regular(root: Path, relative: str) -> BundleFile:
     """Read one bounded regular source file using a non-following directory handle."""
     path = Path(relative)
     with directory_fd(root / path.parent) as parent:
@@ -112,12 +115,8 @@ def read_regular(root: Path, relative: str, *, source_mode: bool = True) -> Bund
                 raise ProjectionError(
                     f"source file has unsupported permissions: {relative}"
                 )
-            # Git tracks executable role, not checkout umask/read bits.
-            mode = (
-                (0o755 if actual_mode & 0o111 else 0o644)
-                if source_mode
-                else actual_mode
-            )
+            # Git tracks owner execution, not checkout umask/group/read/write bits.
+            mode = 0o755 if actual_mode & stat.S_IXUSR else 0o644
             data = stream.read(MAX_FILE_BYTES + 1)
             if len(data) > MAX_FILE_BYTES:
                 raise ProjectionError(f"source file exceeds the byte limit: {relative}")
@@ -154,17 +153,36 @@ def projection_files(
         )
     architecture = platform.split("/")[1]
     lock_path = f"images/base/packages/locks/debian-trixie-{architecture}.lock.json"
-    inputs = {name: read_regular(source, name) for name in (*COPY_PATHS, lock_path)}
+    inputs: dict[str, BundleFile] = {}
+    source_bytes = 0
+
+    def add_input(name: str) -> BundleFile:
+        nonlocal source_bytes
+        item = read_regular(source, name)
+        source_bytes += len(item.data) - len(
+            inputs[name].data if name in inputs else b""
+        )
+        if source_bytes > MAX_SOURCE_BYTES:
+            raise ProjectionError("canonical source aggregate exceeds its byte budget")
+        inputs[name] = item
+        return item
+
+    for name in (*COPY_PATHS, lock_path):
+        add_input(name)
     # Validate the complete profile graph using the existing canonical resolver.
     with directory_fd(source / "profiles") as profile_directory:
-        profile_names = sorted(os.listdir(profile_directory))
+        profile_names: list[str] = []
+        with os.scandir(profile_directory) as entries:
+            for entry in entries:
+                if len(profile_names) >= MAX_SOURCE_ENTRIES:
+                    raise ProjectionError("profile directory exceeds its entry budget")
+                profile_names.append(entry.name)
     profiles: dict[str, dict[str, Any]] = {}
-    for name in profile_names:
+    for name in sorted(profile_names):
         if not name.endswith(".profile.json"):
             continue
         relative = f"profiles/{name}"
-        item = read_regular(source, relative)
-        inputs[relative] = item
+        item = add_input(relative)
         value = strict_json(item.data)
         key = name.removesuffix(".profile.json")
         if value.get("name") != key:
@@ -315,6 +333,16 @@ def projection_files(
 
 def write_bundle(output: Path, files: dict[str, BundleFile]) -> None:
     """Create an exclusive new bundle; never replace authored or racing output."""
+    for name in files:
+        path = Path(name)
+        if (
+            path.is_absolute()
+            or not path.parts
+            or ".." in path.parts
+            or "\\" in name
+            or str(path) != name
+        ):
+            raise ProjectionError("generated member must be a safe relative path")
     with directory_fd(output.parent) as parent:
         try:
             os.mkdir(output.name, 0o755, dir_fd=parent)
@@ -360,7 +388,7 @@ def write_bundle(output: Path, files: dict[str, BundleFile]) -> None:
 
 
 def check_bundle(output: Path, files: dict[str, BundleFile]) -> list[str]:
-    """Compare exact bounded inventory, content and permissions without writes."""
+    """Compare bounded inventory, exact bytes and Git executable roles without writes."""
     errors: list[str] = []
     expected_directories = {
         str(parent)
@@ -369,29 +397,43 @@ def check_bundle(output: Path, files: dict[str, BundleFile]) -> list[str]:
         if str(parent) != "."
     }
     seen: set[str] = set()
-    with directory_fd(output) as root:
-        for current, directories, names, descriptor in os.fwalk(
-            ".", follow_symlinks=False, dir_fd=root
-        ):
-            for name in directories:
-                relative = str(Path(current) / name)
-                metadata = os.stat(name, dir_fd=descriptor, follow_symlinks=False)
-                if (
-                    not stat.S_ISDIR(metadata.st_mode)
-                    or relative not in expected_directories
-                ):
+    member_count = 0
+
+    def inspect(directory: int, prefix: Path) -> None:
+        nonlocal member_count
+        with os.scandir(directory) as entries:
+            for entry in entries:
+                member_count += 1
+                if member_count > MAX_BUNDLE_MEMBERS:
                     raise ProjectionError(
-                        "unexpected directory or symlink in generated bundle"
+                        "generated bundle exceeds its inventory budget"
                     )
-            for name in names:
-                relative = str(Path(current) / name)
-                if relative not in files:
+                relative = str(prefix / entry.name)
+                metadata = entry.stat(follow_symlinks=False)
+                if stat.S_ISDIR(metadata.st_mode):
+                    if relative not in expected_directories:
+                        raise ProjectionError(
+                            "unexpected directory in generated bundle"
+                        )
+                    child = os.open(
+                        entry.name,
+                        os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW,
+                        dir_fd=directory,
+                    )
+                    try:
+                        inspect(child, Path(relative))
+                    finally:
+                        os.close(child)
+                elif relative not in files:
                     errors.append(f"unexpected generated file: {relative}")
-                    continue
-                seen.add(relative)
-                actual = read_regular(output, relative, source_mode=False)
-                if actual != files[relative]:
-                    errors.append(f"generated file is different: {relative}")
+                else:
+                    seen.add(relative)
+                    actual = read_regular(output, relative)
+                    if actual != files[relative]:
+                        errors.append(f"generated file is different: {relative}")
+
+    with directory_fd(output) as root:
+        inspect(root, Path())
     errors.extend(
         f"generated file is missing: {name}" for name in sorted(set(files) - seen)
     )

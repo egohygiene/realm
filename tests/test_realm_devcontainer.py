@@ -277,6 +277,72 @@ class RealmDevcontainerTests(unittest.TestCase):
             self.assertIn("regular file", result.stderr)
             self.assertFalse(output.exists())
 
+    def test_non_emitted_profile_graph_has_an_aggregate_budget(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            source = self.source_copy(temporary)
+            base = json.loads((source / "profiles/base.profile.json").read_text())
+            for number in range(14):
+                profile = dict(base, name=f"extra-{number}", description="x" * 600_000)
+                (source / "profiles" / f"extra-{number}.profile.json").write_text(
+                    json.dumps(profile)
+                )
+                if number == 2:
+                    result = self.run_cli(
+                        "render",
+                        Path(temporary) / "within-budget",
+                        "--source-root",
+                        str(source),
+                    )
+                    self.assertEqual(result.returncode, 0, result.stderr)
+            output = Path(temporary) / "over-budget"
+            result = self.run_cli("render", output, "--source-root", str(source))
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("aggregate", result.stderr)
+            self.assertNotIn("Traceback", result.stderr)
+            self.assertFalse(output.exists())
+
+    def test_source_entries_and_output_inventory_are_bounded(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            source = self.source_copy(temporary)
+            for number in range(129):
+                (source / "profiles" / f"ignored-{number}.txt").write_text("unused")
+            output = Path(temporary) / "source-overflow"
+            result = self.run_cli("render", output, "--source-root", str(source))
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("entry budget", result.stderr)
+            self.assertFalse(output.exists())
+            output = Path(temporary) / "bundle"
+            self.assertEqual(self.run_cli("render", output).returncode, 0)
+            for number in range(65):
+                (output / f"unexpected-{number}.txt").write_text("keep")
+            result = self.run_cli("check", output)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("inventory budget", result.stderr)
+            self.assertTrue(
+                all(
+                    (output / f"unexpected-{number}.txt").read_text() == "keep"
+                    for number in range(65)
+                )
+            )
+
+    def test_clean_private_umask_keeps_git_executable_roles(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            output = Path(temporary) / "bundle"
+            self.assertEqual(self.run_cli("render", output).returncode, 0)
+            for path in output.rglob("*"):
+                if path.is_file():
+                    path.chmod(0o700 if path.stat().st_mode & 0o100 else 0o600)
+            self.assertEqual(self.run_cli("check", output).returncode, 0)
+            script = output / "images/base/scripts/realm-packages"
+            script.chmod(0o611)
+            self.assertNotEqual(self.run_cli("check", output).returncode, 0)
+            script.chmod(0o700)
+            config = output / ".devcontainer/devcontainer.json"
+            config.chmod(0o611)
+            self.assertEqual(self.run_cli("check", output).returncode, 0)
+            config.chmod(0o700)
+            self.assertNotEqual(self.run_cli("check", output).returncode, 0)
+
 
 if __name__ == "__main__":
     unittest.main()

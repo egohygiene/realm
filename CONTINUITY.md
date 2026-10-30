@@ -8,7 +8,7 @@ outrank it.
 
 - Objective: review the first generated base Dev Container slice for [#10](https://github.com/egohygiene/realm/issues/10).
 - Independent base: main `0ebdc4d3562a0af0f806876c5dd81d60e79f9e27`.
-- Candidate: `feat/10-devcontainer-projection`, draft [PR #57](https://github.com/egohygiene/realm/pull/57); implementation checkpoint. The PR records its exact pushed head.
+- Candidate: `feat/10-devcontainer-projection`, draft [PR #57](https://github.com/egohygiene/realm/pull/57); independent-review repair checkpoint. The PR records its exact pushed head.
 - Parallel installed-image evidence is draft [PR #58](https://github.com/egohygiene/realm/pull/58), issue #7; #17 owns the manual release adapter. Reconcile Taskfile/README/continuity semantically.
 
 ## Material changes and source ownership
@@ -21,12 +21,16 @@ configuration and a closed source-bundle receipt. It rejects unsupported intent
 rather than dropping artifacts, language runtimes, services or privilege.
 
 The source receipt binds actual generator/resolver/validator bytes and input/file
-hashes; no time or machine path enters identity. Source modes follow Git's
-executable role; output permissions and inventory are checked exactly. Bounded
+hashes; no time or machine path enters identity. Input and output mode checks
+follow Git's owner-executable role; special mode bits reject. Inventory and bytes
+are checked exactly, while host read/write/group permissions need runtime proof. Bounded
 strict JSON rejects duplicate/non-finite fields. Source/destination parents are
 opened without following symlinks, special files reject, and rendering exclusively
 creates a new directory. Interrupted new output is detectable, not auto-deleted.
 `check` writes nothing, contacts no host and executes no lifecycle/input commands.
+Source enumeration stops at 128 profile-directory entries and eight MiB of
+aggregate canonical inputs, including non-emitted profiles. Each input is at
+most one MiB. Output traversal/error collection stops at 64 members.
 
 Shared optional BuildKit CA transport from #7 commit
 `d6f3604d0f787cc8a2b6c97d70bd3122f81a8203` is cherry-picked as
@@ -39,10 +43,10 @@ it is not copied into layers or silently embedded in generated JSON.
 
 - Original base `task check`: 97 tests and offline gates passed.
 - Stage-one generation regression failed as expected in both architecture subcases because the emitter was absent.
-- Implementation focused suite: all nine methods passed, covering same-manifest/recipe/platform binding, relocation identity, no overwrite, symlinks/FIFO, duplicate/non-finite/oversized input, stale locks, malformed source and damaged/missing/extra/permission-drifted output.
-- `task check`: all 106 tests and declared offline gates passed. An initial attempt correctly stopped because ShellCheck was absent from that invocation's PATH; rerunning with the existing pinned tool setup passed.
+- Implementation focused suite passed nine methods and `task check` passed 106 tests. The review repair passes all twelve focused methods and all 109 Task tests/offline gates, adding aggregate/entry-budget and restrictive-checkout/executable-role controls.
+- An initial Task invocation correctly stopped because ShellCheck was absent from its PATH; the existing pinned tool setup passed. Ruff check/format and whitespace checks pass on the repaired source.
 - Ruff check/format, Python 3.9 grammar, exact shared recipe equality, own Draft202012 schema/receipt validation and both generated configurations against the exact official Draft201909 base schema passed.
-- An initial implementation incorrectly treated checkout 0600/0700 umasks as source-role errors. The repair uses Git's executable-role semantics and still checks generated permissions exactly; it does not change canonical file modes.
+- Review reproduced a valid 12-MiB non-emitted profile graph bypassing the output-only cap and a fresh restrictive-umask Git checkout failing literal output permission checks. Repairs add aggregate/enumeration budgets and compare owner-executable roles on both sides, with unchanged clean-checkout and actual role-drift controls. No canonical file mode is changed; independent replay of this repaired head is next.
 
 No generated runtime or host proof is claimed yet. Next: independently review the
 complete source, then qualify official CLI interpretation and actual native local
