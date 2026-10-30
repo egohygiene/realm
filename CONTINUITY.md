@@ -2,65 +2,53 @@
 
 ## Current checkpoint
 
-Observed 2026-10-30. This repository-owned prose handoff records context, not
-permission or a new machine-enforced continuity contract. Live repository state,
-applicable instructions and canonical sources outrank this snapshot.
+Observed 2026-10-30. This concise repository-owned handoff is context rather than
+permission or a new machine-enforced continuity contract. Live state and
+canonical sources outrank it.
 
-- Verified main before audit integration: `b0d53ffda312ef82b0c3af16540b898a9ea3df82`.
-- #50 and #51 repairs are integrated through [PR #53](https://github.com/egohygiene/realm/pull/53) and [PR #54](https://github.com/egohygiene/realm/pull/54).
-- #8 source activation preparation merged through [PR #55](https://github.com/egohygiene/realm/pull/55) at `19dc1faf978a2135fd9b2bc4c89f9c9da89964df`.
-- #39 standards/mapping merged through [PR #56](https://github.com/egohygiene/realm/pull/56) at `b0d53ffda312ef82b0c3af16540b898a9ea3df82`; reconciled candidate `e9dc8d3f09e999d8ec6b7d92382b7bc150469ddc`.
-- [Audit PR #52](https://github.com/egohygiene/realm/pull/52) integrates its historical report/evidence and refreshes only the operational roadmap pointer and this handoff. The PR records its final head and merge state.
-- Next implementation batch: not selected. Read the requested issue and live [roadmap #25](https://github.com/egohygiene/realm/issues/25) before starting a new issue-sized branch from updated main.
+- Objective: prepare the first generated base Dev Container slice for [#10](https://github.com/egohygiene/realm/issues/10).
+- Independent base: main `0ebdc4d3562a0af0f806876c5dd81d60e79f9e27`, including merged #8/#39 preparation and historical audit #52.
+- Candidate branch: `feat/10-devcontainer-projection`; diagnosis/regression checkpoint. The draft PR records its pushed head and later stages.
+- Canonical sources: catalog/profiles, resolved-profile v1, the exact base Dockerfile/scripts/locks, proposed ADR-0004, Dev Container boundary mapping and [roadmap #25](https://github.com/egohygiene/realm/issues/25).
 
-## Source ownership and acceptance
+## Diagnosis and intended boundary
 
-`docs/mantle-shell.md` uses public Bash/Zsh `.shellrc` and native Fish activation.
-Mantle is sourced, never substituted for a login-shell executable.
-`config/mantle-source-canary.json` pins source
-`0f54fa6e100c5b86af64aa383e41eed8c64e363a`; `tools/realm_mantle.py` verifies
-archive bytes, bounds complete gzip expansion before tar metadata parsing,
-rejects unsafe inventory, publishes acquisition without replacement and runs
-isolated real-shell canaries with owned process-group deadlines. Offline Task
-check validates the pin; acquisition/canary are explicit separate Tasks.
-The source/adapter-bound receipt is `evidence/mantle-source-canary.json`.
+The resolver declares Dev Container intent, but no emitter turns it into a
+buildable local template. The authored #39 reference is not emitted Realm intent
+or installed-profile proof. The regression checks demand a relocatable generated
+bundle for base AMD64/ARM64, exact resolved-manifest and recipe binding, read-only
+drift detection, controlled unsupported input, and no overwrite or symlink escape.
 
-#39's standards checkpoint adds proposed ADR-0004, parallel projections and a
-thirteen-family/four-host mapping. `tools/realm_devcontainer_boundary.py` checks
-the closed mapping, bounded reference policy and exact official base-schema
-bytes. It is neither an emitter nor a full Dev Container schema engine. Profiles
-and resolved-profile v1 remain canonical. The authored reference is not generated
-by Realm #10; the separate typed limited receipt under `docs/evidence` records
-actual CLI/local-container observations and explicitly unproved layers. The
-read-only checker does not import external receipts as authentication.
+The implementation will support only a faithful minimal base, preserving the
+canonical profile and resolved v1 contract. Unsupported language, service and
+artifact profiles must fail instead of silently dropping capabilities. Local
+source generation is not registry publication. Features, Nix/workstation,
+released Mantle, and IDE/cloud qualification remain broader acceptance criteria.
 
-Keep #8 open for a reviewed published Mantle release, independent artifact
-verification, accepted release selection and actual image/projection/platform
-qualification. Keep #39 open for #10's generated-profile Task/Mantle canary,
-actual IDE/cloud host proof and sibling adoption. Later host proof returns to
-#39 without a circular prerequisite. Optional Nix/workstation and broader
-services remain separate; they do not block the minimal project boundary.
+## Validation and next action
 
-## Verification and preserved evidence
+The unchanged base passed `task check`: all 97 tests and declared offline gates.
+The new focused regression
+`python3 -m unittest discover --start-directory tests --pattern test_realm_devcontainer.py -k generated_bundle_matches_same_resolved_manifest --verbose`
+failed as expected for both architecture subcases because the emitter is absent.
+Ruff check/format and whitespace checks passed after correcting import order and
+an unnecessary suppression. The full new suite is not presented as passing.
 
-- The original #8/#39 heads `276467eebe9da3586f1bb2d53ffdbeb0d31aa29d` and `09f8dd6f571762c1411c9b428000d00e1c72390a` had independent review and passed a combined 97-test qualification.
-- Fresh pre-merge checks passed all 77 tests for #55 and all 97 tests plus declared offline gates for #56. Its real reconciliation preserved every one of the twenty qualified non-handoff files byte-for-byte, including the combined Taskfile. Merged main matches the reconciled candidate tree.
-- Earlier #8 evidence passed 24 actual Linux AMD64 Bash/Zsh/Fish process cases, inherited-startup isolation and seven restricted local Docker cases. Earlier #39 evidence passed official Draft 2019-09 schema validation and CLI 0.90.0 interpretation/start/exec/reopen/recreate of the unchanged authored reference. Own schemas, mapping/report/limited-receipt instances and source bindings passed independent JSON Schema checks.
-- Audit report `audits/realm-engineering-readiness-20261028T064323Z.md` and its evidence JSON retain exact bytes and modes from original PR #52 head `1fdd8dd402fc2f559af8b63cb8bc3290479d5412`.
-- That audit describes source `d66a0e4d5a100d287a9745f4c45f055e0a78948b` and its 2026-10-28 tracker state. Its 55-test result, 39-item ledger, negative probes and then-draft delivery record are historical. They are not rerun or rewritten to describe repaired source.
-- The audit reconciliation changes only CONTINUITY.md, ROADMAP.md and the two preserved artifacts relative to current main. Artifact identity, JSON/ledger consistency, local links, documentation scope, historical roadmap preservation and whitespace are checked before merge; the PR records the results.
+Next: implement deterministic generation and exact source/lock checks, run all
+focused tests and `task check`, then independently review and qualify the actual
+generated bundle using the official schema/CLI and available local runtime.
+Parallel #7 owns installed-image evidence and #17 owns the manual release adapter;
+coordinate immutable image/source receipts without copying sibling code.
 
-## Limits and recovery
+## Gates, preservation and privacy
 
-Source checksum proof is not release authentication. Authored-reference execution
-proves no generated profile, installed Realm capability, Task/Mantle/Feature,
-lifecycle, forwarding, GPU or VS Code/Codespaces/DevPod outcome. Recreation is
-not a Dockerfile/Codespaces rebuild. Native macOS/ARM64/Windows, signature and
-provenance verification, hosted qualification and publication remain unproved.
-Hosted Actions remain deferred; all new checkpoint and merge messages include
-`[skip ci]`. No release, tag, deployment or paid resource was created.
+Full #10 includes Features publication, Nix/workstation adapters and broader
+conformance; keep it open. Full #8/#39 retain published Mantle, generated canary,
+and actual supported-host proof. Hosted Actions are deferred and all new commits
+use `[skip ci]`. No merge, tag, release, signing, publication, workflow dispatch,
+paid resource or manual issue closure is performed.
 
-Verify the linked PR states and current remote main before resuming. Preserve
-historical audit evidence and the truthful external gates. Select no additional
-implementation from this handoff alone; the next batch is pending. Keep private
-paths, credentials, environment values and raw logs out of public evidence.
+Preserve historical audit report/evidence, artwork, package locks and canonical
+catalog/profile identities. Public artifacts exclude credentials, private paths,
+environment values and raw logs. Refresh this operational snapshot from actual
+results before the next PR handoff.
