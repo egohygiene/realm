@@ -8,7 +8,7 @@ status: provisional
 owners:
   - egohygiene
 created: 2026-08-19
-updated: 2026-08-24
+updated: 2026-10-30
 governed_by:
   - architecture-roadmap
 depends_on:
@@ -25,6 +25,36 @@ supersedes: []
 ---
 
 # Realm Roadmap
+
+## Current engineering handoff — 2026-10-30
+
+Use [roadmap #25](https://github.com/egohygiene/realm/issues/25), the owning issues
+and [current continuity](CONTINUITY.md) for live execution status. The preserved
+[source-revision audit](audits/realm-engineering-readiness-20261028T064323Z.md)
+and [evidence](audits/evidence/realm-engineering-readiness-20261028T064323Z.json)
+describe source `d66a0e4d5a100d287a9745f4c45f055e0a78948b` on 2026-10-28.
+Its 39-item inventory, 9-ready/30-gated classification, negative probes and
+delivery state are historical observations, not refreshed acceptance claims.
+
+The #50 resolver repair and #51 structural validation repair are merged in
+[PR #53](https://github.com/egohygiene/realm/pull/53) and
+[PR #54](https://github.com/egohygiene/realm/pull/54). Bounded #8 Mantle source
+activation preparation and #39 Dev Container standards/mapping are merged in
+[PR #55](https://github.com/egohygiene/realm/pull/55) and
+[PR #56](https://github.com/egohygiene/realm/pull/56). Their combined source passed
+97 local tests. Full #8/#39 acceptance remains open: published verified Mantle,
+#10's generated projection/Task/Mantle canary and actual supported-host proof
+are separate gates. The next implementation batch has not been selected.
+
+The August execution snapshot below is historical: CI, immutable action pins and the minimal base Dockerfile now exist. Profile declarations still do not prove emitted Nix/workstation/Dev Container adapters or a published image.
+
+The recommended first-version scope is the existing minimal runtime/environment
+with credible checks, pinned Mantle activation and one local Dev Container
+canary where applicable. Distributed-release approval remains separate.
+Optional full images, services, models, knowledge/confidential environments,
+new dashboards and ADR-history migration do not block comic content. Original
+issue scopes and the longer-horizon strategy below are preserved.
+
 
 <!-- BEGIN ROADMAP EXECUTION SNAPSHOT -->
 <!-- roadmap-manifest
