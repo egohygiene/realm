@@ -3,6 +3,8 @@
 The authored reference is independent of Realm's future projection. These tests
 never start a container, execute lifecycle hooks or qualify an editor/cloud host.
 """
+# Copyright 2026 Ego Hygiene
+# SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
@@ -10,14 +12,13 @@ import copy
 import hashlib
 import json
 import os
-from pathlib import Path
 import shutil
 import subprocess
 import sys
 import tempfile
-from typing import Any
 import unittest
-
+from pathlib import Path
+from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 TOOL = ROOT / "tools" / "realm_devcontainer_boundary.py"
@@ -324,11 +325,76 @@ class RealmDevcontainerBoundaryTests(unittest.TestCase):
 
     def test_digest_pinned_features_are_policy_data_without_remote_proof(self) -> None:
         mapping, reference = self.authored_inputs()
-        reference["features"] = {"ghcr.io/example/features/tool@sha256:" + "a" * 64: {}}
+        reference["features"] = {
+            "ghcr.io/example/features/tool@sha256:" + "a" * 64: {
+                "version": "1.2.3",
+                "enabled": True,
+                "owner-defined": {"data": "not-interpreted-by-the-policy-checker"},
+            }
+        }
         result, report = self.check_documents(mapping, reference)
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         self.assertEqual(report["state"], "valid")
         self.assertEqual(report["evidence_layers"]["reference_policy"], "passed")
+
+    def test_reference_policy_rejects_non_object_feature_options(self) -> None:
+        mapping, reference = self.authored_inputs()
+        feature = "ghcr.io/example/features/tool@sha256:" + "a" * 64
+        for options in [None, True, 1, "latest", []]:
+            with self.subTest(options=options):
+                mutated = copy.deepcopy(reference)
+                mutated["features"] = {feature: options}
+                result, report = self.check_documents(mapping, mutated)
+                self.assert_invalid(result, report)
+                self.assertEqual(
+                    report["evidence_layers"]["reference_policy"], "failed"
+                )
+
+    def test_reference_policy_rejects_non_oci_digest_strings(self) -> None:
+        mapping, reference = self.authored_inputs()
+        for repository in [
+            "https://ghcr.io/example/reference",
+            "ghcr.io/example/./reference",
+            "ghcr.io/example/../reference",
+            "ghcr.io/example//reference",
+        ]:
+            pinned = repository + "@sha256:" + "a" * 64
+            for field, value in [("image", pinned), ("features", {pinned: {}})]:
+                with self.subTest(repository=repository, field=field):
+                    mutated = copy.deepcopy(reference)
+                    mutated[field] = value
+                    result, report = self.check_documents(mapping, mutated)
+                    self.assert_invalid(result, report)
+                    self.assertEqual(
+                        report["evidence_layers"]["reference_policy"], "failed"
+                    )
+
+    def test_reference_user_policy_checks_user_component_without_claiming_existence(
+        self,
+    ) -> None:
+        mapping, reference = self.authored_inputs()
+        for field in ["remoteUser", "containerUser"]:
+            for user in ["root:root", "0:0", "00"]:
+                with self.subTest(field=field, rejected_user=user):
+                    mutated = copy.deepcopy(reference)
+                    mutated[field] = user
+                    result, report = self.check_documents(mapping, mutated)
+                    self.assert_invalid(result, report)
+                    self.assertEqual(
+                        report["evidence_layers"]["reference_policy"], "failed"
+                    )
+            for user in ["vscode", "1000", "1000:1000"]:
+                with self.subTest(field=field, declared_user=user):
+                    mutated = copy.deepcopy(reference)
+                    mutated[field] = user
+                    result, report = self.check_documents(mapping, mutated)
+                    self.assertEqual(
+                        result.returncode, 0, result.stdout + result.stderr
+                    )
+                    self.assertEqual(report["state"], "valid")
+                    self.assertEqual(
+                        report["evidence_layers"]["reference_policy"], "passed"
+                    )
 
     def test_local_schema_byte_drift_fails_in_an_isolated_checker_copy(self) -> None:
         mapping, _ = self.authored_inputs()

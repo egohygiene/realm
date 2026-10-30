@@ -80,7 +80,7 @@
         "overrideFeatureInstallOrder"
       ],
       "realm_inputs": [
-        "capabilities[].artifacts"
+        "artifacts"
       ],
       "handling": "Prefer reviewed reusable Features when an immutable artifact and its option contract are available.",
       "limitations": [
@@ -113,12 +113,13 @@
         "updateRemoteUserUID"
       ],
       "realm_inputs": [
-        "constraints.privileged"
+        "not-in-resolved-profile-v1"
       ],
       "handling": "Preserve non-root image identity and distinguish container process users from remote tool users.",
       "limitations": [
         "UID/GID adjustment is Linux-specific.",
-        "The reference disables UID mutation; identity existence needs runtime proof."
+        "The reference disables UID mutation; identity existence needs runtime proof.",
+        "The privileged safety flag does not encode a user or UID/GID policy."
       ]
     },
     {
@@ -234,7 +235,7 @@
       ],
       "realm_inputs": [
         "source_pins",
-        "profile-publication.cache_key"
+        "profile-publication.v1:cache_key"
       ],
       "handling": "Relay owns CI/prebuild mechanics; cache identity must not become canonical capability truth.",
       "limitations": [
@@ -255,15 +256,16 @@
         "users": "degraded",
         "mounts": "host-specific",
         "lifecycle": "supported",
-        "ports": "supported",
-        "host-requirements": "supported",
+        "ports": "degraded",
+        "host-requirements": "host-specific",
         "editor-customizations": "ignored",
         "host-customizations": "ignored",
         "prebuild-cache": "host-specific"
       },
       "limitations": [
         "Documented reference implementation behavior is not complete Realm runtime qualification.",
-        "Editor customizations and host adapters are outside CLI conformance."
+        "Editor customizations and host adapters are outside CLI conformance.",
+        "Interpreting ports and requirements does not provide a forwarding proxy or allocate a machine."
       ]
     },
     {
@@ -278,7 +280,7 @@
         "mounts": "host-specific",
         "lifecycle": "supported",
         "ports": "supported",
-        "host-requirements": "supported",
+        "host-requirements": "host-specific",
         "editor-customizations": "supported",
         "host-customizations": "ignored",
         "prebuild-cache": "host-specific"

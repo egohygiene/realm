@@ -29,6 +29,12 @@ tasks:
       - '"{{.PYTHON}}" tools/realm_profiles.py validate-profiles'
       - '"{{.PYTHON}}" tools/realm_tool_registry.py validate'
       - task: profiles:check
+      - task: devcontainer:check
+
+  devcontainer:check:
+    desc: Check the static Dev Container mapping and authored-reference policy without running a host.
+    cmds:
+      - '"{{.PYTHON}}" tools/realm_devcontainer_boundary.py check'
 
   profiles:render:
     desc: Render deterministic profile publication declarations.

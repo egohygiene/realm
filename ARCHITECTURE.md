@@ -52,13 +52,37 @@ flowchart LR
   S7[Artifact test and publication]
   S1 --> S2
   S2 --> S3
-  S3 --> S4
-  S4 --> S5
-  S5 --> S6
+  S2 --> S4
+  S2 --> S5
+  S2 --> S6
+  S3 --> S7
+  S4 --> S7
+  S5 --> S7
   S6 --> S7
 ```
 
 The diagram is conceptual. [SYSTEM.md](SYSTEM.md) remains authoritative for responsibilities and implementation evidence determines current availability.
+
+## Portable container-development boundary
+
+The open Dev Container Specification is the portable container-development
+interface where applicable. Realm capability profiles and the resolved manifest
+remain canonical; Docker, Dev Container, Nix and workstation outputs are parallel
+projections rather than a required chain through one editor or host.
+
+The [versioned boundary mapping](catalog/devcontainer-boundary.v1.json) assigns
+portable properties, consumer overlays and host adapters explicitly. Editor
+customizations stay namespaced; Codespaces-specific permissions, machine
+selection and prebuild behavior do not become portable capability policy.
+[ADR-0004](DECISIONS.md#adr-0004-project-canonical-profiles-to-the-dev-container-standard)
+compares authored JSON, Realm projection and optional devenv generation.
+
+The [boundary guide](docs/devcontainer-boundary.md) distinguishes the authored
+reference, official schema validation, CLI interpretation, container execution,
+shared tooling and actual IDE/cloud qualification. Issue #39 defines this
+mapping checkpoint; issue #10 owns emitted projections and the generated canary,
+after which #39 can complete host proof. Sanctuary consumes the same contract
+without maintaining an independent implementation.
 
 ## Dependency rules
 

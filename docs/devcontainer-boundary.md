@@ -42,17 +42,28 @@ customizations/repository permissions, and prebuild/cache behavior. Each row
 names the current Realm input or explicitly says that the resolved v1 manifest
 does not contain that field. This does not add fictitious fields to the existing
 capability or resolved-profile contracts.
+Plain field paths name resolved-profile v1 fields; `projection:docker` names a
+projection selector, and `profile-publication.v1:cache_key` belongs to the separate
+publication contract rather than the resolved manifest.
 
 Image and Feature references must be digest-bound in the authored reference
 policy. Prefer reviewed reusable Features and released Realm images once they
 exist. The official base schema accepts arbitrary Feature options; validating
 it does not validate a Feature's own option contract, registry availability,
 installation behavior or reproducibility.
+The bounded policy accepts ordinary lowercase OCI repository components, an
+optional registry/port and tag, and a SHA-256 digest. URL schemes, empty or dot
+path components and mutable tags without a digest are rejected. Feature option
+values must be objects under this Realm policy; their owner-defined data is not
+interpreted. These restrictions do not implement the full OCI or Feature schema.
 
 `containerEnv` applies to container processes; `remoteEnv` applies to processes
 spawned by the remote tool. `containerUser` and `remoteUser` have different
 scopes. UID/GID updating is Linux-specific. Host CPU/memory/storage/GPU fields
 are requirements or hints, not allocation, machine-selection or device proof.
+The reference policy rejects explicit root names and zero UID aliases, including
+`user:group` forms, and disables UID mutation. It does not resolve user databases
+or validate the image's default identity when a user field is absent.
 
 `initializeCommand` executes on the host, including a cloud VM, and may repeat.
 Later lifecycle hooks execute inside the container. Strings invoke a shell,
