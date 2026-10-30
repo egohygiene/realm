@@ -60,8 +60,10 @@ task release:verify VERSION=v0.1.0 SOURCE_REVISION="$IMAGE_SOURCE_REVISION" BUND
 ```
 
 Repeat `--image-evidence` for ARM64 when actual evidence exists. Each #7 receipt
-and its exact artifact bytes are verified before copying. Source revisions and
-platforms cannot conflict. A local config digest and a locally computed scanner
+and its exact artifact bytes are verified before copying. Source revisions,
+platforms and shared source-input checksums cannot conflict. Captured payload
+hashes and sizes must still match the owner-verified receipt before copying;
+receipt metadata is decoded from those captured bytes. A local config digest and a locally computed scanner
 manifest digest remain local identities; neither is relabelled as a registry
 index or platform-manifest digest.
 

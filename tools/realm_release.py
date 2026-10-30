@@ -143,15 +143,19 @@ def object_pairs(pairs: list[tuple[str, Any]]) -> dict:
     return result
 
 
-def read_object(path: Path, maximum: int = MAX_JSON) -> dict:
+def decode_object(data: bytes) -> dict:
     value = json.loads(
-        regular_bytes(path, maximum).decode("utf-8"),
+        data.decode("utf-8"),
         object_pairs_hook=object_pairs,
         parse_constant=lambda _: fail("nonfinite JSON numbers are unsupported"),
     )
     if not isinstance(value, dict):
         fail("JSON input must be an object")
     return value
+
+
+def read_object(path: Path, maximum: int = MAX_JSON) -> dict:
+    return decode_object(regular_bytes(path, maximum))
 
 
 def canonical(value: Any) -> bytes:
@@ -443,7 +447,10 @@ def write_exclusive(output: Path, repository: Path, files: dict[str, bytes]) -> 
     if len(files) > MAX_FILES - 1 or sum(map(len, files.values())) > MAX_TOTAL:
         fail("output inventory is too large")
     output.parent.mkdir(parents=True, exist_ok=True)
-    output.mkdir(exist_ok=False)
+    try:
+        output.mkdir(exist_ok=False)
+    except FileExistsError:
+        fail("output already exists; choose a fresh review directory")
     owned = output.stat()
     try:
         for name, data in sorted(files.items()):
@@ -541,7 +548,7 @@ def verified_image(directory: Path) -> tuple[dict, dict[str, bytes], str]:
     for name, data in files.items():
         if len(data) > MAX_JSON or b'"realm.image-evidence/v1"' not in data:
             continue
-        value = read_object(directory / name)
+        value = decode_object(data)
         if value.get("contract") == "realm.image-evidence/v1":
             same(value, receipt, "verified image receipt")
             receipts.append(name)
@@ -552,6 +559,10 @@ def verified_image(directory: Path) -> tuple[dict, dict[str, bytes], str]:
     } | set(receipts)
     if set(files) != expected:
         fail("image evidence contains undeclared files")
+    for artifact in receipt["artifacts"].values():
+        data = files[artifact["path"]]
+        if len(data) != artifact["bytes"] or checksum(data) != artifact["sha256"]:
+            fail("captured image artifact changed after owner verification")
     return receipt, files, receipts[0]
 
 
@@ -569,6 +580,7 @@ def bundle_files(
     observed_times = []
     platforms = set()
     local_ids = set()
+    source_inputs = {}
     for receipt, payloads, receipt_name in sorted(
         images, key=lambda item: item[0]["subject"]["platform"]
     ):
@@ -578,6 +590,10 @@ def bundle_files(
             "image source repository",
         )
         same(receipt["source"]["revision"], revision, "image source revision")
+        for name, digest in receipt["source"]["inputs"].items():
+            if name in source_inputs and source_inputs[name] != digest:
+                fail("platform receipts contradict shared source-input checksums")
+            source_inputs[name] = digest
         subject = receipt["subject"]
         platform = subject["platform"]
         if (
@@ -699,6 +715,10 @@ def bundle_files(
 
 
 def bundle(repository: Path, arguments: argparse.Namespace) -> dict:
+    version_tag(arguments.version)
+    source_revision(arguments.source_revision)
+    if not 1 <= len(arguments.image_evidence) <= 2:
+        fail("bundle supports one or two observed platform receipts")
     check(repository)
     output = Path(os.path.abspath(arguments.output))
     for directory in arguments.image_evidence:
@@ -738,7 +758,7 @@ def verify(repository: Path, arguments: argparse.Namespace) -> dict:
     }
     if not required.issubset(files):
         fail("Relay container-image required records are missing")
-    manifest = read_object(arguments.bundle / "image-digest.json")
+    manifest = decode_object(files["image-digest.json"])
     closed(
         manifest,
         {

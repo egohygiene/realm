@@ -9,12 +9,15 @@ from __future__ import annotations
 import hashlib
 import importlib.util
 import json
+import os
 import shutil
 import subprocess
 import sys
 import tempfile
+import types
 import unittest
 from pathlib import Path
+from unittest import mock
 
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "tools" / "realm_release.py"
@@ -46,7 +49,9 @@ class RealmReleaseTests(unittest.TestCase):
         )
         return result.stdout.strip()
 
-    def run_release(self, *arguments: str, success: bool = True) -> dict:
+    def run_release(
+        self, *arguments: str, success: bool = True, environment=None
+    ) -> dict:
         result = subprocess.run(
             [
                 sys.executable,
@@ -59,6 +64,7 @@ class RealmReleaseTests(unittest.TestCase):
             capture_output=True,
             timeout=15,
             check=False,
+            env=environment,
         )
         self.assertEqual(
             result.returncode, 0 if success else 2, result.stdout + result.stderr
@@ -267,7 +273,11 @@ class RealmReleaseTests(unittest.TestCase):
             }
         ).encode()
         receipt = {
-            "source": {"repository": "egohygiene/realm", "revision": revision},
+            "source": {
+                "repository": "egohygiene/realm",
+                "revision": revision,
+                "inputs": {"images/base/Dockerfile": "f" * 64},
+            },
             "subject": {
                 "identity_kind": "local-config",
                 "platform": platform,
@@ -382,6 +392,241 @@ class RealmReleaseTests(unittest.TestCase):
             str(output),
             success=False,
         )
+
+    def owner_fixture(self, directory):
+        """Use the actual image-owner verifier with explicitly authored payloads."""
+        specification = importlib.util.spec_from_file_location(
+            "owner_evidence_fixtures", ROOT / "tests/test_realm_image_evidence.py"
+        )
+        fixtures = importlib.util.module_from_spec(specification)
+        specification.loader.exec_module(fixtures)
+        directory.mkdir()
+        helper = fixtures.PortableEvidenceTests()
+        tool, receipt = helper.fixture(directory)
+        # The owner's fixture proves its bounded semantic subset. The release
+        # SPDX index also needs an external document URI; this remains a
+        # synthetic fixture, not actual scanner or platform evidence.
+        sbom_path = directory / "sbom.spdx.json"
+        sbom = json.loads(sbom_path.read_text())
+        sbom["documentNamespace"] = (
+            "https://example.invalid/realm-installed-image-fixture"
+        )
+        data = tool.encode(sbom)
+        sbom_path.write_bytes(data)
+        receipt["artifacts"]["sbom"]["sha256"] = tool.digest(data)
+        receipt["artifacts"]["sbom"]["bytes"] = len(data)
+        (directory / "image-evidence.json").write_bytes(tool.encode(receipt))
+        self.assertEqual(tool.verify_evidence(directory), receipt)
+        return helper, tool, receipt
+
+    def local_bundle(self):
+        evidence = self.directory / "owner-evidence"
+        self.owner_fixture(evidence)
+        output = self.directory / "local-bundle"
+        self.run_release(
+            "bundle",
+            "--version",
+            "v0.1.0",
+            "--source-revision",
+            "b" * 40,
+            "--image-evidence",
+            str(evidence),
+            "--output",
+            str(output),
+        )
+        return output
+
+    def verify_local(self, output, **kwargs):
+        return self.run_release(
+            "verify",
+            "--version",
+            "v0.1.0",
+            "--source-revision",
+            "b" * 40,
+            "--bundle",
+            str(output),
+            **kwargs,
+        )
+
+    def rewrite_checksums(self, directory):
+        files = {
+            path.relative_to(directory).as_posix(): path.read_bytes()
+            for path in directory.rglob("*")
+            if path.is_file() and path.name != "SHA256SUMS"
+        }
+        (directory / "SHA256SUMS").write_text(
+            "".join(
+                f"{hashlib.sha256(data).hexdigest()}  {name}\n"
+                for name, data in sorted(files.items())
+            )
+        )
+
+    def test_actual_owner_contract_roundtrip_stays_local_and_exclusive(self) -> None:
+        output = self.local_bundle()
+        report = self.verify_local(output)
+        self.assertEqual(report["status"], "verified-local-bundle")
+        self.assertEqual(report["observed_platforms"], ["linux/amd64"])
+        self.assertEqual(
+            report["registry_credentials"], "not-required-for-local-verification"
+        )
+        self.run_release(
+            "verify",
+            "--version",
+            "v0.1.0",
+            "--source-revision",
+            "b" * 40,
+            "--bundle",
+            str(output),
+            "--require-release-ready",
+            success=False,
+        )
+        before = (output / "SHA256SUMS").read_bytes()
+        self.run_release(
+            "bundle",
+            "--version",
+            "v0.1.0",
+            "--source-revision",
+            "b" * 40,
+            "--image-evidence",
+            str(self.directory / "owner-evidence"),
+            "--output",
+            str(output),
+            success=False,
+        )
+        self.assertEqual(before, (output / "SHA256SUMS").read_bytes())
+        self.verify_local(output)
+
+    def test_rehashed_root_forgeries_fail_while_owner_payloads_remain_valid(
+        self,
+    ) -> None:
+        original = self.local_bundle()
+        cases = [
+            (
+                "image-digest.json",
+                lambda value: value.__setitem__("release_ready", True),
+            ),
+            (
+                "provenance.json",
+                lambda value: value.__setitem__("source_revision", "c" * 40),
+            ),
+            ("signature.json", lambda value: value.__setitem__("state", "verified")),
+            (
+                "sbom.spdx.json",
+                lambda value: value["externalDocumentRefs"][0]["checksum"].__setitem__(
+                    "checksumValue", "d" * 64
+                ),
+            ),
+        ]
+        for number, (name, change) in enumerate(cases):
+            with self.subTest(name=name):
+                forged = self.directory / f"forged-{number}"
+                shutil.copytree(original, forged)
+                path = forged / name
+                value = json.loads(path.read_text())
+                change(value)
+                path.write_bytes(self.release_module().canonical(value))
+                self.rewrite_checksums(forged)
+                self.verify_local(forged, success=False)
+        self.verify_local(original)
+
+    def test_rehashed_owner_subject_forgery_is_rejected_before_output(self) -> None:
+        evidence = self.directory / "owner-evidence"
+        helper, _tool, _receipt = self.owner_fixture(evidence)
+        helper.rewrite(
+            evidence,
+            "syft.json",
+            lambda value: value["source"]["metadata"].__setitem__(
+                "architecture", "arm64"
+            ),
+        )
+        output = self.directory / "rejected-owner-output"
+        self.run_release(
+            "bundle",
+            "--version",
+            "v0.1.0",
+            "--source-revision",
+            "b" * 40,
+            "--image-evidence",
+            str(evidence),
+            "--output",
+            str(output),
+            success=False,
+        )
+        self.assertFalse(output.exists())
+
+    def test_portable_verification_initializes_no_registry_or_scanner_tool(
+        self,
+    ) -> None:
+        output = self.local_bundle()
+        trap = self.directory / "trap"
+        trap.mkdir()
+        marker = self.directory / "unexpected-tool"
+        for name in ("docker", "syft", "grype", "gh", "git"):
+            path = trap / name
+            path.write_text(f"#!/bin/sh\nprintf x > '{marker}'\nexit 95\n")
+            path.chmod(0o755)
+        environment = dict(os.environ)
+        environment["PATH"] = str(trap)
+        self.verify_local(output, environment=environment)
+        self.assertFalse(marker.exists())
+
+    def test_bundle_output_cannot_be_nested_inside_its_image_inputs(self) -> None:
+        evidence = self.directory / "owner-evidence"
+        self.owner_fixture(evidence)
+        output = evidence / "nested-output"
+        before = sorted(path.name for path in evidence.iterdir())
+        self.run_release(
+            "bundle",
+            "--version",
+            "v0.1.0",
+            "--source-revision",
+            "b" * 40,
+            "--image-evidence",
+            str(evidence),
+            "--output",
+            str(output),
+            success=False,
+        )
+        self.assertFalse(output.exists())
+        self.assertEqual(before, sorted(path.name for path in evidence.iterdir()))
+
+    def test_captured_copy_must_still_match_the_owner_verified_snapshot(self) -> None:
+        """Deterministic mutation seam, not an assertion about real concurrency."""
+        evidence = self.directory / "owner-evidence"
+        _helper, owner, _receipt = self.owner_fixture(evidence)
+
+        def verified_then_mutated(directory):
+            receipt = owner.verify_evidence(directory)
+            path = directory / "syft.json"
+            path.write_bytes(path.read_bytes() + b"\n")
+            return receipt
+
+        seam = types.SimpleNamespace(verify_evidence=verified_then_mutated)
+        with (
+            mock.patch.dict(sys.modules, {"realm_image_evidence": seam}),
+            self.assertRaisesRegex(ValueError, "captured image artifact"),
+        ):
+            self.release_module().verified_image(evidence)
+
+    def test_pure_two_platform_mapping_is_order_independent_not_native_proof(
+        self,
+    ) -> None:
+        tool = self.release_module()
+        amd64 = self.mapping_fixture()
+        arm64 = self.mapping_fixture(platform="linux/arm64")
+        arm64[0]["subject"]["local_config_digest"] = "sha256:" + "d" * 64
+        first = tool.bundle_files("v0.1.0", "a" * 40, [amd64, arm64])
+        second = tool.bundle_files("v0.1.0", "a" * 40, [arm64, amd64])
+        self.assertEqual(first, second)
+        manifest = json.loads(first["image-digest.json"])
+        self.assertEqual(
+            [item["platform"] for item in manifest["images"]],
+            ["linux/amd64", "linux/arm64"],
+        )
+        self.assertFalse(manifest["release_ready"])
+        arm64[0]["source"]["inputs"]["images/base/Dockerfile"] = "e" * 64
+        with self.assertRaisesRegex(ValueError, "shared source-input"):
+            tool.bundle_files("v0.1.0", "a" * 40, [amd64, arm64])
 
 
 if __name__ == "__main__":
