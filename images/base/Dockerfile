@@ -61,7 +61,18 @@ COPY config/debian-trixie.json /tmp/realm-inputs/config.json
 COPY images/base/Dockerfile /tmp/realm-inputs/Dockerfile
 COPY profiles/base.profile.json /tmp/realm-inputs/base.profile.json
 
-RUN [[ -n "${TARGETARCH}" ]] \
+# An optional caller-provided CA bundle configures only this build step's HTTPS
+# transport. BuildKit keeps the bundle out of layers; apt configuration is removed
+# before the layer completes. Without the secret, ordinary system trust applies.
+RUN --mount=type=secret,id=realm_build_ca,target=/run/secrets/realm-build-ca.pem,mode=0444 \
+    if [[ -e /run/secrets/realm-build-ca.pem ]]; then \
+        [[ -s /run/secrets/realm-build-ca.pem ]] \
+            || { printf "%s\n" "Realm build CA bundle is empty" >&2; exit 1; }; \
+        printf "%s\n" 'Acquire::https::CaInfo "/run/secrets/realm-build-ca.pem";' \
+            > /tmp/realm-build-apt.conf; \
+        export APT_CONFIG="/tmp/realm-build-apt.conf"; \
+    fi; \
+    [[ -n "${TARGETARCH}" ]] \
     && /usr/local/libexec/realm/install-apt-packages \
         --catalog "/tmp/realm-inputs/catalog.json" \
         --config "/tmp/realm-inputs/config.json" \
@@ -69,7 +80,7 @@ RUN [[ -n "${TARGETARCH}" ]] \
         --lock "/tmp/realm-apt-lock.json" \
         --profile "/tmp/realm-inputs/base.profile.json" \
         --build-revision "${IMAGE_REVISION}" \
-    && rm --force "/tmp/realm-apt-lock.json" \
+    && rm --force "/tmp/realm-apt-lock.json" "/tmp/realm-build-apt.conf" \
     && rm --recursive --force "/tmp/realm-inputs"
 
 # Restore the non-root interactive development user supplied by the upstream
