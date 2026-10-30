@@ -11,10 +11,10 @@ Prepare the current-v1 container-image release convention for #17 in draft
 `feat/17-container-release`. It targets image-evidence
 [PR #58](https://github.com/egohygiene/realm/pull/58), branch
 `feat/7-image-evidence`, currently incorporated through
-`d6f3604d0f787cc8a2b6c97d70bd3122f81a8203` from main
+`9eccc1062aa14f8ca06c9d045acf21f4319313e1` from main
 `0ebdc4d3562a0af0f806876c5dd81d60e79f9e27`. The PR records the exact pushed
-implementation head. This checkpoint is incomplete until #7's actual verifier
-is incorporated and exercised on its real evidence.
+implementation head. The actual #7 verifier is incorporated in this reconciliation; final reviewed-code
+receipt validation and independent joined review remain pending.
 
 ## Implemented bounded source
 
@@ -43,9 +43,11 @@ release readiness remains nonzero/unavailable.
 
 - Original unchanged-main `task check`: all 97 tests and offline gates passed.
 - Regression checkpoint `c2579a50579c8bcb50654428cf6163c69f121a4d` is pushed and remote-verified. Its nine methods initially failed as expected (five assertions and ten subcase errors) because the adapter/assets were absent.
-- Current focused `python3 -m unittest discover --start-directory tests --pattern test_realm_release.py --verbose`: all 13 methods passed. New pure-mapping fixtures test bytes and contradictions only; they are not image-owner or authentication proof.
+- Current focused `python3 -m unittest discover --start-directory tests --pattern test_realm_release.py --verbose`: all 15 methods passed. Joined `task check` after the real predecessor merge passed all 129 tests and declared offline gates. New pure-mapping fixtures test bytes and contradictions only; they are not image-owner or authentication proof.
 - Exact Aether Draft 2020-12 validation of the declaration and own report/schema checks pass. Ruff check/format, Python 3.9 grammar and whitespace pass. Initial Ruff import/check flags and missing-yet-unimplemented functions were repaired; no checks were weakened.
-- Independent contract inspection confirms vendored bytes and highlights Relay's limited file/checksum boundary. Complete implementation review and actual #7 bundle roundtrip/native EgoLint/combined checks remain pending.
+- Independent review confirmed pinned contracts and identified working-input provenance and lowercase timestamp seams. Plans now separate HEAD from clean/dirty working input checksums, bind the prepared patch to recorded bytes and normalize valid lowercase RFC3339. Focused controls pass.
+- Actual large prototype image-owner evidence passed owner verification, portable bundle creation and verification; root SPDX index passed the exact official SPDX 2.3 schema. This prototype is attributed to its original producer bytes; final reviewed-code capture is pending. Required release readiness returns nonzero/unavailable.
+- Independent contract inspection confirms vendored bytes and highlights Relay's limited file/checksum boundary. The actual current EgoLint consumer reports advisory rollout with all seven release checks passed and zero release findings. Its aggregate exits 1 with thirteen portability findings, all matching the predecessor baseline; no aggregate clean claim is made. Final reviewed-code #7 bundle qualification, full Task and combined checks remain pending.
 
 ## Pins, gates and next action
 
@@ -56,10 +58,10 @@ when checked. Published Relay v1.5.0 resolves to
 `1eada5142f7fc7da7862f335589e3b8f5884ffaf`; tag signature verification is
 unavailable. No successor Hygiene #65 authority is adopted.
 
-Next: ordinary-merge #58's pushed implementation, exercise its actual local
-receipt through bundle creation and portable verification, reject spoofed or
-contradictory records with clean controls, run full Task/native/schema checks and
-independent review, then push the final checkpoint. Parallel #10 owns generated
+Next: finish the ordinary #58 implementation reconciliation, exercise its final
+reviewed local receipt through bundle creation and portable verification, reject
+spoofed records with clean controls, finish full Task/native/schema checks and
+independent joined review, then push the final checkpoint. Parallel #10 owns generated
 Dev Containers; shared Task/README/handoff need semantic combined reconciliation.
 
 Full #17 acceptance remains open for accepted compatible producer evidence,

@@ -57,6 +57,18 @@ PINS = {
         "published-v1.5.0",
     ),
 }
+PLAN_INPUTS = (
+    ".egohygiene/release.json",
+    "CHANGELOG.md",
+    "Taskfile.yml",
+    ".github/workflows/release.yml",
+    "AGENTS.md",
+    "docs/releasing.md",
+    "config/release-inputs.v1.json",
+    "tools/realm_release.py",
+    "schemas/container-release.v1.schema.json",
+    "schemas/release-result.v1.schema.json",
+) + tuple(value[3] for value in PINS.values())
 
 
 class UnavailableError(ValueError):
@@ -357,16 +369,31 @@ def source_revision(value: str) -> str:
 
 def plan(repository: Path, version: str) -> dict:
     version_tag(version)
+    revision = source_revision(git(repository, "rev-parse", "HEAD"))
+    input_sha256 = {
+        name: checksum(regular_bytes(repository / name)) for name in PLAN_INPUTS
+    }
     check(repository)
     changelog(repository, version)
     tags = git(repository, "tag", "--list", version)
     if tags:
         fail("target immutable tag already exists locally")
+    if (
+        input_sha256
+        != {name: checksum(regular_bytes(repository / name)) for name in PLAN_INPUTS}
+        or git(repository, "rev-parse", "HEAD") != revision
+    ):
+        fail("release inputs changed during local planning")
     return {
         "status": "planned-local",
         "repository": "egohygiene/realm",
         "tag": version,
-        "source_revision": source_revision(git(repository, "rev-parse", "HEAD")),
+        "source_revision": revision,
+        "source_binding": "head-plus-working-input-checksums",
+        "input_sha256": input_sha256,
+        "working_tree": "dirty"
+        if git(repository, "status", "--porcelain=v1")
+        else "clean",
         "profile": "container-image",
         "version_authority": "git-tag",
         "default_branch": "not-authenticated-locally",
@@ -446,6 +473,8 @@ def prepare(repository: Path, arguments: argparse.Namespace) -> dict:
     if promoted_date.isoformat() != arguments.date:
         fail("release date must be padded YYYY-MM-DD")
     original = changelog(repository, arguments.version)
+    if checksum(original.encode()) != report["input_sha256"]["CHANGELOG.md"]:
+        fail("changelog changed after the recorded plan")
     replacement = original.replace(
         "## [Unreleased]\n",
         f"## [Unreleased]\n\n## [{arguments.version[1:]}] - {arguments.date}\n",
@@ -591,7 +620,9 @@ def bundle_files(
                 },
             }
         )
-        observed = datetime.fromisoformat(receipt["observed_at"].replace("Z", "+00:00"))
+        observed = datetime.fromisoformat(
+            receipt["observed_at"].upper().replace("Z", "+00:00")
+        )
         if observed.tzinfo is None:
             fail("image observation must include a timezone")
         observed_times.append(observed)

@@ -49,6 +49,8 @@ truth.
 - [The release declaration](.egohygiene/release.json) and
   [release guide](docs/releasing.md) define incubating local preparation and
   portable evidence checks; registry publication remains planned.
+- [`docs/image-evidence.md`](docs/image-evidence.md) documents explicit installed-image
+  SBOM/vulnerability capture, immutable identity boundaries and local-only proof.
 
 ## Reproducible base image
 

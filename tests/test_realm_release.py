@@ -112,6 +112,26 @@ class RealmReleaseTests(unittest.TestCase):
                 self.run_release("plan", "--version", version, success=False)
         self.run_release("plan", "--version", "v1.2.3")
 
+    def test_dirty_input_plan_records_bytes_separately_from_head(self) -> None:
+        first = self.run_release("plan", "--version", "v0.1.0")
+        path = self.repository / "CHANGELOG.md"
+        path.write_text(
+            path.read_text() + "\n- An uncommitted authored fixture entry.\n"
+        )
+        second = self.run_release("plan", "--version", "v0.1.0")
+        self.assertEqual(first["source_revision"], second["source_revision"])
+        self.assertEqual(first["working_tree"], "clean")
+        self.assertEqual(second["working_tree"], "dirty")
+        self.assertEqual(second["source_binding"], "head-plus-working-input-checksums")
+        self.assertNotEqual(
+            first["input_sha256"]["CHANGELOG.md"],
+            second["input_sha256"]["CHANGELOG.md"],
+        )
+        self.assertEqual(
+            second["input_sha256"]["CHANGELOG.md"],
+            hashlib.sha256(path.read_bytes()).hexdigest(),
+        )
+
     def test_prepare_emits_exclusive_review_patch_without_mutating_sources(
         self,
     ) -> None:
@@ -306,6 +326,14 @@ class RealmReleaseTests(unittest.TestCase):
         fixture = self.mapping_fixture()
         with self.assertRaises(ValueError):
             tool.bundle_files("v0.1.0", "a" * 40, [fixture, fixture])
+
+    def test_pure_mapping_accepts_owner_lowercase_rfc3339(self) -> None:
+        tool = self.release_module()
+        fixture = self.mapping_fixture()
+        fixture[0]["observed_at"] = "2026-10-30t12:00:00z"
+        files = tool.bundle_files("v0.1.0", "a" * 40, [fixture])
+        index = json.loads(files["sbom.spdx.json"])
+        self.assertEqual(index["creationInfo"]["created"], "2026-10-30T12:00:00Z")
 
     def test_checksum_complete_arbitrary_records_are_not_image_proof(self) -> None:
         tool = self.release_module()

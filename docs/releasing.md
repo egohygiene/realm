@@ -39,8 +39,11 @@ task release:plan VERSION=v0.1.0
 task release:prepare VERSION=v0.1.0 RELEASE_DATE=2026-10-30 OUTPUT=.cache/realm/release-review-v0.1.0
 ```
 
-Planning is read-only. Preparation creates an exclusive packet with a proposed
-changelog patch, source-bound plan and complete SHA-256 inventory. It does not
+Planning is read-only. Its source binding distinguishes Git HEAD from a clean or
+dirty working tree and records exact SHA-256 checksums of the release inputs.
+Uncommitted authored changes remain inspectable instead of being attributed to
+HEAD alone. Preparation creates an exclusive packet with a proposed changelog
+patch, that input-bound plan and complete SHA-256 inventory. It does not
 apply the patch or select a bump. Existing output directories, source overlap,
 invalid dates/tags and locally existing exact tags reject. Local tag inspection
 does not establish remote tag availability or current default-branch identity.
@@ -61,6 +64,10 @@ and its exact artifact bytes are verified before copying. Source revisions and
 platforms cannot conflict. A local config digest and a locally computed scanner
 manifest digest remain local identities; neither is relabelled as a registry
 index or platform-manifest digest.
+
+This consumer bounds each file to 64 MiB, each complete bundle to 256 MiB and
+512 regular files, and root metadata to 1 MiB. Larger image-owner evidence is
+unavailable to this adapter until a reviewed streaming/resource-bound change.
 
 The root `sbom.spdx.json` is a checksum-bound SPDX index of the actual per-platform
 installed-image SBOMs, which remain in their evidence directories. It does not
