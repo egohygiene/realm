@@ -8,7 +8,7 @@ status: provisional
 owners:
   - egohygiene
 created: 2026-08-19
-updated: 2026-08-24
+updated: 2026-10-30
 governed_by:
   - architecture-roadmap
 depends_on:
@@ -26,15 +26,25 @@ supersedes: []
 
 # Realm Roadmap
 
-## Current audit execution handoff — 2026-10-28
+## Current engineering handoff — 2026-10-30
 
-The current complete ordered work inventory is [roadmap #25](https://github.com/egohygiene/realm/issues/25):
-**39 work issues: 9 ready, 30 gated; parent and PRs excluded.** Asterisks there identify full-outcome gates; preparation
-and the first-version stopping boundary are recorded in the owning issues.
+Use [roadmap #25](https://github.com/egohygiene/realm/issues/25), the owning issues
+and [current continuity](CONTINUITY.md) for live execution status. The preserved
+[source-revision audit](audits/realm-engineering-readiness-20261028T064323Z.md)
+and [evidence](audits/evidence/realm-engineering-readiness-20261028T064323Z.json)
+describe source `d66a0e4d5a100d287a9745f4c45f055e0a78948b` on 2026-10-28.
+Its 39-item inventory, 9-ready/30-gated classification, negative probes and
+delivery state are historical observations, not refreshed acceptance claims.
 
-Read the [source-revision audit](audits/realm-engineering-readiness-20261028T064323Z.md)
-and [current continuity](CONTINUITY.md) before choosing work. The next bounded
-checkpoint is #50 — stop resolver traversal after invalid inheritance validation; one bounded repair PR. No implementation or release was performed by the audit.
+The #50 resolver repair and #51 structural validation repair are merged in
+[PR #53](https://github.com/egohygiene/realm/pull/53) and
+[PR #54](https://github.com/egohygiene/realm/pull/54). Bounded #8 Mantle source
+activation preparation and #39 Dev Container standards/mapping are merged in
+[PR #55](https://github.com/egohygiene/realm/pull/55) and
+[PR #56](https://github.com/egohygiene/realm/pull/56). Their combined source passed
+97 local tests. Full #8/#39 acceptance remains open: published verified Mantle,
+#10's generated projection/Task/Mantle canary and actual supported-host proof
+are separate gates. The next implementation batch has not been selected.
 
 The August execution snapshot below is historical: CI, immutable action pins and the minimal base Dockerfile now exist. Profile declarations still do not prove emitted Nix/workstation/Dev Container adapters or a published image.
 

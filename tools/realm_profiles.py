@@ -60,6 +60,16 @@ PROFILE_FIELDS = {
     "constraints",
 }
 
+# Structural vocabulary mirrors the two published v1 schemas; semantics stay below.
+VERSION_PATTERN = r"^[0-9]+\.[0-9]+\.[0-9]+$"
+OWNER_PATTERN = r"^[a-z0-9_.-]+/[a-z0-9_.-]+$"
+PROFILE_NAME_PATTERN = r"^[a-z][a-z0-9-]*$"
+CAPABILITY_KINDS = ("foundation", "toolset", "language", "shell", "service")
+PACKAGE_FIELDS = {"apt", "nix", "brew"}
+ARTIFACT_FIELDS = {"name", "version", "source"}
+CAPABILITY_CONSTRAINT_FIELDS = {"privileged", "services"}
+PROFILE_CONSTRAINT_FIELDS = {"allow_privileged", "allow_services", "secrets"}
+
 
 def load_json(path: Path) -> dict[str, Any]:
     with path.open("r", encoding="utf-8") as stream:
@@ -92,6 +102,119 @@ def _strings(value: Any, path: str) -> tuple[list[str], list[str]]:
     if len(value) != len(set(value)):
         return value, [f"{path} must not contain duplicates"]
     return value, []
+
+
+def _object_errors(value: Any, path: str, fields: set[str]) -> list[str]:
+    """Check an exact object shape before callers inspect its members."""
+    if not isinstance(value, dict):
+        return [f"{path} must be an object"]
+    errors: list[str] = []
+    missing = fields - set(value)
+    unexpected = set(value) - fields
+    if missing:
+        errors.append(f"{path} is missing required fields: {', '.join(sorted(missing))}")
+    if unexpected:
+        errors.append(
+            f"{path} has unexpected fields: "
+            + ", ".join(sorted(str(field) for field in unexpected))
+        )
+    return errors
+
+
+def _string_errors(value: Any, path: str, pattern: str | None = None) -> list[str]:
+    """Apply the v1 schemas' string type, minimum length, and optional pattern."""
+    if not isinstance(value, str) or not value:
+        return [f"{path} must be a non-empty string"]
+    # JSON Schema patterns use search semantics, including the published anchors.
+    if pattern is not None and re.search(pattern, value) is None:
+        return [f"{path} must match pattern {pattern}"]
+    return []
+
+
+def _boolean_errors(value: Any, path: str) -> list[str]:
+    """Reject numeric/string truthiness rather than coercing safety constraints."""
+    if not isinstance(value, bool):
+        return [f"{path} must be a boolean"]
+    return []
+
+
+def _catalog_structure_errors(catalog: Any) -> list[str]:
+    """Enforce capability-catalog.v1.schema.json using only the standard library."""
+    errors = _object_errors(catalog, "catalog", CATALOG_FIELDS)
+    if not isinstance(catalog, dict):
+        return errors
+    if catalog.get("schema_version") != SCHEMA_VERSION:
+        errors.append(f"catalog schema_version must be {SCHEMA_VERSION}")
+    errors.extend(_string_errors(catalog.get("catalog_version"), "catalog.catalog_version", VERSION_PATTERN))
+    for field in ("platforms", "projections"):
+        errors.extend(_strings(catalog.get(field), f"catalog.{field}")[1])
+    sources = catalog.get("source_pins")
+    if not isinstance(sources, dict) or not sources:
+        errors.append("catalog.source_pins must be a non-empty object")
+    else:
+        for name, source in sources.items():
+            errors.extend(_string_errors(source, f"catalog.source_pins.{name}"))
+    capabilities = catalog.get("capabilities")
+    if not isinstance(capabilities, dict) or not capabilities:
+        return errors + ["catalog.capabilities must be a non-empty object"]
+    for name, capability in capabilities.items():
+        path = f"capability {name}"
+        errors.extend(_object_errors(capability, path, CAPABILITY_FIELDS))
+        if not isinstance(capability, dict):
+            continue
+        errors.extend(_string_errors(capability.get("version"), f"{path}.version", VERSION_PATTERN))
+        errors.extend(_string_errors(capability.get("owner"), f"{path}.owner", OWNER_PATTERN))
+        if capability.get("kind") not in CAPABILITY_KINDS:
+            errors.append(f"{path}.kind must be one of: {', '.join(CAPABILITY_KINDS)}")
+        for field in ("requires", "conflicts", "platforms", "projections"):
+            errors.extend(_strings(capability.get(field), f"{name}.{field}")[1])
+        packages = capability.get("packages")
+        errors.extend(_object_errors(packages, f"{path}.packages", PACKAGE_FIELDS))
+        if isinstance(packages, dict):
+            for manager in sorted(PACKAGE_FIELDS):
+                errors.extend(_strings(packages.get(manager), f"{name}.packages.{manager}")[1])
+        artifacts = capability.get("artifacts")
+        if not isinstance(artifacts, list):
+            errors.append(f"{path}.artifacts must be an array")
+        else:
+            for index, artifact in enumerate(artifacts):
+                artifact_path = f"{path}.artifacts[{index}]"
+                errors.extend(_object_errors(artifact, artifact_path, ARTIFACT_FIELDS))
+                if isinstance(artifact, dict):
+                    for field in sorted(ARTIFACT_FIELDS):
+                        errors.extend(_string_errors(artifact.get(field), f"{artifact_path}.{field}"))
+        constraints = capability.get("constraints")
+        errors.extend(_object_errors(constraints, f"{path}.constraints", CAPABILITY_CONSTRAINT_FIELDS))
+        if isinstance(constraints, dict):
+            for field in sorted(CAPABILITY_CONSTRAINT_FIELDS):
+                errors.extend(_boolean_errors(constraints.get(field), f"{path}.constraints.{field}"))
+    return errors
+
+
+def _profiles_structure_errors(profiles: Any) -> list[str]:
+    """Enforce profile.v1.schema.json for each profile before semantic traversal."""
+    if not isinstance(profiles, dict):
+        return ["profiles must be an object"]
+    errors: list[str] = []
+    for name, profile in profiles.items():
+        path = f"profile {name}"
+        errors.extend(_object_errors(profile, path, PROFILE_FIELDS))
+        if not isinstance(profile, dict):
+            continue
+        if profile.get("schema_version") != SCHEMA_VERSION:
+            errors.append(f"{path} schema_version must be {SCHEMA_VERSION}")
+        errors.extend(_string_errors(profile.get("name"), f"{path}.name", PROFILE_NAME_PATTERN))
+        errors.extend(_string_errors(profile.get("description"), f"{path}.description"))
+        for field in ("extends", "include", "exclude", "platforms", "projections"):
+            errors.extend(_strings(profile.get(field), f"{path}.{field}")[1])
+        constraints = profile.get("constraints")
+        errors.extend(_object_errors(constraints, f"{path}.constraints", PROFILE_CONSTRAINT_FIELDS))
+        if isinstance(constraints, dict):
+            for field in ("allow_privileged", "allow_services"):
+                errors.extend(_boolean_errors(constraints.get(field), f"{path}.constraints.{field}"))
+            if constraints.get("secrets") != "forbidden":
+                errors.append(f"{path} must explicitly forbid secrets")
+    return errors
 
 
 def _secret_material_errors(value: Any, path: str = "$") -> list[str]:
@@ -157,115 +280,59 @@ def _cycles(graph: dict[str, list[str]], kind: str) -> list[str]:
     return errors
 
 
-def validate_catalog(catalog: dict[str, Any]) -> list[str]:
-    errors = _secret_material_errors(catalog)
-    unexpected_catalog_fields = set(catalog) - CATALOG_FIELDS
-    if unexpected_catalog_fields:
-        errors.append(
-            "catalog has unexpected fields: "
-            + ", ".join(sorted(unexpected_catalog_fields))
-        )
-    if catalog.get("schema_version") != SCHEMA_VERSION:
-        errors.append(f"catalog schema_version must be {SCHEMA_VERSION}")
-    platforms, platform_errors = _strings(catalog.get("platforms"), "catalog.platforms")
-    projections, projection_errors = _strings(catalog.get("projections"), "catalog.projections")
-    errors.extend(platform_errors + projection_errors)
-    sources = catalog.get("source_pins")
-    if not isinstance(sources, dict) or not sources:
-        errors.append("catalog.source_pins must be a non-empty object")
-    else:
-        for name, source in sources.items():
-            if not immutable_source(source):
-                errors.append(f"source pin {name} must be immutable")
-    capabilities = catalog.get("capabilities")
-    if not isinstance(capabilities, dict) or not capabilities:
-        return sorted(set(errors + ["catalog.capabilities must be a non-empty object"]))
-
+def validate_catalog(catalog: Any) -> list[str]:
+    """Validate the complete v1 shape before catalog graph and source semantics."""
+    errors = _catalog_structure_errors(catalog) + _secret_material_errors(catalog)
+    if errors:
+        return sorted(set(errors))
+    platforms = catalog["platforms"]
+    projections = catalog["projections"]
+    for name, source in catalog["source_pins"].items():
+        if not immutable_source(source):
+            errors.append(f"source pin {name} must be immutable")
+    capabilities = catalog["capabilities"]
     names = set(capabilities)
     graph: dict[str, list[str]] = {}
     for name, capability in capabilities.items():
-        if not isinstance(capability, dict):
-            errors.append(f"capability {name} must be an object")
-            continue
-        unexpected_capability_fields = set(capability) - CAPABILITY_FIELDS
-        if unexpected_capability_fields:
-            errors.append(
-                f"capability {name} has unexpected fields: "
-                + ", ".join(sorted(unexpected_capability_fields))
-            )
-        requires, requires_errors = _strings(capability.get("requires"), f"{name}.requires")
-        conflicts, conflicts_errors = _strings(capability.get("conflicts"), f"{name}.conflicts")
-        supported_platforms, supported_platform_errors = _strings(
-            capability.get("platforms"), f"{name}.platforms"
-        )
-        supported_projections, supported_projection_errors = _strings(
-            capability.get("projections"), f"{name}.projections"
-        )
-        errors.extend(
-            requires_errors
-            + conflicts_errors
-            + supported_platform_errors
-            + supported_projection_errors
-        )
+        requires = capability["requires"]
+        conflicts = capability["conflicts"]
         graph[name] = requires
         unknown = (set(requires) | set(conflicts)) - names
         if unknown:
             errors.append(f"capability {name} references unknown capabilities: {', '.join(sorted(unknown))}")
         if name in requires or name in conflicts:
             errors.append(f"capability {name} cannot require or conflict with itself")
-        unknown_platforms = set(supported_platforms) - set(platforms)
-        unknown_projections = set(supported_projections) - set(projections)
+        unknown_platforms = set(capability["platforms"]) - set(platforms)
+        unknown_projections = set(capability["projections"]) - set(projections)
         if unknown_platforms:
             errors.append(f"capability {name} has unknown platforms: {', '.join(sorted(unknown_platforms))}")
         if unknown_projections:
             errors.append(f"capability {name} has unknown projections: {', '.join(sorted(unknown_projections))}")
-        packages = capability.get("packages")
-        if not isinstance(packages, dict):
-            errors.append(f"capability {name}.packages must be an object")
-        else:
-            for manager in ("apt", "nix", "brew"):
-                _, package_errors = _strings(packages.get(manager), f"{name}.packages.{manager}")
-                errors.extend(package_errors)
-        artifacts = capability.get("artifacts")
-        if not isinstance(artifacts, list):
-            errors.append(f"capability {name}.artifacts must be an array")
-        else:
-            for index, artifact in enumerate(artifacts):
-                if not isinstance(artifact, dict) or not immutable_source(artifact.get("source")):
-                    errors.append(f"capability {name} artifact {index} must use an immutable source")
-        constraints = capability.get("constraints")
-        if not isinstance(constraints, dict):
-            errors.append(f"capability {name}.constraints must be an object")
-        elif capability.get("kind") == "service" and not constraints.get("services"):
+        for index, artifact in enumerate(capability["artifacts"]):
+            if not immutable_source(artifact["source"]):
+                errors.append(f"capability {name} artifact {index} must use an immutable source")
+        if capability["kind"] == "service" and not capability["constraints"]["services"]:
             errors.append(f"service capability {name} must declare services=true")
     errors.extend(_cycles(graph, "capability dependency"))
     return sorted(set(errors))
 
 
-def validate_profiles(
-    catalog: dict[str, Any], profiles: dict[str, dict[str, Any]]
-) -> list[str]:
-    errors = validate_catalog(catalog)
-    capability_names = set(catalog.get("capabilities", {}))
+def validate_profiles(catalog: Any, profiles: Any) -> list[str]:
+    """Validate catalog/profile structures before their cross-reference semantics."""
+    errors = validate_catalog(catalog) + _profiles_structure_errors(profiles)
+    if isinstance(profiles, dict):
+        for name, profile in profiles.items():
+            errors.extend(_secret_material_errors(profile, f"profile.{name}"))
+    if errors:
+        return sorted(set(errors))
+    capability_names = set(catalog["capabilities"])
     graph: dict[str, list[str]] = {}
     for name, profile in profiles.items():
-        errors.extend(_secret_material_errors(profile, f"profile.{name}"))
-        unexpected_profile_fields = set(profile) - PROFILE_FIELDS
-        if unexpected_profile_fields:
-            errors.append(
-                f"profile {name} has unexpected fields: "
-                + ", ".join(sorted(unexpected_profile_fields))
-            )
-        if profile.get("schema_version") != SCHEMA_VERSION:
-            errors.append(f"profile {name} schema_version must be {SCHEMA_VERSION}")
-        if profile.get("name") != name:
+        if profile["name"] != name:
             errors.append(f"profile key {name} does not match its name field")
-        parents, parent_errors = _strings(profile.get("extends"), f"profile {name}.extends")
-        included, include_errors = _strings(profile.get("include"), f"profile {name}.include")
-        excluded, exclude_errors = _strings(profile.get("exclude"), f"profile {name}.exclude")
-        platforms, platform_errors = _strings(profile.get("platforms"), f"profile {name}.platforms")
-        projections, projection_errors = _strings(profile.get("projections"), f"profile {name}.projections")
-        errors.extend(parent_errors + include_errors + exclude_errors + platform_errors + projection_errors)
+        parents = profile["extends"]
+        included = profile["include"]
+        excluded = profile["exclude"]
         graph[name] = parents
         unknown_parents = set(parents) - set(profiles)
         unknown_capabilities = (set(included) | set(excluded)) - capability_names
@@ -275,13 +342,10 @@ def validate_profiles(
             errors.append(f"profile {name} references unknown capabilities: {', '.join(sorted(unknown_capabilities))}")
         if set(included) & set(excluded):
             errors.append(f"profile {name} includes and excludes the same capability")
-        if set(platforms) - set(catalog.get("platforms", [])):
+        if set(profile["platforms"]) - set(catalog["platforms"]):
             errors.append(f"profile {name} references an unknown platform")
-        if set(projections) - set(catalog.get("projections", [])):
+        if set(profile["projections"]) - set(catalog["projections"]):
             errors.append(f"profile {name} references an unknown projection")
-        constraints = profile.get("constraints")
-        if not isinstance(constraints, dict) or constraints.get("secrets") != "forbidden":
-            errors.append(f"profile {name} must explicitly forbid secrets")
     errors.extend(_cycles(graph, "profile inheritance"))
     return sorted(set(errors))
 
@@ -294,12 +358,18 @@ def resolve_profile(
     projection: str,
 ) -> tuple[dict[str, Any] | None, list[str]]:
     errors = validate_profiles(catalog, profiles)
+    if not isinstance(catalog, dict) or not isinstance(profiles, dict):
+        return None, errors
     if profile_name not in profiles:
         return None, sorted(set(errors + [f"unknown profile: {profile_name}"]))
-    if platform not in catalog.get("platforms", []):
+    if isinstance(catalog.get("platforms"), list) and platform not in catalog["platforms"]:
         errors.append(f"unknown platform: {platform}")
-    if projection not in catalog.get("projections", []):
+    if isinstance(catalog.get("projections"), list) and projection not in catalog["projections"]:
         errors.append(f"unknown projection: {projection}")
+
+    # Invalid inheritance and metadata must never reach graph traversal.
+    if errors:
+        return None, sorted(set(errors))
 
     lineage: list[str] = []
     seen_profiles: set[str] = set()

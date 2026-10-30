@@ -1,0 +1,10 @@
+{
+  "schema_version": "realm.mantle-source-canary/v1",
+  "kind": "source-canary",
+  "repository": "egohygiene/mantle",
+  "revision": "0f54fa6e100c5b86af64aa383e41eed8c64e363a",
+  "url": "https://codeload.github.com/egohygiene/mantle/tar.gz/0f54fa6e100c5b86af64aa383e41eed8c64e363a",
+  "sha256": "9461d47e66e274e6bdaeb04b77eb069a82d5e5a528139e765211c01c477449ca",
+  "source_version": "0.1.0-dev",
+  "released_integration": false
+}

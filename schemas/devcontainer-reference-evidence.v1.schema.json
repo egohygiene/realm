@@ -1,0 +1,315 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.egohygiene.io/realm/devcontainer-reference-evidence.v1.schema.json",
+  "title": "Realm limited authored Dev Container reference evidence v1",
+  "description": "An independent bounded observation receipt, never an authentication assertion or full Realm/host conformance verdict.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "contract",
+    "state",
+    "observed_at",
+    "scope",
+    "subject",
+    "official_schema",
+    "tools",
+    "observations",
+    "commands",
+    "cleanup",
+    "unproven",
+    "limitations"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "contract": {
+      "const": "realm.devcontainer-reference-evidence/v1"
+    },
+    "state": {
+      "const": "limited"
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "scope": {
+      "const": "authored-reference-only/local-linux-amd64"
+    },
+    "subject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "reference_path",
+        "reference_sha256",
+        "image"
+      ],
+      "properties": {
+        "reference_path": {
+          "const": "tests/fixtures/devcontainer/reference/.devcontainer/devcontainer.json"
+        },
+        "reference_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "image": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        }
+      }
+    },
+    "official_schema": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "repository",
+        "revision",
+        "path",
+        "sha256",
+        "draft",
+        "meta_validation",
+        "reference_validation",
+        "external_reference_resolution"
+      ],
+      "properties": {
+        "repository": {
+          "const": "devcontainers/spec"
+        },
+        "revision": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{40}$"
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "draft": {
+          "const": "2019-09"
+        },
+        "meta_validation": {
+          "const": "passed"
+        },
+        "reference_validation": {
+          "const": "passed"
+        },
+        "external_reference_resolution": {
+          "const": "not-needed/all-refs-local"
+        }
+      }
+    },
+    "tools": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "cli",
+        "docker"
+      ],
+      "properties": {
+        "cli": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "version",
+            "source_revision",
+            "package_tarball_sha256",
+            "npm_integrity",
+            "package_signature_provenance"
+          ],
+          "properties": {
+            "version": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "source_revision": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{40}$"
+            },
+            "package_tarball_sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "npm_integrity": {
+              "type": "string",
+              "pattern": "^sha512-[A-Za-z0-9+/]+={0,2}$"
+            },
+            "package_signature_provenance": {
+              "const": "not-verified"
+            }
+          }
+        },
+        "docker": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "version",
+            "os",
+            "architecture"
+          ],
+          "properties": {
+            "version": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "os": {
+              "const": "linux"
+            },
+            "architecture": {
+              "const": "amd64"
+            }
+          }
+        }
+      }
+    },
+    "observations": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "cli_interpretation",
+        "container_start",
+        "exec_checks",
+        "reopen_existing_container",
+        "recreate_same_configuration",
+        "remote_user",
+        "uid_update",
+        "container_environment",
+        "remote_environment",
+        "workspace_files"
+      ],
+      "properties": {
+        "cli_interpretation": {
+          "const": "passed"
+        },
+        "container_start": {
+          "const": "passed"
+        },
+        "exec_checks": {
+          "const": "passed"
+        },
+        "reopen_existing_container": {
+          "const": "passed/same-container"
+        },
+        "recreate_same_configuration": {
+          "const": "passed/new-container"
+        },
+        "remote_user": {
+          "const": "vscode"
+        },
+        "uid_update": {
+          "const": false
+        },
+        "container_environment": {
+          "const": "REALM_REFERENCE=authored-reference-only"
+        },
+        "remote_environment": {
+          "const": "REALM_PROJECTION=not-emitted-by-realm-10"
+        },
+        "workspace_files": {
+          "const": "configuration-and-temporary-sentinel-present"
+        }
+      }
+    },
+    "commands": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "notation",
+        "read_configuration",
+        "up",
+        "exec",
+        "reopen",
+        "recreate"
+      ],
+      "properties": {
+        "notation": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "read_configuration": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "up": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "exec": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "reopen": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "recreate": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        }
+      }
+    },
+    "cleanup": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_json_unchanged",
+        "owned_containers_removed"
+      ],
+      "properties": {
+        "source_json_unchanged": {
+          "const": true
+        },
+        "owned_containers_removed": {
+          "const": true
+        }
+      }
+    },
+    "unproven": {
+      "type": "array",
+      "minItems": 12,
+      "maxItems": 12,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "enum": [
+          "realm-profile-generation",
+          "task-workflow",
+          "mantle-integration",
+          "features",
+          "forwarded-ports",
+          "gpu",
+          "lifecycle",
+          "vscode",
+          "codespaces",
+          "devpod",
+          "dockerfile-rebuild",
+          "codespaces-rebuild"
+        ]
+      }
+    },
+    "limitations": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 16,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 4096
+      }
+    }
+  }
+}

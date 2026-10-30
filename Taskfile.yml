@@ -28,7 +28,24 @@ tasks:
       - '"{{.PYTHON}}" tools/realm_profiles.py validate-catalog'
       - '"{{.PYTHON}}" tools/realm_profiles.py validate-profiles'
       - '"{{.PYTHON}}" tools/realm_tool_registry.py validate'
+      - '"{{.PYTHON}}" tools/realm_mantle.py check'
       - task: profiles:check
+      - task: devcontainer:check
+
+  devcontainer:check:
+    desc: Check the static Dev Container mapping and authored-reference policy without running a host.
+    cmds:
+      - '"{{.PYTHON}}" tools/realm_devcontainer_boundary.py check'
+
+  mantle:fetch:
+    desc: Explicitly acquire the checksum-pinned unreleased Mantle source canary.
+    cmds:
+      - '"{{.PYTHON}}" tools/realm_mantle.py fetch --output .cache/realm/mantle-source.tar.gz'
+
+  mantle:canary:
+    desc: Exercise verified source in temporary homes using real Bash, Zsh and Fish.
+    cmds:
+      - '"{{.PYTHON}}" tools/realm_mantle.py canary --archive .cache/realm/mantle-source.tar.gz'
 
   profiles:render:
     desc: Render deterministic profile publication declarations.
