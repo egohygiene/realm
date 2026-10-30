@@ -1,0 +1,188 @@
+{
+  "adapter_sha256": "b533c9c134e0f83ca88340adbb86265bd26502097984088ef0abe6b71da06953",
+  "archive_sha256": "9461d47e66e274e6bdaeb04b77eb069a82d5e5a528139e765211c01c477449ca",
+  "checks": [
+    {
+      "case": "copy-install",
+      "exit_code": 0,
+      "status": "passed"
+    },
+    {
+      "case": "bash-interactive-hook",
+      "exit_code": 0,
+      "status": "passed"
+    },
+    {
+      "case": "bash-explicit-noninteractive",
+      "exit_code": 0,
+      "status": "passed"
+    },
+    {
+      "case": "bash-ci-command",
+      "exit_code": 0,
+      "status": "passed"
+    },
+    {
+      "case": "bash-command-status",
+      "exit_code": 23,
+      "status": "passed"
+    },
+    {
+      "case": "bash-reject-invalid-profile",
+      "exit_code": 64,
+      "status": "passed"
+    },
+    {
+      "case": "zsh-interactive-hook",
+      "exit_code": 0,
+      "status": "passed"
+    },
+    {
+      "case": "zsh-explicit-noninteractive",
+      "exit_code": 0,
+      "status": "passed"
+    },
+    {
+      "case": "zsh-ci-command",
+      "exit_code": 0,
+      "status": "passed"
+    },
+    {
+      "case": "zsh-command-status",
+      "exit_code": 23,
+      "status": "passed"
+    },
+    {
+      "case": "zsh-reject-invalid-profile",
+      "exit_code": 64,
+      "status": "passed"
+    },
+    {
+      "case": "fish-interactive-hook",
+      "exit_code": 0,
+      "status": "passed"
+    },
+    {
+      "case": "fish-explicit-noninteractive",
+      "exit_code": 0,
+      "status": "passed"
+    },
+    {
+      "case": "fish-ci-command",
+      "exit_code": 0,
+      "status": "passed"
+    },
+    {
+      "case": "fish-command-status",
+      "exit_code": 23,
+      "status": "passed"
+    },
+    {
+      "case": "fish-reject-invalid-profile",
+      "exit_code": 64,
+      "status": "passed"
+    },
+    {
+      "case": "bash-missing-runtime-recovery",
+      "exit_code": 0,
+      "status": "passed"
+    },
+    {
+      "case": "zsh-missing-runtime-recovery",
+      "exit_code": 0,
+      "status": "passed"
+    },
+    {
+      "case": "fish-missing-runtime-recovery",
+      "exit_code": 0,
+      "status": "passed"
+    },
+    {
+      "case": "disable-hooks",
+      "exit_code": 0,
+      "status": "passed"
+    },
+    {
+      "case": "bash-disabled-hook-recovery",
+      "exit_code": 0,
+      "status": "passed"
+    },
+    {
+      "case": "zsh-disabled-hook-recovery",
+      "exit_code": 0,
+      "status": "passed"
+    },
+    {
+      "case": "fish-disabled-hook-recovery",
+      "exit_code": 0,
+      "status": "passed"
+    },
+    {
+      "case": "bash-without-activation-recovery",
+      "exit_code": 0,
+      "status": "passed"
+    }
+  ],
+  "container": {
+    "checks": [
+      "bash-positive",
+      "bash-status23",
+      "bash-invalid64",
+      "zsh-positive",
+      "zsh-status23",
+      "zsh-invalid64",
+      "bash-recovery"
+    ],
+    "image": "mcr.microsoft.com/devcontainers/base:2.1.15-trixie@sha256:b8c3669fb4cc652621b3386517c40ab3e151e827de958d6fe75528798ffb5727",
+    "limitations": [
+      "Fish and Python absent from this base image; native host canary covers them",
+      "No Realm image build, TTY, Dev Container, hosted or released integration proof"
+    ],
+    "network": "none",
+    "root_filesystem": "read-only",
+    "scope": "actual-local-linux-amd64-container-processes-not-image-build",
+    "source_revision": "0f54fa6e100c5b86af64aa383e41eed8c64e363a",
+    "source_sha256": "9461d47e66e274e6bdaeb04b77eb069a82d5e5a528139e765211c01c477449ca",
+    "status": "passed",
+    "uid": 1000
+  },
+  "hosted_qualification": "not-performed",
+  "independent_review": {
+    "adapter_sha256": "b533c9c134e0f83ca88340adbb86265bd26502097984088ef0abe6b71da06953",
+    "checks": [
+      "actual archive unpack",
+      "metadata expansion rejection",
+      "controlled malformed deflate rejection",
+      "12 focused tests",
+      "independent 24 native-process replay"
+    ],
+    "container_replay": "not performed by independent reviewer; local coordinating probe recorded separately",
+    "status": "no remaining source blocker"
+  },
+  "limitations": [
+    "No published Mantle release exists when observed; released integration is blocked.",
+    "Interactive flags used without a TTY; no signal/terminal behavior qualification.",
+    "No Realm image build or emitted Dev Container projection; no VS Code/Codespaces/hosted proof.",
+    "No native macOS/ARM64/Windows qualification; no signature/provenance/publication verification.",
+    "Offline acquisition/archive negatives use labelled synthetic inputs; injected collision is not a real concurrency test."
+  ],
+  "local_shell_versions": {
+    "bash": "5.2.37",
+    "fish": "4.0.2",
+    "zsh": "5.9"
+  },
+  "observed_on": "2026-10-30",
+  "offline_validation": {
+    "command": "task check",
+    "python_tests": 77,
+    "status": "passed"
+  },
+  "realm_base_revision": "ef018932ac6c5096295aeee11beeb45ea0299184",
+  "released_integration": false,
+  "schema_version": "realm.mantle-source-canary-result/v1",
+  "scope": "actual-local-processes-in-synthetic-temporary-homes",
+  "source_authentication": "reviewed-commit-and-checksum-only; release-signature/provenance not verified",
+  "source_revision": "0f54fa6e100c5b86af64aa383e41eed8c64e363a",
+  "startup_isolation_control": "Actual canary passed with inherited startup/config/home/profile overrides; synthetic hook was not executed.",
+  "status": "passed"
+}
