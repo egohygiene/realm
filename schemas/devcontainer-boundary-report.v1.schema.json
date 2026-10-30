@@ -1,0 +1,223 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.egohygiene.io/realm/devcontainer-boundary-report.v1.schema.json",
+  "title": "Realm bounded Dev Container mapping report v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "contract",
+    "scope",
+    "state",
+    "input_digests",
+    "checks",
+    "evidence_layers",
+    "host_qualification",
+    "required_layer"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "contract": {
+      "const": "realm.devcontainer-boundary-report/v1"
+    },
+    "scope": {
+      "const": "mapping-and-reference-policy-only"
+    },
+    "state": {
+      "enum": [
+        "valid",
+        "invalid",
+        "unavailable"
+      ]
+    },
+    "input_digests": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mapping",
+        "reference",
+        "spec_schema"
+      ],
+      "properties": {
+        "mapping": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "reference": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "spec_schema": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    },
+    "checks": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 128,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "status",
+          "message"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "status": {
+            "enum": [
+              "passed",
+              "failed"
+            ]
+          },
+          "message": {
+            "type": "string",
+            "maxLength": 512
+          }
+        }
+      }
+    },
+    "evidence_layers": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mapping",
+        "reference_policy",
+        "official_schema",
+        "cli_interpretation",
+        "container_execution",
+        "task_workflow",
+        "vscode",
+        "codespaces",
+        "devpod"
+      ],
+      "properties": {
+        "mapping": {
+          "enum": [
+            "passed",
+            "failed",
+            "not-performed"
+          ]
+        },
+        "reference_policy": {
+          "enum": [
+            "passed",
+            "failed",
+            "not-performed"
+          ]
+        },
+        "official_schema": {
+          "enum": [
+            "passed",
+            "failed",
+            "not-performed"
+          ]
+        },
+        "cli_interpretation": {
+          "enum": [
+            "passed",
+            "failed",
+            "not-performed"
+          ]
+        },
+        "container_execution": {
+          "enum": [
+            "passed",
+            "failed",
+            "not-performed"
+          ]
+        },
+        "task_workflow": {
+          "enum": [
+            "passed",
+            "failed",
+            "not-performed"
+          ]
+        },
+        "vscode": {
+          "enum": [
+            "passed",
+            "failed",
+            "not-performed"
+          ]
+        },
+        "codespaces": {
+          "enum": [
+            "passed",
+            "failed",
+            "not-performed"
+          ]
+        },
+        "devpod": {
+          "enum": [
+            "passed",
+            "failed",
+            "not-performed"
+          ]
+        }
+      }
+    },
+    "host_qualification": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "observed",
+          "reason"
+        ],
+        "properties": {
+          "id": {
+            "enum": [
+              "devcontainer-cli",
+              "vscode",
+              "codespaces",
+              "devpod"
+            ]
+          },
+          "observed": {
+            "const": "unavailable"
+          },
+          "reason": {
+            "type": "string",
+            "maxLength": 512
+          }
+        }
+      }
+    },
+    "required_layer": {
+      "enum": [
+        null,
+        "mapping",
+        "reference-policy",
+        "official-schema",
+        "cli-interpretation",
+        "container-execution",
+        "task-workflow",
+        "vscode",
+        "codespaces",
+        "devpod"
+      ]
+    }
+  }
+}

@@ -1,0 +1,336 @@
+{
+  "schema_version": "1.0.0",
+  "contract": "realm.devcontainer-boundary/v1",
+  "canonical_input": "resolved-profile.v1",
+  "projection_issue": "https://github.com/egohygiene/realm/issues/10",
+  "spec": {
+    "repository": "devcontainers/spec",
+    "revision": "c95ffeed1d059abfe9ffbe79762dc2fa4e7c2421",
+    "schema_path": "vendor/devcontainers/devContainer.base.schema.json",
+    "sha256": "a0883c0405ff433db188849d458fb20b9c0d73e0ba1a6e44c1d83f3b485408dd",
+    "license": "CC-BY-4.0"
+  },
+  "cli": {
+    "version": "0.90.0",
+    "revision": "d807cb27c195b6bc0e89d893fc20f44a30bf27ee",
+    "source": "https://github.com/devcontainers/cli/tree/d807cb27c195b6bc0e89d893fc20f44a30bf27ee"
+  },
+  "reference": {
+    "path": "tests/fixtures/devcontainer/reference/.devcontainer/devcontainer.json",
+    "kind": "authored-reference-only",
+    "realm_profile_applied": false
+  },
+  "capabilities": [
+    {
+      "id": "images",
+      "owner": "realm",
+      "spec_properties": [
+        "image"
+      ],
+      "realm_inputs": [
+        "source_pins.devcontainers-base"
+      ],
+      "handling": "Use an immutable reviewed image; the authored reference uses the existing base-image pin.",
+      "limitations": [
+        "The reference is not a released Realm profile image.",
+        "Image validity does not prove installed capability content."
+      ]
+    },
+    {
+      "id": "dockerfiles",
+      "owner": "realm",
+      "spec_properties": [
+        "build.dockerfile",
+        "build.context",
+        "build.args",
+        "build.target"
+      ],
+      "realm_inputs": [
+        "projection:docker"
+      ],
+      "handling": "Realm image construction can feed a Dev Container projection; paths are relative to the configuration directory.",
+      "limitations": [
+        "The #10 generator owns emission.",
+        "Build arguments must not embed credentials."
+      ]
+    },
+    {
+      "id": "compose",
+      "owner": "consumer",
+      "spec_properties": [
+        "dockerComposeFile",
+        "service",
+        "runServices",
+        "workspaceFolder"
+      ],
+      "realm_inputs": [
+        "not-in-resolved-profile-v1"
+      ],
+      "handling": "Consumer application orchestration owns Compose files and service selection.",
+      "limitations": [
+        "Do not infer Compose services from the privileged services profile.",
+        "Host and service orchestration require separate execution proof."
+      ]
+    },
+    {
+      "id": "features",
+      "owner": "realm",
+      "spec_properties": [
+        "features",
+        "overrideFeatureInstallOrder"
+      ],
+      "realm_inputs": [
+        "capabilities[].artifacts"
+      ],
+      "handling": "Prefer reviewed reusable Features when an immutable artifact and its option contract are available.",
+      "limitations": [
+        "Require digest-bound OCI references in this reference policy.",
+        "The official base schema does not validate arbitrary Feature options."
+      ]
+    },
+    {
+      "id": "environment",
+      "owner": "consumer",
+      "spec_properties": [
+        "containerEnv",
+        "remoteEnv"
+      ],
+      "realm_inputs": [
+        "not-in-resolved-profile-v1"
+      ],
+      "handling": "Keep container-wide environment separate from tool-spawned process environment and host-supplied values.",
+      "limitations": [
+        "Never put credential values in generated files or reports.",
+        "localEnv refers to the selected host, including a cloud host."
+      ]
+    },
+    {
+      "id": "users",
+      "owner": "realm",
+      "spec_properties": [
+        "containerUser",
+        "remoteUser",
+        "updateRemoteUserUID"
+      ],
+      "realm_inputs": [
+        "constraints.privileged"
+      ],
+      "handling": "Preserve non-root image identity and distinguish container process users from remote tool users.",
+      "limitations": [
+        "UID/GID adjustment is Linux-specific.",
+        "The reference disables UID mutation; identity existence needs runtime proof."
+      ]
+    },
+    {
+      "id": "mounts",
+      "owner": "consumer",
+      "spec_properties": [
+        "mounts",
+        "workspaceMount",
+        "workspaceFolder"
+      ],
+      "realm_inputs": [
+        "not-in-resolved-profile-v1"
+      ],
+      "handling": "Repository workspace requirements are consumer intent; host adapters own filesystem-specific bindings.",
+      "limitations": [
+        "Codespaces ignores ordinary bind mounts.",
+        "Do not expose host sockets or privileged paths through an implicit profile default."
+      ]
+    },
+    {
+      "id": "lifecycle",
+      "owner": "consumer",
+      "spec_properties": [
+        "initializeCommand",
+        "onCreateCommand",
+        "updateContentCommand",
+        "postCreateCommand",
+        "postStartCommand",
+        "postAttachCommand",
+        "waitFor"
+      ],
+      "realm_inputs": [
+        "not-in-resolved-profile-v1"
+      ],
+      "handling": "Lifecycle commands are reviewed consumer code; validation never executes them.",
+      "limitations": [
+        "initializeCommand runs on the host and may repeat.",
+        "Strings use a shell, arrays direct execution, and objects parallel commands."
+      ]
+    },
+    {
+      "id": "ports",
+      "owner": "consumer",
+      "spec_properties": [
+        "forwardPorts",
+        "portsAttributes",
+        "otherPortsAttributes"
+      ],
+      "realm_inputs": [
+        "not-in-resolved-profile-v1"
+      ],
+      "handling": "Forwarding is separate from application listening and host port publication.",
+      "limitations": [
+        "Codespaces does not support host:port forwarding syntax.",
+        "UI forwarding and reachability need host-specific proof."
+      ]
+    },
+    {
+      "id": "host-requirements",
+      "owner": "consumer",
+      "spec_properties": [
+        "hostRequirements.cpus",
+        "hostRequirements.memory",
+        "hostRequirements.storage",
+        "hostRequirements.gpu"
+      ],
+      "realm_inputs": [
+        "not-in-resolved-profile-v1"
+      ],
+      "handling": "Declare minimum host needs without claiming the selected machine or GPU satisfies them.",
+      "limitations": [
+        "Machine selection and GPU devices remain host responsibilities.",
+        "Requirements are not resource-allocation or accelerator proof."
+      ]
+    },
+    {
+      "id": "editor-customizations",
+      "owner": "host",
+      "spec_properties": [
+        "customizations.vscode"
+      ],
+      "realm_inputs": [
+        "not-in-resolved-profile-v1"
+      ],
+      "handling": "Editor settings stay in a uniquely named customization namespace.",
+      "limitations": [
+        "The reference CLI may ignore editor-specific settings.",
+        "Extensions and editor availability need separate reviewed qualification."
+      ]
+    },
+    {
+      "id": "host-customizations",
+      "owner": "host",
+      "spec_properties": [
+        "customizations.codespaces",
+        "customizations.codespaces.repositories"
+      ],
+      "realm_inputs": [
+        "not-in-resolved-profile-v1"
+      ],
+      "handling": "Codespaces-specific UI and repository permission intent stays in its host namespace.",
+      "limitations": [
+        "Namespace presence grants no repository access.",
+        "A host adapter and explicit authorization own permissions and paid resources."
+      ]
+    },
+    {
+      "id": "prebuild-cache",
+      "owner": "relay",
+      "spec_properties": [
+        "build.cacheFrom",
+        "customizations.codespaces"
+      ],
+      "realm_inputs": [
+        "source_pins",
+        "profile-publication.cache_key"
+      ],
+      "handling": "Relay owns CI/prebuild mechanics; cache identity must not become canonical capability truth.",
+      "limitations": [
+        "Codespaces prebuild configuration is host/service-specific.",
+        "A cache hit or prebuild is not runtime conformance."
+      ]
+    }
+  ],
+  "hosts": [
+    {
+      "id": "devcontainer-cli",
+      "expected": {
+        "images": "supported",
+        "dockerfiles": "supported",
+        "compose": "supported",
+        "features": "supported",
+        "environment": "supported",
+        "users": "degraded",
+        "mounts": "host-specific",
+        "lifecycle": "supported",
+        "ports": "supported",
+        "host-requirements": "supported",
+        "editor-customizations": "ignored",
+        "host-customizations": "ignored",
+        "prebuild-cache": "host-specific"
+      },
+      "limitations": [
+        "Documented reference implementation behavior is not complete Realm runtime qualification.",
+        "Editor customizations and host adapters are outside CLI conformance."
+      ]
+    },
+    {
+      "id": "vscode",
+      "expected": {
+        "images": "supported",
+        "dockerfiles": "supported",
+        "compose": "supported",
+        "features": "supported",
+        "environment": "supported",
+        "users": "degraded",
+        "mounts": "host-specific",
+        "lifecycle": "supported",
+        "ports": "supported",
+        "host-requirements": "supported",
+        "editor-customizations": "supported",
+        "host-customizations": "ignored",
+        "prebuild-cache": "host-specific"
+      },
+      "limitations": [
+        "Clone-in-volume behavior changes workspace mount assumptions.",
+        "No VS Code session is established by offline validation."
+      ]
+    },
+    {
+      "id": "codespaces",
+      "expected": {
+        "images": "supported",
+        "dockerfiles": "supported",
+        "compose": "supported",
+        "features": "supported",
+        "environment": "supported",
+        "users": "degraded",
+        "mounts": "ignored",
+        "lifecycle": "supported",
+        "ports": "degraded",
+        "host-requirements": "host-specific",
+        "editor-customizations": "supported",
+        "host-customizations": "host-specific",
+        "prebuild-cache": "host-specific"
+      },
+      "limitations": [
+        "Host means the cloud VM; bind mounts, shutdown and forwarding semantics differ.",
+        "No paid Codespaces creation, machine selection, connect or rebuild proof is claimed."
+      ]
+    },
+    {
+      "id": "devpod",
+      "expected": {
+        "images": "unavailable",
+        "dockerfiles": "unavailable",
+        "compose": "unavailable",
+        "features": "unavailable",
+        "environment": "unavailable",
+        "users": "unavailable",
+        "mounts": "unavailable",
+        "lifecycle": "unavailable",
+        "ports": "unavailable",
+        "host-requirements": "unavailable",
+        "editor-customizations": "unavailable",
+        "host-customizations": "unavailable",
+        "prebuild-cache": "unavailable"
+      },
+      "limitations": [
+        "A supporting-tool listing does not prove field-level compatibility.",
+        "A reviewed implementation/version and provider-specific run are required."
+      ]
+    }
+  ]
+}
