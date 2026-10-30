@@ -1,0 +1,228 @@
+#!/usr/bin/env bash
+
+set -Eeuo pipefail
+
+readonly REALM_PACKAGE_DIRECTORY="/usr/local/share/realm/packages"
+readonly REALM_LOCK_PATH="${REALM_PACKAGE_DIRECTORY}/apt-lock.json"
+readonly REALM_INVENTORY_PATH="${REALM_PACKAGE_DIRECTORY}/apt-installed.tsv"
+readonly REALM_METADATA_PATH="${REALM_PACKAGE_DIRECTORY}/build-metadata.json"
+
+
+# @description Print an error and terminate verification.
+# @arg $1 string Human-readable failure reason.
+# @exitcode 1 Always.
+die() {
+    printf "Realm apt verification failed: %s\n" "$1" >&2
+    exit 1
+}
+
+
+# @description Calculate the canonical checksum of the installed lock.
+# @stdout sha256-prefixed checksum.
+calculate_lock_checksum() {
+    local digest
+    digest="$(jq --compact-output --sort-keys 'del(.lock_checksum)' "${REALM_LOCK_PATH}" | sha256sum | awk '{print $1}')"
+    printf "sha256:%s\n" "${digest}"
+}
+
+
+# @description Verify package versions and inventory metadata against dpkg.
+verify_inventory() {
+    local actual_architecture
+    local actual_status
+    local actual_version
+    local base_digest
+    local base_platform_digest
+    local build_revision
+    local capability
+    local expected_architecture
+    local expected_inventory
+    local lock_checksum_value
+    local locked_version
+    local name
+    local security_snapshot
+    local snapshot
+
+    lock_checksum_value="$(jq --raw-output '.lock_checksum' "${REALM_LOCK_PATH}")"
+    [[ "$(calculate_lock_checksum)" == "${lock_checksum_value}" ]] \
+        || die "installed lock checksum is invalid"
+    snapshot="$(jq --raw-output '.snapshot' "${REALM_LOCK_PATH}")"
+    security_snapshot="$(jq --raw-output '.security_snapshot' "${REALM_LOCK_PATH}")"
+    base_digest="$(jq --raw-output '.base_image.digest' "${REALM_LOCK_PATH}")"
+    base_platform_digest="$(jq --raw-output '.base_image.platform_digest' "${REALM_LOCK_PATH}")"
+    jq --exit-status \
+        --arg lock_checksum "${lock_checksum_value}" \
+        --arg snapshot "${snapshot}" \
+        --arg security_snapshot "${security_snapshot}" \
+        --arg base_digest "${base_digest}" \
+        --arg base_platform_digest "${base_platform_digest}" \
+        '(.schema_version == "1.0.0") and
+         (.build_revision | type == "string" and length > 0) and
+         (.lock_checksum == $lock_checksum) and
+         (.snapshot == $snapshot) and
+         (.security_snapshot == $security_snapshot) and
+         (.base_image_digest == $base_digest) and
+         (.base_platform_digest == $base_platform_digest) and
+         ((keys | sort) == [
+             "base_image_digest",
+             "base_platform_digest",
+             "build_revision",
+             "lock_checksum",
+             "schema_version",
+             "security_snapshot",
+             "snapshot"
+         ])' "${REALM_METADATA_PATH}" >/dev/null \
+        || die "build metadata does not match the installed lock"
+    build_revision="$(jq --raw-output '.build_revision' "${REALM_METADATA_PATH}")"
+
+    expected_inventory="$(mktemp)"
+    printf "name\tlocked_version\tinstalled_version\tarchitecture\tcapability\tsnapshot\tsecurity_snapshot\tbase_image_digest\tbase_platform_digest\tbuild_revision\tlock_checksum\n" \
+        > "${expected_inventory}"
+    while IFS=$'\t' read -r name locked_version expected_architecture capability; do
+        IFS=$'\t' read -r actual_status actual_version actual_architecture < <(
+            dpkg-query --show \
+                --showformat='${db:Status-Status}\t${Version}\t${Architecture}\n' \
+                "${name}"
+        )
+        [[ "${actual_status}" == "installed" ]] \
+            || die "${name} is not fully installed"
+        [[ "${actual_version}" == "${locked_version}" ]] \
+            || die "${name} version differs from the lock"
+        [[ "${actual_architecture}" == "${expected_architecture}" ]] \
+            || die "${name} architecture differs from the lock"
+        printf "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n" \
+            "${name}" \
+            "${locked_version}" \
+            "${actual_version}" \
+            "${actual_architecture}" \
+            "${capability}" \
+            "${snapshot}" \
+            "${security_snapshot}" \
+            "${base_digest}" \
+            "${base_platform_digest}" \
+            "${build_revision}" \
+            "${lock_checksum_value}" \
+            >> "${expected_inventory}"
+    done < <(
+        jq --raw-output \
+            '.packages[] | [.name, .version, .architecture, .capability] | @tsv' \
+            "${REALM_LOCK_PATH}"
+    )
+    cmp --silent "${expected_inventory}" "${REALM_INVENTORY_PATH}" \
+        || die "installed inventory does not exactly match the lock and dpkg"
+    rm --force "${expected_inventory}"
+}
+
+
+# @description Render the exact source contract expected from the installed lock.
+# @arg $1 string Output path.
+render_expected_sources() {
+    local output_path="$1"
+    local architecture
+    local components
+    local index
+    local repository_count
+    local signed_by
+    local suites
+    local uri
+
+    architecture="$(jq --raw-output '.architecture' "${REALM_LOCK_PATH}")"
+    repository_count="$(jq '.repositories | length' "${REALM_LOCK_PATH}")"
+    : > "${output_path}"
+    for ((index = 0; index < repository_count; index += 1)); do
+        uri="$(jq --raw-output ".repositories[${index}].uri" "${REALM_LOCK_PATH}")"
+        suites="$(jq --raw-output ".repositories[${index}].suites | join(\" \")" "${REALM_LOCK_PATH}")"
+        components="$(jq --raw-output ".repositories[${index}].components | join(\" \")" "${REALM_LOCK_PATH}")"
+        signed_by="$(jq --raw-output ".repositories[${index}].signed_by" "${REALM_LOCK_PATH}")"
+        {
+            printf "Types: deb\n"
+            printf "URIs: %s\n" "${uri}"
+            printf "Suites: %s\n" "${suites}"
+            printf "Components: %s\n" "${components}"
+            printf "Architectures: %s\n" "${architecture}"
+            printf "Signed-By: %s\n" "${signed_by}"
+            printf "By-Hash: force\n"
+            printf "Check-Valid-Until: no\n\n"
+        } >> "${output_path}"
+    done
+}
+
+
+# @description Verify only Realm's exact immutable snapshot sources remain active.
+verify_sources() {
+    local actual_keyring_checksum
+    local expected_keyring_checksum
+    local expected_sources
+    local keyring_path
+    local -a active_sources
+
+    mapfile -d "" -t active_sources < <(
+        find /etc/apt/sources.list.d -maxdepth 1 \
+            \( -type f -o -type l \) \
+            \( -name "*.list" -o -name "*.sources" \) -print0
+    )
+    [[ "${#active_sources[@]}" -eq 1 ]] \
+        || die "expected exactly one active apt source file"
+    [[ "${active_sources[0]}" == "/etc/apt/sources.list.d/realm-debian-snapshot.sources" ]] \
+        || die "Realm snapshot source is not active"
+    [[ -f "${active_sources[0]}" && ! -L "${active_sources[0]}" ]] \
+        || die "Realm snapshot source must be a regular file"
+    [[ -f /etc/apt/sources.list && ! -L /etc/apt/sources.list ]] \
+        || die "legacy sources.list must be a regular file"
+    [[ ! -s /etc/apt/sources.list ]] || die "legacy sources.list must be empty"
+
+    expected_sources="$(mktemp)"
+    render_expected_sources "${expected_sources}"
+    cmp --silent \
+        "${expected_sources}" \
+        /etc/apt/sources.list.d/realm-debian-snapshot.sources \
+        || die "active apt sources do not exactly match the installed lock"
+    rm --force "${expected_sources}"
+
+    keyring_path="$(jq --raw-output '.keyring.path' "${REALM_LOCK_PATH}")"
+    expected_keyring_checksum="$(jq --raw-output '.keyring.sha256' "${REALM_LOCK_PATH}")"
+    [[ -f "${keyring_path}" && ! -L "${keyring_path}" ]] \
+        || die "pinned repository keyring is unavailable"
+    actual_keyring_checksum="$(sha256sum "${keyring_path}" | awk '{print $1}')"
+    [[ "${actual_keyring_checksum}" == "${expected_keyring_checksum}" ]] \
+        || die "repository keyring checksum differs from the lock"
+}
+
+
+# @description Verify service suppression, apt consistency, and cache cleanup.
+verify_runtime_state() {
+    local policy_status
+
+    if /usr/sbin/policy-rc.d; then
+        policy_status=0
+    else
+        policy_status=$?
+    fi
+    [[ "${policy_status}" -eq 101 ]] || die "policy-rc.d does not suppress services"
+    apt-get check
+    [[ -z "$(find /var/lib/apt/lists -mindepth 1 -print -quit)" ]] \
+        || die "apt package indexes were not removed"
+    [[ -z "$(find /var/cache/apt/archives -type f -name "*.deb" -print -quit)" ]] \
+        || die "downloaded apt archives were not removed"
+}
+
+
+# @description Run all offline installed-image package checks.
+main() {
+    [[ "$(id --user)" -eq 0 ]] || die "verification must run as root"
+    for command_name in apt-get awk cmp dpkg-query find jq sha256sum; do
+        command -v "${command_name}" >/dev/null 2>&1 \
+            || die "required command is unavailable: ${command_name}"
+    done
+    for path in "${REALM_LOCK_PATH}" "${REALM_INVENTORY_PATH}" "${REALM_METADATA_PATH}"; do
+        [[ -s "${path}" ]] || die "required evidence is missing: ${path}"
+    done
+    verify_inventory
+    verify_sources
+    verify_runtime_state
+    printf "Realm apt verification complete: %s\n" \
+        "$(jq --raw-output '.lock_checksum' "${REALM_LOCK_PATH}")"
+}
+
+
+main "$@"

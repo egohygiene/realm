@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import shutil
 import subprocess
 import sys
@@ -36,6 +37,7 @@ class RealmDevcontainerTests(unittest.TestCase):
             text=True,
             capture_output=True,
             check=False,
+            timeout=10,
         )
 
     def test_generated_bundle_matches_same_resolved_manifest(self) -> None:
@@ -128,6 +130,11 @@ class RealmDevcontainerTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             output = Path(temporary) / "bundle"
             self.assertEqual(self.run_cli("render", output).returncode, 0)
+            self.assertEqual(self.run_cli("check", output).returncode, 0)
+            script = output / "images/base/scripts/realm-packages"
+            script.chmod(0o644)
+            self.assertNotEqual(self.run_cli("check", output).returncode, 0)
+            script.chmod(0o755)
             self.assertEqual(self.run_cli("check", output).returncode, 0)
             target = output / ".devcontainer/devcontainer.json"
             target.write_text('{"image":"unreviewed:latest"}\n')
@@ -241,6 +248,34 @@ class RealmDevcontainerTests(unittest.TestCase):
                 f"linux/{architecture}",
             )
             self.assertEqual(result.returncode, 0, result.stderr)
+
+    def test_duplicate_nonfinite_oversized_and_special_inputs_reject(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            source = self.source_copy(temporary)
+            output = Path(temporary) / "bundle"
+            catalog = source / "catalog/capabilities.json"
+            original = catalog.read_bytes()
+            for content in (
+                b'{"schema_version":"1.0.0","schema_version":"1.0.0"}',
+                b'{"schema_version":NaN}',
+                b" " * (1024 * 1024 + 1),
+            ):
+                with self.subTest(content_length=len(content)):
+                    catalog.write_bytes(content)
+                    result = self.run_cli(
+                        "render", output, "--source-root", str(source)
+                    )
+                    self.assertNotEqual(result.returncode, 0)
+                    self.assertNotIn("Traceback", result.stderr)
+                    self.assertFalse(output.exists())
+            catalog.write_bytes(original)
+            script = source / "images/base/scripts/realm-packages"
+            script.unlink()
+            os.mkfifo(script)
+            result = self.run_cli("render", output, "--source-root", str(source))
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("regular file", result.stderr)
+            self.assertFalse(output.exists())
 
 
 if __name__ == "__main__":

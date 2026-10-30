@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.egohygiene.io/realm/devcontainer-projection.v1.schema.json",
+  "title": "Generated Realm base Dev Container source bundle v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "generator", "profile", "platform", "projection", "status", "published", "source_identity", "inputs", "resolved_sha256", "files", "limitations"],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "generator": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version", "sources"],
+      "properties": {
+        "id": {"const": "realm-devcontainer"},
+        "version": {"const": "1.0.0"},
+        "sources": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["tools/realm_devcontainer.py", "tools/realm_profiles.py", "tools/realm_apt_packages.py"],
+          "properties": {
+            "tools/realm_devcontainer.py": {"$ref": "#/$defs/sha256"},
+            "tools/realm_profiles.py": {"$ref": "#/$defs/sha256"},
+            "tools/realm_apt_packages.py": {"$ref": "#/$defs/sha256"}
+          }
+        }
+      }
+    },
+    "profile": {"const": "base"},
+    "platform": {"enum": ["linux/amd64", "linux/arm64"]},
+    "projection": {"const": "devcontainer"},
+    "status": {"const": "generated-source"},
+    "published": {"const": false},
+    "source_identity": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "inputs": {
+      "type": "object",
+      "minProperties": 10,
+      "propertyNames": {"$ref": "#/$defs/path"},
+      "additionalProperties": {"$ref": "#/$defs/fileIdentity"}
+    },
+    "resolved_sha256": {"$ref": "#/$defs/sha256"},
+    "files": {
+      "type": "array",
+      "minItems": 14,
+      "maxItems": 14,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["path", "sha256", "mode"],
+        "properties": {
+          "path": {"$ref": "#/$defs/path"},
+          "sha256": {"$ref": "#/$defs/sha256"},
+          "mode": {"enum": ["0644", "0755"]}
+        }
+      }
+    },
+    "limitations": {
+      "const": [
+        "local-unpublished-template", "base-profile-only", "no-feature-distribution",
+        "nix-and-workstation-not-emitted", "task-and-mantle-not-installed-base-capabilities",
+        "runtime-and-host-proof-recorded-separately"
+      ]
+    }
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "path": {"type": "string", "minLength": 1, "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[a-zA-Z0-9_./-]+$"},
+    "fileIdentity": {
+      "type": "object", "additionalProperties": false,
+      "required": ["sha256", "mode"],
+      "properties": {
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "mode": {"enum": ["0644", "0755"]}
+      }
+    }
+  }
+}

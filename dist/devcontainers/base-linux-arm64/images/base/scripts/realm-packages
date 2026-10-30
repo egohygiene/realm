@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+
+set -Eeuo pipefail
+
+readonly REALM_PACKAGE_DIRECTORY="/usr/local/share/realm/packages"
+readonly REALM_LOCK_PATH="${REALM_PACKAGE_DIRECTORY}/apt-lock.json"
+readonly REALM_INVENTORY_PATH="${REALM_PACKAGE_DIRECTORY}/apt-installed.tsv"
+readonly REALM_METADATA_PATH="${REALM_PACKAGE_DIRECTORY}/build-metadata.json"
+
+
+# @description Print offline package provenance for the running Realm image.
+# @arg $@ string Optional --json, --lock, or --help selector.
+main() {
+    case "${1:-}" in
+        "")
+            jq '{
+                build_revision,
+                snapshot,
+                security_snapshot,
+                base_image_digest,
+                base_platform_digest,
+                lock_checksum
+            }' "${REALM_METADATA_PATH}"
+            printf "\nInstalled Realm package roots:\n"
+            sed -n "1,200p" "${REALM_INVENTORY_PATH}"
+            ;;
+        --json)
+            jq '.' "${REALM_METADATA_PATH}"
+            ;;
+        --lock)
+            jq '.' "${REALM_LOCK_PATH}"
+            ;;
+        --help)
+            printf "Usage: realm-packages [--json|--lock|--help]\n"
+            ;;
+        *)
+            printf "Unknown argument: %s\n" "$1" >&2
+            return 2
+            ;;
+    esac
+}
+
+
+main "$@"

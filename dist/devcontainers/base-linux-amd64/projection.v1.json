@@ -1,0 +1,177 @@
+{
+  "files": [
+    {
+      "mode": "0644",
+      "path": ".devcontainer/devcontainer.json",
+      "sha256": "e2b5768fedc2851d640037de0c73df9ee5e72927aa266c5bb822819f65c41c58"
+    },
+    {
+      "mode": "0644",
+      "path": ".dockerignore",
+      "sha256": "7a9599d7af93b2590b5b36d974f78f4f066cb21afefde1b7d56de8470c1cdbd1"
+    },
+    {
+      "mode": "0644",
+      "path": "LICENSE",
+      "sha256": "1deb55b00af813e1c8f086e851d0e1ed2084ea942a54996f069df05cd0561372"
+    },
+    {
+      "mode": "0644",
+      "path": "README.md",
+      "sha256": "859bc73a7dff0a2dccb893ff31a88b023ec18aec0e3333f95f74a2ae9a132d60"
+    },
+    {
+      "mode": "0644",
+      "path": "catalog/capabilities.json",
+      "sha256": "16c282cfba5d1b73ef60d2e6ecfe829ae9828197f6272edd377fbc5db7c3b20c"
+    },
+    {
+      "mode": "0644",
+      "path": "config/debian-trixie.json",
+      "sha256": "58485b52a3a5260e3f6988334281c5a1d180529c7f875feef2da09314a7b6a00"
+    },
+    {
+      "mode": "0644",
+      "path": "images/base/Dockerfile",
+      "sha256": "3f33b7b838ad9c1c12ae5b27facec3d371842c93a764acb2c560a7ee9c10e6f6"
+    },
+    {
+      "mode": "0644",
+      "path": "images/base/packages/locks/debian-trixie-amd64.lock.json",
+      "sha256": "515bd4e107ef6965a3b50c2c0c0caac8fa35461cdbf37aa6407471d42094c1e8"
+    },
+    {
+      "mode": "0755",
+      "path": "images/base/scripts/install-apt-packages",
+      "sha256": "9240853926e8f59b247fe44f25f0eeac1bcae16154f7453e70098f17dc4b564c"
+    },
+    {
+      "mode": "0755",
+      "path": "images/base/scripts/realm-packages",
+      "sha256": "d494fcadb9504b28e5dd1c3f069fa6a0bd0c391ffaf822f4a565aa158ba879ee"
+    },
+    {
+      "mode": "0755",
+      "path": "images/base/scripts/verify-apt-packages",
+      "sha256": "1692e1049b880b55a7b926468bf6a39d2429ff0522c66d202c17fbd54bf6322c"
+    },
+    {
+      "mode": "0755",
+      "path": "images/base/tests/smoke.sh",
+      "sha256": "5bbbdc6876772890099fb83215b79bb444be876fa274bdeda80484cb6e3f14ab"
+    },
+    {
+      "mode": "0644",
+      "path": "profiles/base.profile.json",
+      "sha256": "77a6ad9b5f13aaeece62c89bdfe9750637d1b15dd8682bd4d25a000dd34d77bf"
+    },
+    {
+      "mode": "0644",
+      "path": "resolved-profile.v1.json",
+      "sha256": "78852eff7b9056f1eb9e41221b67c62227d7e56dad8fa78e1008ca7bc1163bc6"
+    }
+  ],
+  "generator": {
+    "id": "realm-devcontainer",
+    "sources": {
+      "tools/realm_apt_packages.py": "5e1c8dd551408bc73caedd818b63f50c7fe3ff2b5c1fc4cae1be5e770df9f406",
+      "tools/realm_devcontainer.py": "ff0d4831a7e2c67d0d73aea80d1cffe0a2959d3f664b9cec99b7f98c89c91cca",
+      "tools/realm_profiles.py": "d031b61f955722ae84462dc3b554859212c7bfefceff3249bb2e57774b1cc83b"
+    },
+    "version": "1.0.0"
+  },
+  "inputs": {
+    "LICENSE": {
+      "mode": "0644",
+      "sha256": "1deb55b00af813e1c8f086e851d0e1ed2084ea942a54996f069df05cd0561372"
+    },
+    "catalog/capabilities.json": {
+      "mode": "0644",
+      "sha256": "16c282cfba5d1b73ef60d2e6ecfe829ae9828197f6272edd377fbc5db7c3b20c"
+    },
+    "config/debian-trixie.json": {
+      "mode": "0644",
+      "sha256": "58485b52a3a5260e3f6988334281c5a1d180529c7f875feef2da09314a7b6a00"
+    },
+    "images/base/Dockerfile": {
+      "mode": "0644",
+      "sha256": "3f33b7b838ad9c1c12ae5b27facec3d371842c93a764acb2c560a7ee9c10e6f6"
+    },
+    "images/base/packages/locks/debian-trixie-amd64.lock.json": {
+      "mode": "0644",
+      "sha256": "515bd4e107ef6965a3b50c2c0c0caac8fa35461cdbf37aa6407471d42094c1e8"
+    },
+    "images/base/scripts/install-apt-packages": {
+      "mode": "0755",
+      "sha256": "9240853926e8f59b247fe44f25f0eeac1bcae16154f7453e70098f17dc4b564c"
+    },
+    "images/base/scripts/realm-packages": {
+      "mode": "0755",
+      "sha256": "d494fcadb9504b28e5dd1c3f069fa6a0bd0c391ffaf822f4a565aa158ba879ee"
+    },
+    "images/base/scripts/verify-apt-packages": {
+      "mode": "0755",
+      "sha256": "1692e1049b880b55a7b926468bf6a39d2429ff0522c66d202c17fbd54bf6322c"
+    },
+    "images/base/tests/smoke.sh": {
+      "mode": "0755",
+      "sha256": "5bbbdc6876772890099fb83215b79bb444be876fa274bdeda80484cb6e3f14ab"
+    },
+    "profiles/base.profile.json": {
+      "mode": "0644",
+      "sha256": "77a6ad9b5f13aaeece62c89bdfe9750637d1b15dd8682bd4d25a000dd34d77bf"
+    },
+    "profiles/cloud.profile.json": {
+      "mode": "0644",
+      "sha256": "f7a4741ffa792d8a9d544740a2bee8a90708fb1d24b2e24034664e151e5d0622"
+    },
+    "profiles/flutter.profile.json": {
+      "mode": "0644",
+      "sha256": "156aaccec8df6b9c455377eafa56d7c0b81ddc49cc9c9016bc5701bd19121289"
+    },
+    "profiles/full.profile.json": {
+      "mode": "0644",
+      "sha256": "e5172ff3220bac92ca51166b0dc38f1af608a91d2d75c853f127b99074fafb69"
+    },
+    "profiles/git.profile.json": {
+      "mode": "0644",
+      "sha256": "e41d149cf8c05a84ffb432c3a6cfb5d7bb889e50f2b4dd07464b0e699a61c673"
+    },
+    "profiles/media.profile.json": {
+      "mode": "0644",
+      "sha256": "e70766fcb36f80b6ff6bfb0a7e9497724a3f7bae4af833c333f7c34108ff4958"
+    },
+    "profiles/node.profile.json": {
+      "mode": "0644",
+      "sha256": "df5dcde3718d9039c44528129e5729f0b44025655b260e08f931c05aaf705530"
+    },
+    "profiles/python.profile.json": {
+      "mode": "0644",
+      "sha256": "2482273b94d00e5c138d94a70168e657ab8eab9d35aefae9f68df6322ff43a35"
+    },
+    "profiles/rust.profile.json": {
+      "mode": "0644",
+      "sha256": "f08b34879c04ed6459ee0837f40ed47f67565684ab06cfe7ef7983142696dd78"
+    },
+    "profiles/services.profile.json": {
+      "mode": "0644",
+      "sha256": "e458283720af0db82b4716e0f92500daa53b2a13038fea29a4702e39f8ca76b6"
+    }
+  },
+  "limitations": [
+    "local-unpublished-template",
+    "base-profile-only",
+    "no-feature-distribution",
+    "nix-and-workstation-not-emitted",
+    "task-and-mantle-not-installed-base-capabilities",
+    "runtime-and-host-proof-recorded-separately"
+  ],
+  "platform": "linux/amd64",
+  "profile": "base",
+  "projection": "devcontainer",
+  "published": false,
+  "resolved_sha256": "78852eff7b9056f1eb9e41221b67c62227d7e56dad8fa78e1008ca7bc1163bc6",
+  "schema_version": "1.0.0",
+  "source_identity": "sha256:ec376d3fe3104679ceea0a23681b7c2803b0e601b3e7137f3ba90d4b2b00b21a",
+  "status": "generated-source"
+}

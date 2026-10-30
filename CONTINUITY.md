@@ -2,53 +2,65 @@
 
 ## Current checkpoint
 
-Observed 2026-10-30. This concise repository-owned handoff is context rather than
-permission or a new machine-enforced continuity contract. Live state and
-canonical sources outrank it.
+Observed 2026-10-30. This repository-owned prose handoff records context, not
+permission or machine-contract adoption. Live state and canonical sources
+outrank it.
 
-- Objective: prepare the first generated base Dev Container slice for [#10](https://github.com/egohygiene/realm/issues/10).
-- Independent base: main `0ebdc4d3562a0af0f806876c5dd81d60e79f9e27`, including merged #8/#39 preparation and historical audit #52.
-- Candidate branch: `feat/10-devcontainer-projection`; diagnosis/regression checkpoint. The draft PR records its pushed head and later stages.
-- Canonical sources: catalog/profiles, resolved-profile v1, the exact base Dockerfile/scripts/locks, proposed ADR-0004, Dev Container boundary mapping and [roadmap #25](https://github.com/egohygiene/realm/issues/25).
+- Objective: review the first generated base Dev Container slice for [#10](https://github.com/egohygiene/realm/issues/10).
+- Independent base: main `0ebdc4d3562a0af0f806876c5dd81d60e79f9e27`.
+- Candidate: `feat/10-devcontainer-projection`, draft [PR #57](https://github.com/egohygiene/realm/pull/57); implementation checkpoint. The PR records its exact pushed head.
+- Parallel installed-image evidence is draft [PR #58](https://github.com/egohygiene/realm/pull/58), issue #7; #17 owns the manual release adapter. Reconcile Taskfile/README/continuity semantically.
 
-## Diagnosis and intended boundary
+## Material changes and source ownership
 
-The resolver declares Dev Container intent, but no emitter turns it into a
-buildable local template. The authored #39 reference is not emitted Realm intent
-or installed-profile proof. The regression checks demand a relocatable generated
-bundle for base AMD64/ARM64, exact resolved-manifest and recipe binding, read-only
-drift detection, controlled unsupported input, and no overwrite or symlink escape.
+`tools/realm_devcontainer.py` emits faithful base AMD64/ARM64 bundles under
+`dist/devcontainers`, using the unchanged resolved-profile v1 and existing
+resolver/configuration/lock validation. Each bundle carries exact Realm-owned
+recipe/scripts/selected lock/canonical inputs, resolved JSON, relative-path
+configuration and a closed source-bundle receipt. It rejects unsupported intent
+rather than dropping artifacts, language runtimes, services or privilege.
 
-The implementation will support only a faithful minimal base, preserving the
-canonical profile and resolved v1 contract. Unsupported language, service and
-artifact profiles must fail instead of silently dropping capabilities. Local
-source generation is not registry publication. Features, Nix/workstation,
-released Mantle, and IDE/cloud qualification remain broader acceptance criteria.
+The source receipt binds actual generator/resolver/validator bytes and input/file
+hashes; no time or machine path enters identity. Source modes follow Git's
+executable role; output permissions and inventory are checked exactly. Bounded
+strict JSON rejects duplicate/non-finite fields. Source/destination parents are
+opened without following symlinks, special files reject, and rendering exclusively
+creates a new directory. Interrupted new output is detectable, not auto-deleted.
+`check` writes nothing, contacts no host and executes no lifecycle/input commands.
 
-## Validation and next action
+Shared optional BuildKit CA transport from #7 commit
+`d6f3604d0f787cc8a2b6c97d70bd3122f81a8203` is cherry-picked as
+`5130152b6063b1f7affbb485f730307735970333`. The exact same Dockerfile is copied
+into both generated bundles; package locks, image/frontend pins and package
+intent are unchanged. A local consumer supplies the optional secret explicitly;
+it is not copied into layers or silently embedded in generated JSON.
 
-The unchanged base passed `task check`: all 97 tests and declared offline gates.
-The new focused regression
-`python3 -m unittest discover --start-directory tests --pattern test_realm_devcontainer.py -k generated_bundle_matches_same_resolved_manifest --verbose`
-failed as expected for both architecture subcases because the emitter is absent.
-Ruff check/format and whitespace checks passed after correcting import order and
-an unnecessary suppression. The full new suite is not presented as passing.
+## Actual checks and limits
 
-Next: implement deterministic generation and exact source/lock checks, run all
-focused tests and `task check`, then independently review and qualify the actual
-generated bundle using the official schema/CLI and available local runtime.
-Parallel #7 owns installed-image evidence and #17 owns the manual release adapter;
-coordinate immutable image/source receipts without copying sibling code.
+- Original base `task check`: 97 tests and offline gates passed.
+- Stage-one generation regression failed as expected in both architecture subcases because the emitter was absent.
+- Implementation focused suite: all nine methods passed, covering same-manifest/recipe/platform binding, relocation identity, no overwrite, symlinks/FIFO, duplicate/non-finite/oversized input, stale locks, malformed source and damaged/missing/extra/permission-drifted output.
+- `task check`: all 106 tests and declared offline gates passed. An initial attempt correctly stopped because ShellCheck was absent from that invocation's PATH; rerunning with the existing pinned tool setup passed.
+- Ruff check/format, Python 3.9 grammar, exact shared recipe equality, own Draft202012 schema/receipt validation and both generated configurations against the exact official Draft201909 base schema passed.
+- An initial implementation incorrectly treated checkout 0600/0700 umasks as source-role errors. The repair uses Git's executable-role semantics and still checks generated permissions exactly; it does not change canonical file modes.
 
-## Gates, preservation and privacy
+No generated runtime or host proof is claimed yet. Next: independently review the
+complete source, then qualify official CLI interpretation and actual native local
+start/exec/reopen/recreate using the exact generated bundle. Any private-CA or
+build-metadata consumer overlay and disposable Task/Mantle tooling must have
+separate identities and limitations, not masquerade as unchanged generated JSON
+or installed base capabilities.
 
-Full #10 includes Features publication, Nix/workstation adapters and broader
-conformance; keep it open. Full #8/#39 retain published Mantle, generated canary,
-and actual supported-host proof. Hosted Actions are deferred and all new commits
-use `[skip ci]`. No merge, tag, release, signing, publication, workflow dispatch,
-paid resource or manual issue closure is performed.
+## Remaining acceptance and preservation
 
-Preserve historical audit report/evidence, artwork, package locks and canonical
-catalog/profile identities. Public artifacts exclude credentials, private paths,
-environment values and raw logs. Refresh this operational snapshot from actual
-results before the next PR handoff.
+Full #10 remains open for reviewed Feature/template distribution, Nix/workstation
+dry-run/uninstall adapters and broad same-manifest conformance. Full #8 retains
+published verified Mantle; #39 retains actual supported-host/sibling proof. No
+ARM64 runtime, IDE/cloud, release authentication or hosted proof is inferred from
+source generation or schema checks. Hosted Actions are deferred; every checkpoint
+uses `[skip ci]`. No merge, tag, release, signing, publication, dispatch, paid
+resource or manual issue closure is performed.
+
+Preserve historical audit report/evidence, creative assets and canonical profile
+identities. Public records exclude credentials, private paths, environment values
+and raw logs. Refresh this snapshot after final validation and review.
