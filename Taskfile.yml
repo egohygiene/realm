@@ -29,6 +29,7 @@ tasks:
       - '"{{.PYTHON}}" tools/realm_profiles.py validate-profiles'
       - '"{{.PYTHON}}" tools/realm_tool_registry.py validate'
       - '"{{.PYTHON}}" tools/realm_mantle.py check'
+      - '"{{.PYTHON}}" tools/realm_image_evidence.py check-inputs'
       - task: profiles:check
       - task: devcontainer:check
 
@@ -51,6 +52,48 @@ tasks:
     desc: Render deterministic profile publication declarations.
     cmds:
       - '"{{.PYTHON}}" tools/realm_profile_publications.py render'
+
+  image:evidence:plan:
+    desc: Plan local installed-image evidence without executing image tools.
+    requires:
+      vars: [IMAGE_CONFIG_DIGEST, IMAGE_REVISION]
+    env:
+      REALM_EVIDENCE_IMAGE: '{{.IMAGE_CONFIG_DIGEST}}'
+      REALM_EVIDENCE_REVISION: '{{.IMAGE_REVISION}}'
+    cmds:
+      - '"{{.PYTHON}}" tools/realm_image_evidence.py plan --image "$REALM_EVIDENCE_IMAGE" --source-revision "$REALM_EVIDENCE_REVISION"'
+
+  image:evidence:
+    desc: Explicitly capture native local image evidence with pinned scanners.
+    requires:
+      vars: [IMAGE_CONFIG_DIGEST, IMAGE_REVISION, SOURCE_ROOT, EVIDENCE_DIRECTORY, SYFT, GRYPE, GRYPE_DB_DIRECTORY]
+    env:
+      REALM_EVIDENCE_IMAGE: '{{.IMAGE_CONFIG_DIGEST}}'
+      REALM_EVIDENCE_REVISION: '{{.IMAGE_REVISION}}'
+      REALM_EVIDENCE_SOURCE: '{{.SOURCE_ROOT}}'
+      REALM_EVIDENCE_DIRECTORY: '{{.EVIDENCE_DIRECTORY}}'
+      REALM_EVIDENCE_SYFT: '{{.SYFT}}'
+      REALM_EVIDENCE_GRYPE: '{{.GRYPE}}'
+      REALM_EVIDENCE_DB: '{{.GRYPE_DB_DIRECTORY}}'
+    cmds:
+      - >-
+        "{{.PYTHON}}" tools/realm_image_evidence.py collect
+        --image "$REALM_EVIDENCE_IMAGE"
+        --source-revision "$REALM_EVIDENCE_REVISION"
+        --source-root "$REALM_EVIDENCE_SOURCE"
+        --output "$REALM_EVIDENCE_DIRECTORY"
+        --syft "$REALM_EVIDENCE_SYFT"
+        --grype "$REALM_EVIDENCE_GRYPE"
+        --database-directory "$REALM_EVIDENCE_DB"
+
+  image:evidence:verify:
+    desc: Verify portable local evidence without Docker, scanners or network.
+    requires:
+      vars: [EVIDENCE_DIRECTORY]
+    env:
+      REALM_EVIDENCE_DIRECTORY: '{{.EVIDENCE_DIRECTORY}}'
+    cmds:
+      - '"{{.PYTHON}}" tools/realm_image_evidence.py verify --directory "$REALM_EVIDENCE_DIRECTORY"'
 
   profiles:check:
     desc: Validate profile admission and checked-in publication declarations.
