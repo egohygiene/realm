@@ -33,6 +33,23 @@ tasks:
       - '"{{.PYTHON}}" tools/realm_image_evidence.py check-inputs'
       - task: profiles:check
       - task: devcontainer:check
+      - task: devcontainers:check
+
+  devcontainers:check:
+    desc: Check both generated base Dev Container source bundles offline.
+    cmds:
+      - '"{{.PYTHON}}" tools/realm_devcontainer.py check --platform linux/amd64'
+      - '"{{.PYTHON}}" tools/realm_devcontainer.py check --platform linux/arm64'
+
+  devcontainers:render:
+    desc: Render one base Dev Container into an explicitly new output directory.
+    requires:
+      vars: [ARCH, OUTPUT]
+    preconditions:
+      - sh: 'test "{{.ARCH}}" = "amd64" || test "{{.ARCH}}" = "arm64"'
+        msg: 'ARCH must be "amd64" or "arm64".'
+    cmds:
+      - '"{{.PYTHON}}" tools/realm_devcontainer.py render --platform "linux/{{.ARCH}}" --output "{{.OUTPUT}}"'
 
   devcontainer:check:
     desc: Check the static Dev Container mapping and authored-reference policy without running a host.

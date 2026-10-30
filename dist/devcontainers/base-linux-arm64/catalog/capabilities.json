@@ -1,0 +1,191 @@
+{
+  "schema_version": "1.0.0",
+  "catalog_version": "1.2.0",
+  "platforms": ["linux/amd64", "linux/arm64"],
+  "projections": ["docker", "devcontainer", "nix", "workstation"],
+  "source_pins": {
+    "debian": "https://snapshot.debian.org/archive/debian/20260829T120000Z/",
+    "debian-security": "https://snapshot.debian.org/archive/debian-security/20260829T120000Z/",
+    "devcontainers-base": "mcr.microsoft.com/devcontainers/base:2.1.15-trixie@sha256:b8c3669fb4cc652621b3386517c40ab3e151e827de958d6fe75528798ffb5727",
+    "dockerfile-frontend": "docker/dockerfile:1.10@sha256:865e5dd094beca432e8c0a1d5e1c465db5f998dca4e439981029b3b81fb39ed5",
+    "nixpkgs": "github:NixOS/nixpkgs@ac62194c3917d5f474c1a844b6fd6da2db95077d",
+    "homebrew-core": "github:Homebrew/homebrew-core@acaaa48453c4ddd45f1086e8166dfe7940b8f098"
+  },
+  "capabilities": {
+    "realm-base": {
+      "version": "1.0.0",
+      "kind": "foundation",
+      "owner": "egohygiene/realm",
+      "requires": [],
+      "conflicts": [],
+      "platforms": ["linux/amd64", "linux/arm64"],
+      "projections": ["docker", "devcontainer", "nix", "workstation"],
+      "packages": {
+        "apt": ["ca-certificates", "curl", "gnupg"],
+        "nix": ["cacert", "curl", "gnupg"],
+        "brew": ["curl", "gnupg"]
+      },
+      "artifacts": [],
+      "constraints": {"privileged": false, "services": false}
+    },
+    "common-cli": {
+      "version": "1.0.0",
+      "kind": "toolset",
+      "owner": "egohygiene/realm",
+      "requires": ["realm-base"],
+      "conflicts": [],
+      "platforms": ["linux/amd64", "linux/arm64"],
+      "projections": ["docker", "devcontainer", "nix", "workstation"],
+      "packages": {
+        "apt": ["file", "git-lfs", "jq", "openssh-client", "rsync", "tree", "unzip", "wget", "xz-utils", "zip"],
+        "nix": ["file", "git-lfs", "jq", "openssh", "rsync", "tree", "unzip", "wget", "xz", "zip"],
+        "brew": ["git-lfs", "jq", "rsync", "tree", "wget", "xz"]
+      },
+      "artifacts": [],
+      "constraints": {"privileged": false, "services": false}
+    },
+    "build-toolchain": {
+      "version": "1.0.0",
+      "kind": "toolset",
+      "owner": "egohygiene/realm",
+      "requires": ["realm-base"],
+      "conflicts": [],
+      "platforms": ["linux/amd64", "linux/arm64"],
+      "projections": ["docker", "devcontainer", "nix", "workstation"],
+      "packages": {
+        "apt": ["build-essential", "ccache", "clang", "clang-format", "clang-tidy", "cmake", "make", "ninja-build", "pkg-config"],
+        "nix": ["ccache", "clang", "cmake", "gnumake", "ninja", "pkg-config"],
+        "brew": ["ccache", "clang-format", "cmake", "ninja", "pkg-config"]
+      },
+      "artifacts": [],
+      "constraints": {"privileged": false, "services": false}
+    },
+    "rust-toolchain": {
+      "version": "1.0.0",
+      "kind": "language",
+      "owner": "egohygiene/realm",
+      "requires": ["build-toolchain"],
+      "conflicts": [],
+      "platforms": ["linux/amd64", "linux/arm64"],
+      "projections": ["docker", "devcontainer", "nix", "workstation"],
+      "packages": {"apt": [], "nix": ["rustup"], "brew": ["rustup"]},
+      "artifacts": [
+        {"name": "rustup", "version": "1.28.2", "source": "https://github.com/rust-lang/rustup@1.28.2"}
+      ],
+      "constraints": {"privileged": false, "services": false}
+    },
+    "node-toolchain": {
+      "version": "1.0.0",
+      "kind": "language",
+      "owner": "egohygiene/realm",
+      "requires": ["build-toolchain"],
+      "conflicts": [],
+      "platforms": ["linux/amd64", "linux/arm64"],
+      "projections": ["docker", "devcontainer", "nix", "workstation"],
+      "packages": {"apt": [], "nix": ["nodejs_24", "corepack"], "brew": ["node@24"]},
+      "artifacts": [
+        {"name": "node", "version": "24.6.0", "source": "https://github.com/nodejs/node@v24.6.0"}
+      ],
+      "constraints": {"privileged": false, "services": false}
+    },
+    "python-toolchain": {
+      "version": "1.0.0",
+      "kind": "language",
+      "owner": "egohygiene/realm",
+      "requires": ["build-toolchain"],
+      "conflicts": [],
+      "platforms": ["linux/amd64", "linux/arm64"],
+      "projections": ["docker", "devcontainer", "nix", "workstation"],
+      "packages": {
+        "apt": ["python3", "python3-pip", "python3-venv"],
+        "nix": ["python313", "uv"],
+        "brew": ["python@3.13", "uv"]
+      },
+      "artifacts": [
+        {"name": "python", "version": "3.13.7", "source": "https://github.com/python/cpython@bcee1c322115c581da27600f2ae55e5439c027eb"}
+      ],
+      "constraints": {"privileged": false, "services": false}
+    },
+    "cloud-cli": {
+      "version": "1.0.0",
+      "kind": "toolset",
+      "owner": "egohygiene/realm",
+      "requires": ["common-cli"],
+      "conflicts": [],
+      "platforms": ["linux/amd64", "linux/arm64"],
+      "projections": ["docker", "devcontainer", "nix", "workstation"],
+      "packages": {"apt": [], "nix": ["opentofu", "pulumi-bin"], "brew": ["opentofu", "pulumi"]},
+      "artifacts": [
+        {"name": "opentofu", "version": "1.10.6", "source": "https://github.com/opentofu/opentofu@v1.10.6"},
+        {"name": "pulumi", "version": "3.196.0", "source": "https://github.com/pulumi/pulumi@v3.196.0"}
+      ],
+      "constraints": {"privileged": false, "services": false}
+    },
+    "media-toolchain": {
+      "version": "1.0.0",
+      "kind": "toolset",
+      "owner": "egohygiene/realm",
+      "requires": ["common-cli"],
+      "conflicts": [],
+      "platforms": ["linux/amd64", "linux/arm64"],
+      "projections": ["docker", "devcontainer", "nix", "workstation"],
+      "packages": {"apt": ["ffmpeg", "imagemagick"], "nix": ["ffmpeg", "imagemagick"], "brew": ["ffmpeg", "imagemagick"]},
+      "artifacts": [],
+      "constraints": {"privileged": false, "services": false}
+    },
+    "mantle-shell": {
+      "version": "0.1.0",
+      "kind": "shell",
+      "owner": "egohygiene/mantle",
+      "requires": ["common-cli"],
+      "conflicts": [],
+      "platforms": ["linux/amd64", "linux/arm64"],
+      "projections": ["docker", "devcontainer", "nix", "workstation"],
+      "packages": {"apt": [], "nix": [], "brew": []},
+      "artifacts": [
+        {"name": "mantle", "version": "2026.8.30", "source": "https://github.com/egohygiene/mantle@e5a4e9ca20833a29d6f20b18ff7103674ed3a064"}
+      ],
+      "constraints": {"privileged": false, "services": false}
+    },
+    "flutter-toolchain": {
+      "version": "1.0.0",
+      "kind": "language",
+      "owner": "egohygiene/realm",
+      "requires": ["build-toolchain"],
+      "conflicts": [],
+      "platforms": ["linux/amd64", "linux/arm64"],
+      "projections": ["docker", "devcontainer", "nix", "workstation"],
+      "packages": {"apt": [], "nix": ["flutter"], "brew": ["flutter"]},
+      "artifacts": [
+        {"name": "flutter", "version": "3.35.1", "source": "https://github.com/flutter/flutter@20f82749394e68bcfbbeee96bad384abaae09c13"}
+      ],
+      "constraints": {"privileged": false, "services": false}
+    },
+    "git-toolchain": {
+      "version": "1.0.0",
+      "kind": "toolset",
+      "owner": "egohygiene/realm",
+      "requires": ["common-cli"],
+      "conflicts": [],
+      "platforms": ["linux/amd64", "linux/arm64"],
+      "projections": ["docker", "devcontainer", "nix", "workstation"],
+      "packages": {"apt": ["git", "git-delta"], "nix": ["git", "git-lfs", "gitAndTools.delta"], "brew": ["git", "git-lfs", "git-delta"]},
+      "artifacts": [
+        {"name": "git-delta", "version": "0.18.2", "source": "https://github.com/dandavison/delta@a589ff9debaefdd3992384434120f5a03a103481"}
+      ],
+      "constraints": {"privileged": false, "services": false}
+    },
+    "container-host": {
+      "version": "1.0.0",
+      "kind": "service",
+      "owner": "egohygiene/realm",
+      "requires": ["common-cli"],
+      "conflicts": [],
+      "platforms": ["linux/amd64", "linux/arm64"],
+      "projections": ["devcontainer", "nix", "workstation"],
+      "packages": {"apt": ["docker.io"], "nix": ["docker"], "brew": ["docker"]},
+      "artifacts": [],
+      "constraints": {"privileged": true, "services": true}
+    }
+  }
+}
