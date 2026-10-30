@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.egohygiene.io/realm/container-release-local-evidence.v1.schema.json",
+  "title": "Realm limited local container-release evidence v1",
+  "description": "Source-bound record of individually executed local checks, never imported as authentication or release authority.",
+  "type": "object", "additionalProperties": false,
+  "required": ["schema_version", "state", "adapter_sha256", "image_evidence", "bundle", "checks", "spdx_schema", "relay", "egolint", "limitations", "release_ready", "publication"],
+  "properties": {
+    "schema_version": {"const": "realm.container-release-local-evidence/v1"},
+    "state": {"const": "limited"},
+    "adapter_sha256": {"$ref": "#/$defs/sha256"},
+    "image_evidence": {
+      "type": "object", "additionalProperties": false,
+      "required": ["path", "sha256", "producer_sha256", "source_revision", "platform", "local_config_digest", "reported_matches", "ignored_matches"],
+      "properties": {
+        "path": {"const": "docs/evidence/image-local-capture.v1.json"},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "producer_sha256": {"$ref": "#/$defs/sha256"},
+        "source_revision": {"$ref": "#/$defs/revision"},
+        "platform": {"const": "linux/amd64"},
+        "local_config_digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+        "reported_matches": {"type": "integer", "minimum": 0},
+        "ignored_matches": {"type": "integer", "minimum": 0}
+      }
+    },
+    "bundle": {
+      "type": "object", "additionalProperties": false,
+      "required": ["profile", "proposed_tag", "files", "verified_payloads", "total_bytes", "sha256sums_sha256", "image_digest_record_sha256", "spdx_index_sha256"],
+      "properties": {
+        "profile": {"const": "container-image"},
+        "proposed_tag": {"type": "string", "pattern": "^v(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"},
+        "files": {"type": "integer", "minimum": 1, "maximum": 512},
+        "verified_payloads": {"type": "integer", "minimum": 1, "maximum": 511},
+        "total_bytes": {"type": "integer", "minimum": 1, "maximum": 268435456},
+        "sha256sums_sha256": {"$ref": "#/$defs/sha256"},
+        "image_digest_record_sha256": {"$ref": "#/$defs/sha256"},
+        "spdx_index_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "checks": {
+      "type": "object", "additionalProperties": false,
+      "required": ["owner_verify", "bundle_create", "bundle_verify", "readiness_gate", "published_relay_mechanics", "official_spdx_index", "own_manifest_schema"],
+      "properties": {
+        "owner_verify": {"const": "passed"}, "bundle_create": {"const": "passed"}, "bundle_verify": {"const": "passed"},
+        "readiness_gate": {"const": "unavailable"}, "published_relay_mechanics": {"const": "passed"},
+        "official_spdx_index": {"const": "passed"}, "own_manifest_schema": {"const": "passed"}
+      }
+    },
+    "spdx_schema": {"type": "object", "additionalProperties": false, "required": ["repository", "revision", "sha256"], "properties": {"repository": {"const": "spdx/spdx-spec"}, "revision": {"const": "aadf3b0b8dbbabdb4d880b0fc714255fea436ff7"}, "sha256": {"const": "3ec6cd5b8ba0c9a3e821da48536fa1b814567dc7e4376efe98d3e7b2a7a8d230"}}},
+    "relay": {"type": "object", "additionalProperties": false, "required": ["revision", "validator_sha256", "evidence_sha256", "authentication"], "properties": {"revision": {"const": "1eada5142f7fc7da7862f335589e3b8f5884ffaf"}, "validator_sha256": {"const": "71058329cb8820187aaaccb6224f82734eee4626fb5037ed9ea82735319e3998"}, "evidence_sha256": {"$ref": "#/$defs/sha256"}, "authentication": {"const": "not-performed"}}},
+    "egolint": {
+      "type": "object", "additionalProperties": false,
+      "required": ["revision", "binary_sha256", "release_state", "checks_passed", "checks_failed", "aggregate_exit", "portability_findings", "baseline_portability_findings", "portability_matches_baseline", "external_publication"],
+      "properties": {
+        "revision": {"$ref": "#/$defs/revision"}, "binary_sha256": {"$ref": "#/$defs/sha256"}, "release_state": {"const": "advisory"},
+        "checks_passed": {"const": 7}, "checks_failed": {"const": 0}, "aggregate_exit": {"type": "integer", "minimum": 0, "maximum": 255},
+        "portability_findings": {"type": "integer", "minimum": 0}, "baseline_portability_findings": {"type": "integer", "minimum": 0},
+        "portability_matches_baseline": {"const": true}, "external_publication": {"const": "not_verified"}
+      }
+    },
+    "limitations": {"type": "array", "uniqueItems": true, "minItems": 7, "maxItems": 7, "items": {"enum": ["native-arm64-capture", "registry-publication", "registry-manifest-index-identity", "signature-authentication", "provenance-authentication", "hosted-workflow-execution", "released-owner-acceptance"]}},
+    "release_ready": {"const": false}, "publication": {"const": "not-performed"}
+  },
+  "$defs": {"sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}, "revision": {"type": "string", "pattern": "^[0-9a-f]{40}$"}}
+}

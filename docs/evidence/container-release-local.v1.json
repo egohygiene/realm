@@ -1,0 +1,68 @@
+{
+  "schema_version": "realm.container-release-local-evidence/v1",
+  "state": "limited",
+  "adapter_sha256": "97654f3cc5d3390936d85fb96dcb1db14c43ab5b6bf2f907999ac9156747c21e",
+  "image_evidence": {
+    "path": "docs/evidence/image-local-capture.v1.json",
+    "sha256": "e17b2155186ffe9cf96de124140637fc164a1f78c0c3e8884dea2b86434c3c94",
+    "producer_sha256": "6bbeb3b54193f9319f3a45d984929b35f6cf4cb4426988df8ea82a789ebe84d2",
+    "source_revision": "d6f3604d0f787cc8a2b6c97d70bd3122f81a8203",
+    "platform": "linux/amd64",
+    "local_config_digest": "sha256:c3bb59a8ddbaac91ce808da1077b4704cdb3069f986cad0701a542d773a9ad7e",
+    "reported_matches": 1689,
+    "ignored_matches": 3015
+  },
+  "bundle": {
+    "profile": "container-image",
+    "proposed_tag": "v0.1.0",
+    "files": 14,
+    "verified_payloads": 13,
+    "total_bytes": 74957539,
+    "sha256sums_sha256": "c659506509bdf5cbb5cd19db79ae11da1c3752963215dff875e2ee9125521557",
+    "image_digest_record_sha256": "79670351fa0a7baee0c059c855f505e29df201d08dcb7795e3918e6f657e8bff",
+    "spdx_index_sha256": "bc7afc18280442f2c746580cf8ab21e7d858397f699fbcd6e64acf430835dc0d"
+  },
+  "checks": {
+    "owner_verify": "passed",
+    "bundle_create": "passed",
+    "bundle_verify": "passed",
+    "readiness_gate": "unavailable",
+    "published_relay_mechanics": "passed",
+    "official_spdx_index": "passed",
+    "own_manifest_schema": "passed"
+  },
+  "spdx_schema": {
+    "repository": "spdx/spdx-spec",
+    "revision": "aadf3b0b8dbbabdb4d880b0fc714255fea436ff7",
+    "sha256": "3ec6cd5b8ba0c9a3e821da48536fa1b814567dc7e4376efe98d3e7b2a7a8d230"
+  },
+  "relay": {
+    "revision": "1eada5142f7fc7da7862f335589e3b8f5884ffaf",
+    "validator_sha256": "71058329cb8820187aaaccb6224f82734eee4626fb5037ed9ea82735319e3998",
+    "evidence_sha256": "66e716911d0f41076c0e47e95f3af5f63beaaded7fb52310211c5dd6471758a1",
+    "authentication": "not-performed"
+  },
+  "egolint": {
+    "revision": "f14f7fd3ab0ce9e87c367352fcb3af11a32eda59",
+    "binary_sha256": "993d1139e86169a48c43153fc16f9389c477f2093d90e4d3752db3f7ad73d7dd",
+    "release_state": "advisory",
+    "checks_passed": 7,
+    "checks_failed": 0,
+    "aggregate_exit": 1,
+    "portability_findings": 13,
+    "baseline_portability_findings": 13,
+    "portability_matches_baseline": true,
+    "external_publication": "not_verified"
+  },
+  "limitations": [
+    "native-arm64-capture",
+    "registry-publication",
+    "registry-manifest-index-identity",
+    "signature-authentication",
+    "provenance-authentication",
+    "hosted-workflow-execution",
+    "released-owner-acceptance"
+  ],
+  "release_ready": false,
+  "publication": "not-performed"
+}

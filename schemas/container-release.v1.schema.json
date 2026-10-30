@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.egohygiene.io/realm/container-release.v1.schema.json",
+  "title": "Realm local container-release mapping v1",
+  "description": "Portable local mapping of exact image evidence; cannot assert registry identity, authentication or release readiness.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "repository", "tag", "source_revision", "profile", "component", "images", "registry_index", "signature_authentication", "provenance_authentication", "release_ready", "publication"],
+  "properties": {
+    "schema_version": {"const": "realm.container-release/v1"},
+    "repository": {"const": "egohygiene/realm"},
+    "tag": {"type": "string", "pattern": "^v(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"},
+    "source_revision": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "profile": {"const": "container-image"},
+    "component": {"const": "realm-base"},
+    "images": {
+      "type": "array", "minItems": 1, "maxItems": 2, "uniqueItems": true,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["receipt", "receipt_sha256", "identity_kind", "local_config_digest", "scanner_manifest_digest", "platform", "execution", "registry_reference", "registry_manifest_digest", "index_digest"],
+        "properties": {
+          "receipt": {"type": "string", "pattern": "^image-evidence/linux-(amd64|arm64)/image-evidence\\.json$"},
+          "receipt_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+          "identity_kind": {"const": "local-config"},
+          "local_config_digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+          "scanner_manifest_digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+          "platform": {"enum": ["linux/amd64", "linux/arm64"]},
+          "execution": {"const": "native"},
+          "registry_reference": {"type": "null"},
+          "registry_manifest_digest": {"type": "null"},
+          "index_digest": {"type": "null"}
+        }
+      }
+    },
+    "registry_index": {"type": "null"},
+    "signature_authentication": {"const": "not-performed"},
+    "provenance_authentication": {"const": "not-performed"},
+    "release_ready": {"const": false},
+    "publication": {"const": "not-performed"}
+  }
+}
