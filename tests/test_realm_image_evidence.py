@@ -612,39 +612,60 @@ class PortableEvidenceTests(unittest.TestCase):
             time.sleep(0.5)
             self.assertFalse(marker.exists())
 
-    def test_docker_client_timeout_cleans_only_the_identified_owned_container(self):
+    def test_execution_deadline_starts_after_create_and_removes_only_owned_id(self):
         from unittest import mock
 
         tool = module()
-        captured = {}
+        state = {"started": False, "removed": False}
 
-        def fake_run(argv, _env, _timeout=300):
-            if argv[1] == "run":
-                captured["name"] = argv[argv.index("--name") + 1]
-                captured["label"] = argv[argv.index("--label") + 1]
-                raise ValueError("synthetic client deadline")
-            if argv[1:3] == ["container", "inspect"]:
-                key, token = captured["label"].split("=", 1)
+        def fake_run(argv, _env, timeout=300):
+            operation = argv[1:3]
+            if operation == ["container", "create"]:
+                state["name"] = argv[argv.index("--name") + 1]
+                state["label"] = argv[argv.index("--label") + 1]
+                self.assertEqual(timeout, 120)
+                return ("d" * 64 + "\n").encode()
+            if operation == ["container", "inspect"]:
+                if state["removed"]:
+                    raise ValueError("synthetic absent container")
+                key, token = state["label"].split("=", 1)
                 return tool.encode(
                     {
                         "Id": "d" * 64,
-                        "Name": "/" + captured["name"],
+                        "Name": "/" + state["name"],
+                        "Image": "sha256:" + "a" * 64,
                         "Config": {"Labels": {key: token}},
+                        "State": {
+                            "Status": "running" if state["started"] else "created",
+                            "ExitCode": 0,
+                        },
                     }
                 )
-            if argv[1:3] == ["container", "rm"]:
-                captured["removed"] = argv[-1]
+            if operation == ["container", "start"]:
+                self.assertEqual(argv[-1], "d" * 64)
+                self.assertEqual(timeout, 0.1)
+                state["started"] = True
+                raise ValueError("synthetic execution deadline")
+            if operation == ["container", "rm"]:
+                self.assertEqual(argv[-1], "d" * 64)
+                state["removed"] = True
                 return b""
-            self.fail("unexpected container operation")
+            self.assertEqual(operation, ["container", "ls"])
+            return b""
 
         with (
             mock.patch.object(tool, "run", side_effect=fake_run),
-            self.assertRaisesRegex(ValueError, "synthetic client deadline"),
+            self.assertRaisesRegex(ValueError, "synthetic execution deadline"),
         ):
             tool.run_container(
-                ["docker"], ["--network", "none"], "sha256:" + "a" * 64, [], {}
+                ["docker"],
+                ["--network", "none"],
+                "sha256:" + "a" * 64,
+                [],
+                {},
+                timeout=0.1,
             )
-        self.assertEqual(captured["removed"], "d" * 64)
+        self.assertTrue(state["started"] and state["removed"])
 
     def test_container_cleanup_refuses_unproved_ownership(self):
         from unittest import mock
@@ -655,14 +676,19 @@ class PortableEvidenceTests(unittest.TestCase):
 
             def fake_run(argv, _env, _timeout=300, config=config, calls=calls):
                 calls.append(argv)
-                if argv[1] == "run":
-                    return b"synthetic stdout"
+                if argv[1:3] == ["container", "create"]:
+                    return ("d" * 64).encode()
                 if argv[1:3] == ["container", "inspect"]:
                     name = calls[0][calls[0].index("--name") + 1]
                     return tool.encode(
-                        {"Id": "d" * 64, "Name": "/" + name, "Config": config}
+                        {
+                            "Id": "d" * 64,
+                            "Name": "/" + name,
+                            "Image": "sha256:" + "a" * 64,
+                            "Config": config,
+                        }
                     )
-                self.fail("unproved container must not be removed")
+                self.fail("unproved container must not be started or removed")
 
             with (
                 self.subTest(config=config),
@@ -672,25 +698,124 @@ class PortableEvidenceTests(unittest.TestCase):
                 tool.run_container(["docker"], [], "sha256:" + "a" * 64, [], {})
             self.assertFalse(any(call[1:3] == ["container", "rm"] for call in calls))
 
-    def test_completed_container_absence_is_verified_without_deletion(self):
+    def test_container_exit_status_is_checked_separately_from_client_success(self):
+        from unittest import mock
+
+        tool = module()
+        for status in (0, 23, False):
+            state = {"started": False, "removed": False}
+
+            def fake_run(argv, _env, _timeout=300, status=status, state=state):
+                operation = argv[1:3]
+                if operation == ["container", "create"]:
+                    state["name"] = argv[argv.index("--name") + 1]
+                    state["label"] = argv[argv.index("--label") + 1]
+                    return ("d" * 64).encode()
+                if operation == ["container", "inspect"]:
+                    if state["removed"]:
+                        raise ValueError("synthetic absent container")
+                    key, token = state["label"].split("=", 1)
+                    return tool.encode(
+                        {
+                            "Id": "d" * 64,
+                            "Name": "/" + state["name"],
+                            "Image": "sha256:" + "a" * 64,
+                            "Config": {"Labels": {key: token}},
+                            "State": {
+                                "Status": "exited" if state["started"] else "created",
+                                "ExitCode": status,
+                            },
+                        }
+                    )
+                if operation == ["container", "start"]:
+                    state["started"] = True
+                    return b"synthetic stdout"
+                if operation == ["container", "rm"]:
+                    state["removed"] = True
+                    return b""
+                self.assertEqual(operation, ["container", "ls"])
+                return b""
+
+            with (
+                self.subTest(status=status),
+                mock.patch.object(tool, "run", side_effect=fake_run),
+            ):
+                if type(status) is int and status == 0:
+                    self.assertEqual(
+                        tool.run_container(
+                            ["docker"], [], "sha256:" + "a" * 64, [], {}
+                        ),
+                        b"synthetic stdout",
+                    )
+                else:
+                    with self.assertRaisesRegex(ValueError, "exit"):
+                        tool.run_container(["docker"], [], "sha256:" + "a" * 64, [], {})
+            self.assertTrue(state["removed"])
+
+    def test_indeterminate_create_is_non_success_with_owned_name_recovery(self):
         from unittest import mock
 
         tool = module()
 
         def fake_run(argv, _env, _timeout=300):
-            if argv[1] == "run":
-                return b"synthetic stdout"
+            if argv[1:3] == ["container", "create"]:
+                raise ValueError("synthetic creation timeout")
             if argv[1:3] == ["container", "inspect"]:
-                raise ValueError("synthetic already-removed container")
+                raise ValueError("synthetic not observed yet")
             self.assertEqual(argv[1:3], ["container", "ls"])
-            self.assertIn("--filter", argv)
             return b""
 
-        with mock.patch.object(tool, "run", side_effect=fake_run):
-            self.assertEqual(
-                tool.run_container(["docker"], [], "sha256:" + "a" * 64, [], {}),
-                b"synthetic stdout",
+        with (
+            mock.patch.object(tool, "run", side_effect=fake_run),
+            self.assertRaisesRegex(
+                ValueError, "not observed.*recovery name: realm-evidence-"
+            ),
+        ):
+            tool.run_container(
+                ["docker"], [], "sha256:" + "a" * 64, [], {}, late_poll_seconds=0
             )
+
+    def test_late_created_container_is_owned_cleaned_and_still_non_success(self):
+        from unittest import mock
+
+        tool = module()
+        state = {"removed": False}
+
+        def fake_run(argv, _env, _timeout=300):
+            operation = argv[1:3]
+            if operation == ["container", "create"]:
+                state["name"] = argv[argv.index("--name") + 1]
+                state["label"] = argv[argv.index("--label") + 1]
+                raise ValueError("synthetic creation timeout")
+            if operation == ["container", "inspect"]:
+                if state["removed"]:
+                    raise ValueError("synthetic absent container")
+                key, token = state["label"].split("=", 1)
+                return tool.encode(
+                    {
+                        "Id": "d" * 64,
+                        "Name": "/" + state["name"],
+                        "Image": "sha256:" + "a" * 64,
+                        "Config": {"Labels": {key: token}},
+                    }
+                )
+            if operation == ["container", "rm"]:
+                self.assertEqual(argv[-1], "d" * 64)
+                state["removed"] = True
+                return b""
+            self.assertEqual(operation, ["container", "ls"])
+            return b""
+
+        with (
+            mock.patch.object(tool, "run", side_effect=fake_run),
+            self.assertRaisesRegex(
+                ValueError, "late owned container removed.*recovery name"
+            ),
+        ):
+            tool.run_container(
+                ["docker"], [], "sha256:" + "a" * 64, [], {}, late_poll_seconds=0
+            )
+        self.assertTrue(state["removed"])
 
 
 if __name__ == "__main__":

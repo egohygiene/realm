@@ -118,11 +118,16 @@ implements its own contract vocabulary, not a general external JSON Schema engin
 Capture builds a temporary sibling directory and publishes it with Linux
 `renameat2(RENAME_NOREPLACE)`. An existing or racing destination is preserved;
 unsupported atomic publication fails. Tool failures/deadlines leave no partial
-final directory. Each Docker invocation gets a fresh name and label. Deadline cleanup verifies
-that name, label and exact container ID before removing an owned disposable
-container; already-removed containers require a successful absence check. Only
-owned process groups, containers and temporary files are cleaned; no broad
-image/container/cache pruning or registry deletion occurs. Producer bytes are
+final directory. Each Docker invocation gets a fresh name and label. A separate, generous create
+deadline precedes the command deadline: create returns a full immutable ID, then
+start/attach runs the command, whose actual exit status is checked. Cleanup
+verifies exact name, nonce, image and ID before removing only that disposable
+container. An indeterminate creation uses bounded scoped late polling and always
+returns non-success with an owned-name recovery instruction; immediate absence
+cannot prove a queued daemon creation will never finish. This repairs an actual
+negative-probe observation where a run-client deadline preceded late daemon
+creation. Only owned process groups, containers and temporary files are cleaned;
+no broad image/container/cache pruning or registry deletion occurs. Producer bytes are
 frozen at capture start and must remain unchanged before publication, preventing
 a normal source edit from relabelling old running code with a new file hash.
 

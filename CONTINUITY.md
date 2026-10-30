@@ -24,14 +24,14 @@ private paths are removed from portable tool reports; raw hashes remain labelled
 
 The four first-checkpoint regressions failed as expected (one failure, three
 missing-file errors); baseline 97 tests had passed. Implementation checkpoint guards passed 17 methods; review hardening now passes
-23 methods, including actual no-replace filesystem and owned-child deadline
-controls plus synthetic container ownership/timeout seams.
+25 methods, including actual no-replace filesystem and owned-child deadline
+controls plus synthetic creation/execution/ownership/late-timeout seams.
 Ruff check/format pass after initial routine context-manager/import corrections.
 Early independent review found finite-overflow/type seams and deeper package/
 source bindings; the implementation repairs them and adds focused regressions.
 The reviewed implementation checkpoint passed 114 full Task tests. Review
-hardening freezes producer bytes during capture and cleans only uniquely owned
-containers after client deadlines. Exact current full checks are recorded in
+hardening freezes producer bytes during capture and separates daemon creation
+from execution deadlines, retaining the full owned container ID for cleanup. Exact current full checks are recorded in
 PR #58; code changes require a fresh actual capture before the final receipt.
 
 Initial actual unmodified Docker build failed apt TLS verification. A standalone
@@ -39,6 +39,12 @@ Dockerfile-only repair `d6f3604d0f787cc8a2b6c97d70bd3122f81a8203` supplies optio
 BuildKit CA trust for that RUN without persisting trust material or changing
 locks/source pins. Root's exact clean native AMD64 build and installed-lock,
 non-root smoke, CA/config absence and source-metadata probes passed.
+
+An actual timeout probe exposed late Docker creation after initial absence. Two
+newly owned Created sleep-test containers were verified and removed by exact
+name/nonce/image/command/ID; no unrelated resources were changed. The repaired
+create/start state machine requires fresh actual execution proof before its final
+receipt. Indeterminate creation remains non-success with bounded recovery.
 
 The first actual producer prototype then passed on that exact image with Syft
 1.55.0 and Grype 0.121.0: 293 installed packages plus the SPDX container root,
