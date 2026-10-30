@@ -1,15 +1,25 @@
 """Offline boundary controls; real pinned-source activation is a separate canary."""
 
 from pathlib import Path
+import hashlib
+import importlib.util
+import io
 import json
+import os
 import subprocess
 import sys
+import tarfile
 import tempfile
 import unittest
+from unittest import mock
 
 
 ROOT = Path(__file__).resolve().parents[1]
 TOOL = ROOT / "tools/realm_mantle.py"
+SPEC = importlib.util.spec_from_file_location("realm_mantle", TOOL)
+mantle = importlib.util.module_from_spec(SPEC)
+if TOOL.is_file():
+    SPEC.loader.exec_module(mantle)
 
 
 class RealmMantleTests(unittest.TestCase):
@@ -51,6 +61,107 @@ class RealmMantleTests(unittest.TestCase):
             self.assertNotEqual(result.returncode, 0)
             self.assertIn("already exists", result.stderr)
             self.assertEqual(archive.read_bytes(), b"existing owned bytes")
+
+    def synthetic_archive(self, members):
+        """Trusted checksum seam, not a Mantle distribution or activation proof."""
+        stream = io.BytesIO()
+        with tarfile.open(fileobj=stream, mode="w:gz") as archive:
+            for name, kind, payload in members:
+                info = tarfile.TarInfo(name)
+                info.type = kind
+                info.size = len(payload) if kind == tarfile.REGTYPE else 0
+                info.linkname = "../../outside"
+                archive.addfile(info, io.BytesIO(payload))
+        data = stream.getvalue()
+        pin = mantle.load_pin()
+        pin["sha256"] = hashlib.sha256(data).hexdigest()
+        return data, pin
+
+    def test_pin_rejects_mutable_or_misbound_inputs(self):
+        pin = mantle.load_pin()
+        mutations = {"revision": "main", "url": "https://example.invalid/source",
+                     "sha256": "not-a-hash", "released_integration": True,
+                     "source_version": "1.0.0", "secret": "synthetic"}
+        with tempfile.TemporaryDirectory() as temporary:
+            path = Path(temporary) / "pin.json"
+            for key, value in mutations.items():
+                with self.subTest(key=key):
+                    path.write_text(json.dumps(dict(pin, **{key: value})))
+                    with self.assertRaises(ValueError):
+                        mantle.load_pin(path)
+
+    def test_unsafe_archives_reject_before_any_member_is_written(self):
+        top = "mantle-" + mantle.load_pin()["revision"]
+        cases = {
+            "traversal": [(top + "/../../outside", tarfile.REGTYPE, b"bad")],
+            "absolute": [("/outside", tarfile.REGTYPE, b"bad")],
+            "symlink": [(top + "/link", tarfile.SYMTYPE, b"")],
+            "hardlink": [(top + "/link", tarfile.LNKTYPE, b"")],
+            "device": [(top + "/device", tarfile.CHRTYPE, b"")],
+            "duplicate": [(top + "/same", tarfile.REGTYPE, b"first"),
+                          (top + "/same", tarfile.REGTYPE, b"second")],
+            "foreign-root": [("different/source", tarfile.REGTYPE, b"bad")],
+        }
+        with tempfile.TemporaryDirectory() as temporary:
+            for label, members in cases.items():
+                with self.subTest(case=label):
+                    data, pin = self.synthetic_archive(members)
+                    output = Path(temporary) / label
+                    with self.assertRaisesRegex(ValueError, "unsafe or duplicate"):
+                        mantle.unpack(data, pin, output)
+                    self.assertFalse(output.exists())
+            self.assertFalse((Path(temporary) / "outside").exists())
+
+    def test_acquisition_checks_bytes_and_preserves_racing_destination(self):
+        data, pin = self.synthetic_archive([])
+
+        def response():
+            stream = io.BytesIO(data)
+            stream.geturl = lambda: pin["url"]
+            return stream
+
+        with tempfile.TemporaryDirectory() as temporary:
+            output = Path(temporary) / "archive.tar.gz"
+            with mock.patch.object(mantle.urllib.request, "urlopen", return_value=response()):
+                mantle.fetch(pin, output)
+            self.assertEqual(output.read_bytes(), data)
+            output.unlink()
+            original = os.link
+
+            def collision(source, destination):
+                Path(destination).write_bytes(b"another publisher won")
+                original(source, destination)
+
+            with mock.patch.object(mantle.urllib.request, "urlopen", return_value=response()), \
+                    mock.patch.object(mantle.os, "link", side_effect=collision):
+                with self.assertRaises(FileExistsError):
+                    mantle.fetch(pin, output)
+            self.assertEqual(output.read_bytes(), b"another publisher won")
+            self.assertEqual(sorted(path.name for path in Path(temporary).iterdir()), [output.name])
+
+    def test_corrupt_acquisition_does_not_publish_or_execute(self):
+        stream = io.BytesIO(b"unreviewed source")
+        pin = mantle.load_pin()
+        stream.geturl = lambda: pin["url"]
+        with tempfile.TemporaryDirectory() as temporary:
+            output = Path(temporary) / "archive.tar.gz"
+            with mock.patch.object(mantle.urllib.request, "urlopen", return_value=stream), \
+                    mock.patch.object(mantle.subprocess, "run") as execute:
+                with self.assertRaisesRegex(ValueError, "SHA-256 mismatch"):
+                    mantle.fetch(pin, output)
+            self.assertFalse(output.exists())
+            execute.assert_not_called()
+
+    def test_missing_required_shell_is_a_failure_before_source_execution(self):
+        data, pin = self.synthetic_archive([])
+        with tempfile.TemporaryDirectory() as temporary:
+            archive = Path(temporary) / "archive.tar.gz"
+            archive.write_bytes(data)
+            with mock.patch.object(mantle.shutil, "which", side_effect=lambda name: None if name == "fish" else "/bin/" + name), \
+                    mock.patch.object(mantle.subprocess, "run") as execute:
+                with self.assertRaisesRegex(ValueError, "unavailable: fish"):
+                    mantle.canary(pin, archive)
+            execute.assert_not_called()
 
 
 if __name__ == "__main__":
