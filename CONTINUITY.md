@@ -1,45 +1,68 @@
-# Realm continuity
+# Realm release checkpoint
 
-## Current checkpoint
+Observed 2026-10-30. This concise prose handoff records context, not authority or
+an adopted machine-enforced continuity contract. Verify live source and work
+tracker state before resuming.
 
-Observed 2026-10-30. This repository-owned prose snapshot records context, not
-permission or a machine-enforced continuity contract. Live source, instructions
-and owning issues outrank it.
+## Current objective and base
 
-- Objective: prepare bounded installed-image evidence for [#7](https://github.com/egohygiene/realm/issues/7).
-- Base: main `0ebdc4d3562a0af0f806876c5dd81d60e79f9e27`; prior audit and #8/#39 preparation are merged.
-- Candidate: `feat/7-image-evidence`; regression checkpoint, draft PR to be recorded after creation.
-- Canonical inputs: catalog/profiles, immutable base configuration and apt locks, images/base, Taskfile.yml, docs/image-evidence.md and [roadmap #25](https://github.com/egohygiene/realm/issues/25).
+Prepare the current-v1 container-image release convention for #17 as one bounded
+draft. The branch `feat/17-container-release` is stacked on image-evidence
+[PR #58](https://github.com/egohygiene/realm/pull/58), branch
+`feat/7-image-evidence`, at `d6f3604d0f787cc8a2b6c97d70bd3122f81a8203`.
+Original main is `0ebdc4d3562a0af0f806876c5dd81d60e79f9e27`.
+No merge or publication is claimed. The PR will record this checkpoint's exact
+remotely pushed head and live draft reference after creation.
 
-## Diagnosis and actual checks
+## Diagnosis and checks
 
-Current profile SPDX files declare requested intent, not an installed image.
-No image-evidence producer or typed local receipt exists at the base. The four
-new regression controls expose this gap: one expected failure and three expected
-missing-file errors. They cover a read-only plan, refusal of mutable tags,
-declared-intent substitution and distinct image identities. The unchanged base
-passed 97 tests and every offline gate before these intentional regressions.
+Main has no repository release declaration, changelog, release Task handoffs or
+manual release workflow. Nine new focused regression methods cover the missing
+adapter and owned assets, exact tag grammar, read-only plans, exclusive review
+patches, date/output rejection, duplicate local tags, malformed declarations,
+source pin drift and the literal manual workflow handoff. The expected initial
+run failed with five assertions and ten subcase errors because those product
+surfaces do not exist. The full unchanged-main baseline passed all 97 tests and
+declared offline checks. These expected failures are not passing qualification.
 
-The first actual unchanged-image build reached apt but failed HTTPS certificate
-verification under the managed proxy. No successful image build is claimed.
-The next narrow repair supplies optional BuildKit CA trust for that RUN only,
-without disabling TLS, persisting session certificates or altering source pins.
+Read the complete #17/#25 descriptions and dependency issues/comments. Aether
+#61, Hygiene #27 and Relay #47 are closed; EgoLint #29 remains open although its
+source checkpoint PRs are merged. Current-v1 source pins remain Aether
+`8a2a3d08f3aa9da3847bd5277843506ab855192e` (draft) and Hygiene
+`28f9d6c7519d820644572634ba4476614f418d83` (proposed); no owner GitHub Releases
+exist when checked. Relay v1.5.0 is published and its annotated tag resolves to
+`1eada5142f7fc7da7862f335589e3b8f5884ffaf`; tag signature verification is not
+established. No successor Hygiene #65 authority is adopted.
 
-## Next action, parallel work and limits
+## Implementation and recovery
 
-Implement and independently review the producer and its closed contract, then
-run actual pinned scanners and image verification on an exact reviewed native
-image if supported. Publish no registry/tag/release or signing claims. Preserve
-reported vulnerability findings; tool exit zero is not a clean-image verdict.
+Implement the actual local plan/prepare/verify adapter, source-locked declaration
+and contracts, reviewable changelog patch, and bounded no-overwrite Relay
+container-image evidence bundle. Consume #7's real `verify_evidence` interface;
+local config identity must never be relabelled as a registry manifest/index
+digest. Root bundle SBOM indexing must distinguish actual platform inventories
+from declared intent. Missing signatures, registry and native-platform evidence
+remain unavailable; local receipts cannot become release-ready by flags.
 
-Parallel #10 owns generated Dev Container projection. #17 owns the manual
-release adapter and consumes #7 evidence without confusing local configuration
-IDs with registry manifests/indexes or authentication. Separate branches may
-update Taskfile and this handoff; reconcile by live evidence at integration.
-Full #7 remains open for native ARM64, signatures/provenance, reviewed policy
-and actual accepted distribution. Hosted Actions are deferred; every checkpoint
-uses `[skip ci]`. No workflow dispatch, paid resource, issue closure or merge.
+The manual workflow will review exact-source evidence with read-only permissions.
+Its literal Task dispatch will point to that real workflow. It will not silently
+add credentialed registry publication, tags or release writes. Complete #7's
+implementation dependency through an ordinary merge before qualification, then
+run focused/full checks and independent review and push the next checkpoint.
+Parallel #10 owns the generated Dev Container slice; reconcile shared Taskfile,
+README and handoff semantically for combined validation.
 
-Keep historical audit/creative bytes unchanged. Exclude private paths,
-credentials, environment values and unrestricted logs from public evidence.
-Refresh this handoff after validation and before each PR checkpoint.
+## Gates and preservation
+
+Full #17 acceptance needs compatible accepted producer evidence, genuine native
+AMD64/ARM64 qualification, verified signatures/provenance, public immutable image
+identity, registry adapter and explicit publication approval. Source preparation
+remains incubating/advisory. Hosted Actions are deferred; all new commits include
+`[skip ci]`. No workflow dispatch, bot review request, release, tag, signing,
+publication, paid resource or manual issue closure is performed.
+
+Preserve historical audit report/evidence, package locks, source pins, profile
+identity and creative assets. Keep credentials, private paths, environment values
+and raw machine logs out of public content. ADR not required: this consumes the
+existing owner release protocol and repository-owned adapter boundary without
+ratifying a new architecture or rewriting historical decisions.
