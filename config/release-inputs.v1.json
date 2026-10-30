@@ -1,0 +1,8 @@
+{
+  "schema_version": "realm.release-inputs/v1",
+  "sources": [
+    {"id": "aether-release-schema", "repository": "egohygiene/aether", "revision": "8a2a3d08f3aa9da3847bd5277843506ab855192e", "source_path": "catalog/schemas/aether.repository-release.v1.schema.json", "local_path": "vendor/aether/aether.repository-release.v1.schema.json", "sha256": "8431ea7651336aa7695aee5b9aedce536b1e7c76c3cb15927f64a6206f9cc1f5", "status": "draft-source"},
+    {"id": "hygiene-release-policy", "repository": "egohygiene/hygiene", "revision": "28f9d6c7519d820644572634ba4476614f418d83", "source_path": "catalog/repository-release-policy.json", "local_path": "vendor/hygiene/repository-release-policy.v1.json", "sha256": "20030513c311416c5130a15af897590892025b55cfd79d210be362d47748063f", "status": "proposed-source"},
+    {"id": "relay-release-profiles", "repository": "egohygiene/relay", "revision": "1eada5142f7fc7da7862f335589e3b8f5884ffaf", "source_path": "release-profiles.json", "local_path": "vendor/relay/release-profiles.v1.json", "sha256": "43bc25a8c17329921702311c5601b28affb4e16f398b35d448e14df9cbd6f552", "status": "published-v1.5.0"}
+  ]
+}

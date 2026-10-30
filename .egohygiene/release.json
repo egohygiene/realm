@@ -1,0 +1,21 @@
+{
+  "$schema": "https://egohygiene.io/schemas/aether/repository-release/v1.json",
+  "schema_version": "egohygiene.repository-release/v1",
+  "repository": {"id": "egohygiene/realm", "lifecycle": "incubating", "release_profile": "container-image"},
+  "release": {"state": "unreleased", "tag_prefix": "v", "immutable_tags": true, "major_alias": "disabled"},
+  "changelog": {"path": "CHANGELOG.md", "format": "keep-a-changelog/1.1", "unreleased_heading": "Unreleased"},
+  "components": [{"id": "realm-base", "kind": "container-image", "version_authority": {"kind": "git-tag"}}],
+  "delivery": {"channels": [
+    {"kind": "github-release", "state": "planned", "relay_profile": "container-image", "notes": "Published Relay v1.5.0 defines the container-image evidence profile. The current manual workflow reviews local source and bundles; it does not publish a release."},
+    {"kind": "container-registry", "state": "planned", "notes": "GHCR or Docker Hub publication is a separate repository-owned adapter requiring reviewed native multi-architecture image evidence, cryptographic verification and explicit publication approval. No registry image is claimed."}
+  ]},
+  "evidence": {
+    "source": "required", "change": "required", "provenance": "required", "sbom": "required", "signature": "required",
+    "rollback": {"strategy": "revoke-channel", "instructions": "Keep exact vMAJOR.MINOR.PATCH tags, recorded OCI index/platform digests and evidence bytes immutable. Stop discovery-channel promotion for an affected digest, document revocation, and update consumers by reviewed change to a previously verified digest or a corrective successor. Never retag an existing version or overwrite an earlier bundle. See docs/releasing.md for partial-publication recovery and retention."}
+  },
+  "automation": {
+    "taskfile_path": "Taskfile.yml",
+    "tasks": {"plan": "release:plan", "prepare": "release:prepare", "verify": "release:verify", "publish": "release:publish"},
+    "github": {"manual_dispatch_required": true, "workflow_path": ".github/workflows/release.yml", "state": "configured"}
+  }
+}

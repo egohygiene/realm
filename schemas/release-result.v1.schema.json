@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.egohygiene.io/realm/release-result.v1.schema.json",
+  "title": "Realm local release preparation result v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "status", "release_ready", "publication"],
+  "properties": {
+    "schema_version": {"const": "realm.release-result/v1"},
+    "status": {"enum": ["valid-local-selection", "planned-local", "prepared-local-review", "prepared-local-bundle", "verified-local-bundle", "invalid", "unavailable"]},
+    "release_ready": {"const": false},
+    "publication": {"const": "not-performed"},
+    "rollout": {"const": "incubating-advisory"},
+    "repository": {"const": "egohygiene/realm"},
+    "tag": {"type": "string", "pattern": "^v(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"},
+    "source_revision": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "profile": {"const": "container-image"},
+    "version_authority": {"const": "git-tag"},
+    "default_branch": {"const": "not-authenticated-locally"},
+    "remote_tags": {"const": "not-inspected"},
+    "signature": {"const": "unavailable"},
+    "provenance": {"const": "unavailable"},
+    "provenance_authentication": {"const": "not-performed"},
+    "observed_platforms": {"type": "array", "minItems": 1, "maxItems": 2, "uniqueItems": true, "items": {"enum": ["linux/amd64", "linux/arm64"]}},
+    "artifact_count": {"type": "integer", "minimum": 1, "maximum": 512},
+    "network_access": {"const": "not-performed"},
+    "registry_credentials": {"const": "not-required-for-local-verification"},
+    "message": {"type": "string", "minLength": 1, "maxLength": 240}
+  }
+}

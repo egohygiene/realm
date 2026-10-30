@@ -29,6 +29,7 @@ tasks:
       - '"{{.PYTHON}}" tools/realm_profiles.py validate-profiles'
       - '"{{.PYTHON}}" tools/realm_tool_registry.py validate'
       - '"{{.PYTHON}}" tools/realm_mantle.py check'
+      - '"{{.PYTHON}}" tools/realm_release.py check'
       - task: profiles:check
       - task: devcontainer:check
 
@@ -213,6 +214,42 @@ tasks:
     desc: Run the read-only, architecture-independent CI checks.
     cmds:
       - task: check
+
+  release:plan:
+    desc: Inspect a proposed stable tag and local source without mutation.
+    requires:
+      vars: [VERSION]
+    env:
+      REALM_RELEASE_VERSION: '{{.VERSION}}'
+    cmds:
+      - '"{{.PYTHON}}" tools/realm_release.py plan --version "${REALM_RELEASE_VERSION}"'
+
+  release:prepare:
+    desc: Create an exclusive review packet without applying the changelog patch.
+    requires:
+      vars: [VERSION, RELEASE_DATE, OUTPUT]
+    env:
+      REALM_RELEASE_VERSION: '{{.VERSION}}'
+      REALM_RELEASE_DATE: '{{.RELEASE_DATE}}'
+      REALM_RELEASE_OUTPUT: '{{.OUTPUT}}'
+    cmds:
+      - '"{{.PYTHON}}" tools/realm_release.py prepare --version "${REALM_RELEASE_VERSION}" --date "${REALM_RELEASE_DATE}" --output "${REALM_RELEASE_OUTPUT}"'
+
+  release:verify:
+    desc: Verify portable local evidence without registry credentials or a publication claim.
+    requires:
+      vars: [VERSION, SOURCE_REVISION, BUNDLE]
+    env:
+      REALM_RELEASE_VERSION: '{{.VERSION}}'
+      REALM_RELEASE_SOURCE: '{{.SOURCE_REVISION}}'
+      REALM_RELEASE_BUNDLE: '{{.BUNDLE}}'
+    cmds:
+      - '"{{.PYTHON}}" tools/realm_release.py verify --version "${REALM_RELEASE_VERSION}" --source-revision "${REALM_RELEASE_SOURCE}" --bundle "${REALM_RELEASE_BUNDLE}"'
+
+  release:publish:
+    desc: Hand off to the real read-only manual review workflow; publication remains gated.
+    cmds:
+      - gh workflow run .github/workflows/release.yml
 
   ci:architecture:
     desc: Run online lock and image validation for one native architecture.

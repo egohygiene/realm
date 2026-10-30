@@ -1,0 +1,111 @@
+name: Review Realm container release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Reviewed exact vMAJOR.MINOR.PATCH proposal.
+        required: true
+        type: string
+      expected-source-revision:
+        description: Full current default-branch commit to review.
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: "realm-release-review-${{ github.ref }}"
+  cancel-in-progress: false
+
+jobs:
+  review:
+    name: Review exact current-main source without publication
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Require exact current default-branch identity
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+          EXPECTED_SOURCE_REVISION: ${{ inputs.expected-source-revision }}
+          RELEASE_VERSION: ${{ inputs.version }}
+        run: |
+          set -euo pipefail
+          if [[ "${GITHUB_REF_TYPE}" != "branch" || "${GITHUB_REF_NAME}" != "${DEFAULT_BRANCH}" ]]; then
+            printf '%s\n' 'Release review requires the current default branch.' >&2
+            exit 2
+          fi
+          if [[ ! "${EXPECTED_SOURCE_REVISION}" =~ ^[0-9a-f]{40}$ || "${EXPECTED_SOURCE_REVISION}" != "${GITHUB_SHA}" ]]; then
+            printf '%s\n' 'Expected source must equal the workflow commit.' >&2
+            exit 2
+          fi
+          if [[ ! "${RELEASE_VERSION}" =~ ^v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$ ]]; then
+            printf '%s\n' 'Version must be exact stable vMAJOR.MINOR.PATCH.' >&2
+            exit 2
+          fi
+          current_source="$(gh api "repos/${GITHUB_REPOSITORY}/git/ref/heads/${DEFAULT_BRANCH}" --jq '.object.sha')"
+          if [[ "${current_source}" != "${EXPECTED_SOURCE_REVISION}" ]]; then
+            printf '%s\n' 'The default branch advanced; review its new source.' >&2
+            exit 2
+          fi
+
+      - name: Check out exact reviewed source without persisted credentials
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.expected-source-revision }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Inspect selected profile and write the local review plan
+        shell: bash
+        env:
+          RELEASE_VERSION: ${{ inputs.version }}
+        run: |
+          set -euo pipefail
+          mkdir --parents .cache/realm/release-review
+          python3 tools/realm_release.py check
+          python3 tools/realm_release.py plan --version "${RELEASE_VERSION}" \
+            > .cache/realm/release-review/plan.json
+
+      - name: Record the bounded review outcome
+        if: ${{ always() }}
+        shell: bash
+        env:
+          REVIEW_STATUS: ${{ job.status }}
+          EXPECTED_SOURCE_REVISION: ${{ inputs.expected-source-revision }}
+          RELEASE_VERSION: ${{ inputs.version }}
+        run: |
+          mkdir --parents .cache/realm/release-review
+          python3 - <<'PYTHON'
+          import json
+          import os
+          from pathlib import Path
+          import re
+
+          revision = os.environ["EXPECTED_SOURCE_REVISION"]
+          version = os.environ["RELEASE_VERSION"]
+          report = {
+              "schema_version": "realm.release-review-outcome/v1",
+              "review_status": os.environ["REVIEW_STATUS"],
+              "source_revision": revision if re.fullmatch(r"[0-9a-f]{40}", revision) else None,
+              "tag": version if re.fullmatch(r"v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)", version) else None,
+              "release_ready": False,
+              "publication": "not-performed",
+              "registry_adapter": "not-configured",
+              "native_multiarch_qualification": "not-performed-by-review",
+              "signature_provenance_verification": "not-performed-by-review",
+          }
+          Path(".cache/realm/release-review/outcome.json").write_text(json.dumps(report, indent=2) + "\n")
+          PYTHON
+
+      - name: Preserve bounded review evidence
+        if: ${{ always() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: "realm-release-review-${{ github.run_id }}-${{ github.run_attempt }}"
+          path: .cache/realm/release-review/
+          if-no-files-found: error
+          retention-days: 30

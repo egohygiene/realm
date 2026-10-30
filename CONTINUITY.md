@@ -1,68 +1,72 @@
 # Realm release checkpoint
 
 Observed 2026-10-30. This concise prose handoff records context, not authority or
-an adopted machine-enforced continuity contract. Verify live source and work
-tracker state before resuming.
+an adopted machine-enforced continuity contract. Live instructions, source and
+work-tracker evidence outrank this snapshot.
 
-## Current objective and base
+## Current objective and dependency
 
-Prepare the current-v1 container-image release convention for #17 as one bounded
-draft. The branch `feat/17-container-release` is stacked on image-evidence
+Prepare the current-v1 container-image release convention for #17 in draft
+[PR #59](https://github.com/egohygiene/realm/pull/59), branch
+`feat/17-container-release`. It targets image-evidence
 [PR #58](https://github.com/egohygiene/realm/pull/58), branch
-`feat/7-image-evidence`, at `d6f3604d0f787cc8a2b6c97d70bd3122f81a8203`.
-Original main is `0ebdc4d3562a0af0f806876c5dd81d60e79f9e27`.
-No merge or publication is claimed. The PR will record this checkpoint's exact
-remotely pushed head and live draft reference after creation.
+`feat/7-image-evidence`, currently incorporated through
+`d6f3604d0f787cc8a2b6c97d70bd3122f81a8203` from main
+`0ebdc4d3562a0af0f806876c5dd81d60e79f9e27`. The PR records the exact pushed
+implementation head. This checkpoint is incomplete until #7's actual verifier
+is incorporated and exercised on its real evidence.
 
-## Diagnosis and checks
+## Implemented bounded source
 
-Main has no repository release declaration, changelog, release Task handoffs or
-manual release workflow. Nine new focused regression methods cover the missing
-adapter and owned assets, exact tag grammar, read-only plans, exclusive review
-patches, date/output rejection, duplicate local tags, malformed declarations,
-source pin drift and the literal manual workflow handoff. The expected initial
-run failed with five assertions and ten subcase errors because those product
-surfaces do not exist. The full unchanged-main baseline passed all 97 tests and
-declared offline checks. These expected failures are not passing qualification.
+The declaration selects an incubating/advisory, unreleased `container-image`
+profile with one `git-tag` authority and planned delivery channels. Root
+CHANGELOG keeps Unreleased. AGENTS and docs/releasing.md explain the actual
+scope, compatibility, immutable tags/digests, partial-publication recovery,
+rollback and retention. No version/tag or release history is invented.
 
-Read the complete #17/#25 descriptions and dependency issues/comments. Aether
-#61, Hygiene #27 and Relay #47 are closed; EgoLint #29 remains open although its
-source checkpoint PRs are merged. Current-v1 source pins remain Aether
+`tools/realm_release.py` checks the narrow selected Realm profile and exact
+source-locked contract bytes, plans read-only, emits an exclusive review packet
+without applying the changelog patch, and maps verified #7 local evidence into
+checksum-complete portable Relay records. The root SPDX document indexes the
+exact per-platform installed SBOMs; it is not a merged package inventory.
+Verification reconstructs all root records from owner-verified receipts rather
+than trusting checksum-complete arbitrary JSON. Output creation is exclusive
+with cleanup, not atomic visibility; complete-inventory verification is required.
+
+The real manual workflow has only read permissions, checks exact current-main
+identity and writes bounded review evidence. The literal Task dispatch names
+that exact workflow. It is a review handoff, not a credentialed publisher.
+Local-only v1 evidence and all results keep release_ready false; requested
+release readiness remains nonzero/unavailable.
+
+## Actual checks and remaining validation
+
+- Original unchanged-main `task check`: all 97 tests and offline gates passed.
+- Regression checkpoint `c2579a50579c8bcb50654428cf6163c69f121a4d` is pushed and remote-verified. Its nine methods initially failed as expected (five assertions and ten subcase errors) because the adapter/assets were absent.
+- Current focused `python3 -m unittest discover --start-directory tests --pattern test_realm_release.py --verbose`: all 13 methods passed. New pure-mapping fixtures test bytes and contradictions only; they are not image-owner or authentication proof.
+- Exact Aether Draft 2020-12 validation of the declaration and own report/schema checks pass. Ruff check/format, Python 3.9 grammar and whitespace pass. Initial Ruff import/check flags and missing-yet-unimplemented functions were repaired; no checks were weakened.
+- Independent contract inspection confirms vendored bytes and highlights Relay's limited file/checksum boundary. Complete implementation review and actual #7 bundle roundtrip/native EgoLint/combined checks remain pending.
+
+## Pins, gates and next action
+
+Current-v1 owner source selections remain Aether
 `8a2a3d08f3aa9da3847bd5277843506ab855192e` (draft) and Hygiene
-`28f9d6c7519d820644572634ba4476614f418d83` (proposed); no owner GitHub Releases
-exist when checked. Relay v1.5.0 is published and its annotated tag resolves to
-`1eada5142f7fc7da7862f335589e3b8f5884ffaf`; tag signature verification is not
-established. No successor Hygiene #65 authority is adopted.
+`28f9d6c7519d820644572634ba4476614f418d83` (proposed), with no GitHub Releases
+when checked. Published Relay v1.5.0 resolves to
+`1eada5142f7fc7da7862f335589e3b8f5884ffaf`; tag signature verification is
+unavailable. No successor Hygiene #65 authority is adopted.
 
-## Implementation and recovery
+Next: ordinary-merge #58's pushed implementation, exercise its actual local
+receipt through bundle creation and portable verification, reject spoofed or
+contradictory records with clean controls, run full Task/native/schema checks and
+independent review, then push the final checkpoint. Parallel #10 owns generated
+Dev Containers; shared Task/README/handoff need semantic combined reconciliation.
 
-Implement the actual local plan/prepare/verify adapter, source-locked declaration
-and contracts, reviewable changelog patch, and bounded no-overwrite Relay
-container-image evidence bundle. Consume #7's real `verify_evidence` interface;
-local config identity must never be relabelled as a registry manifest/index
-digest. Root bundle SBOM indexing must distinguish actual platform inventories
-from declared intent. Missing signatures, registry and native-platform evidence
-remain unavailable; local receipts cannot become release-ready by flags.
-
-The manual workflow will review exact-source evidence with read-only permissions.
-Its literal Task dispatch will point to that real workflow. It will not silently
-add credentialed registry publication, tags or release writes. Complete #7's
-implementation dependency through an ordinary merge before qualification, then
-run focused/full checks and independent review and push the next checkpoint.
-Parallel #10 owns the generated Dev Container slice; reconcile shared Taskfile,
-README and handoff semantically for combined validation.
-
-## Gates and preservation
-
-Full #17 acceptance needs compatible accepted producer evidence, genuine native
-AMD64/ARM64 qualification, verified signatures/provenance, public immutable image
-identity, registry adapter and explicit publication approval. Source preparation
-remains incubating/advisory. Hosted Actions are deferred; all new commits include
-`[skip ci]`. No workflow dispatch, bot review request, release, tag, signing,
-publication, paid resource or manual issue closure is performed.
-
-Preserve historical audit report/evidence, package locks, source pins, profile
-identity and creative assets. Keep credentials, private paths, environment values
-and raw machine logs out of public content. ADR not required: this consumes the
-existing owner release protocol and repository-owned adapter boundary without
-ratifying a new architecture or rewriting historical decisions.
+Full #17 acceptance remains open for accepted compatible producer evidence,
+genuine native multiarch qualification, public registry manifest/index identity,
+verified signatures/provenance, the owner registry adapter and explicit
+publication approval. Hosted Actions are deferred; all new commits include
+`[skip ci]`. No merge, tag, release, signing, publication, workflow dispatch,
+paid resource or issue closure is performed. Preserve audit/assets/locks/profile
+identity; exclude credentials, private paths, environment values and raw logs.
+ADR not required: this consumes existing owner protocols and adapter boundaries.

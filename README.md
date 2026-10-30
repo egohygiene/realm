@@ -46,6 +46,9 @@ truth.
   lock design, maintenance workflow, review gates, and limitations.
 - [`images/base/README.md`](images/base/README.md) defines the minimal base image
   boundary and its runtime evidence.
+- [The release declaration](.egohygiene/release.json) and
+  [release guide](docs/releasing.md) define incubating local preparation and
+  portable evidence checks; registry publication remains planned.
 
 ## Reproducible base image
 
