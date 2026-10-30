@@ -11,9 +11,10 @@ Prepare the current-v1 container-image release convention for #17 in draft
 `feat/17-container-release`. It targets image-evidence
 [PR #58](https://github.com/egohygiene/realm/pull/58), branch
 `feat/7-image-evidence`, currently incorporated through
-`9eccc1062aa14f8ca06c9d045acf21f4319313e1` from main
+`4106779538ccb82829bbacb73c2ceef8ee91bd8e` from main
 `0ebdc4d3562a0af0f806876c5dd81d60e79f9e27`. The PR records the exact pushed
-implementation head. The actual #7 verifier is incorporated in this reconciliation; final reviewed-code
+implementation head. The actual #7 verifier and its source-freeze/owned-container cleanup delta are
+incorporated in this reconciliation; final reviewed-code
 receipt validation and independent joined review remain pending.
 
 ## Implemented bounded source
@@ -43,9 +44,9 @@ release readiness remains nonzero/unavailable.
 
 - Original unchanged-main `task check`: all 97 tests and offline gates passed.
 - Regression checkpoint `c2579a50579c8bcb50654428cf6163c69f121a4d` is pushed and remote-verified. Its nine methods initially failed as expected (five assertions and ten subcase errors) because the adapter/assets were absent.
-- Current focused `python3 -m unittest discover --start-directory tests --pattern test_realm_release.py --verbose`: all 22 methods passed, including actual-owner fixture roundtrips, rewritten-root/owner contradictions, no-tool initialization traps and deterministic captured-copy mutation. Joined `task check` passed 129 tests initially and 136 tests after the first review repair; the final expanded source will be checked again after the predecessor delta. New pure-mapping fixtures test bytes and contradictions only; they are not image-owner or authentication proof.
+- Current focused `python3 -m unittest discover --start-directory tests --pattern test_realm_release.py --verbose`: all 25 methods passed, including actual-owner fixture roundtrips, rewritten-root/owner contradictions, no-tool initialization traps and deterministic captured-copy mutation. Joined `task check` passed 143 tests before the final namespace controls; complete final-source qualification is still pending. New pure-mapping fixtures test bytes and contradictions only; they are not image-owner or authentication proof.
 - Exact Aether Draft 2020-12 validation of the declaration and own report/schema checks pass. Ruff check/format, Python 3.9 grammar and whitespace pass. Initial Ruff import/check flags and missing-yet-unimplemented functions were repaired; no checks were weakened.
-- Independent review confirmed pinned contracts and identified working-input provenance and lowercase timestamp seams. Plans now separate HEAD from clean/dirty working input checksums, bind the prepared patch to recorded bytes and normalize valid lowercase RFC3339. Focused controls pass. Independent review reproduced a copy-consistency defect after owner verification; the new regression failed before repair. Captured payload bytes now recheck every receipt hash/size and cached receipt/root metadata is decoded without rereading its path. Shared source-input hashes across platform records must agree.
+- Independent review confirmed pinned contracts and identified working-input provenance and lowercase timestamp seams. Plans now separate HEAD from clean/dirty working input checksums, bind the prepared patch to recorded bytes and normalize valid lowercase RFC3339. Focused controls pass. Independent review reproduced a copy-consistency defect after owner verification; the new regression failed before repair. Captured payload bytes now recheck every receipt hash/size and cached receipt/root metadata is decoded without rereading its path. Shared source-input hashes across platform records must agree. Valid escaped JSON receipt serialization is now accepted by decoding the fixed owner receipt path; the new control first failed before repair. The SPDX index requires distinct bounded HTTP(S)/URN namespace syntax and rejects malformed namespaces before output without echoing their values.
 - Actual large prototype image-owner evidence passed owner verification, portable bundle creation and verification; root SPDX index passed the exact official SPDX 2.3 schema. This prototype is attributed to its original producer bytes; final reviewed-code capture is pending. Required release readiness returns nonzero/unavailable.
 - Independent contract inspection confirms vendored bytes and highlights Relay's limited file/checksum boundary. The actual current EgoLint consumer reports advisory rollout with all seven release checks passed and zero release findings. Its aggregate exits 1 with thirteen portability findings, all matching the predecessor baseline; no aggregate clean claim is made. Final reviewed-code #7 bundle qualification, full Task and combined checks remain pending.
 

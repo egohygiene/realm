@@ -74,7 +74,10 @@ unavailable to this adapter until a reviewed streaming/resource-bound change.
 The root `sbom.spdx.json` is a checksum-bound SPDX index of the actual per-platform
 installed-image SBOMs, which remain in their evidence directories. It does not
 invent a merged installed inventory or reuse `dist/profiles` declared-intent
-SBOMs. `provenance.json` records local input mapping; `signature.json` records
+SBOMs. This consumer requires distinct bounded HTTP(S)/URN document namespaces
+with supported URI syntax, without fragments, whitespace/control characters or
+invalid percent encoding. The check performs no network lookup and is not a
+full SPDX schema engine. `provenance.json` records local input mapping; `signature.json` records
 unavailable authentication. The complete sorted `SHA256SUMS` inventory covers
 every payload exactly once. The selected Relay `container-image` required paths
 are present and can be inspected by the exact published Relay validator.

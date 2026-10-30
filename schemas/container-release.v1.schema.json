@@ -19,7 +19,7 @@
         "type": "object", "additionalProperties": false,
         "required": ["receipt", "receipt_sha256", "identity_kind", "local_config_digest", "scanner_manifest_digest", "platform", "execution", "registry_reference", "registry_manifest_digest", "index_digest"],
         "properties": {
-          "receipt": {"type": "string", "pattern": "^image-evidence/linux-(amd64|arm64)/[A-Za-z0-9][A-Za-z0-9._-]*\\.json$"},
+          "receipt": {"type": "string", "pattern": "^image-evidence/linux-(amd64|arm64)/image-evidence\\.json$"},
           "receipt_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
           "identity_kind": {"const": "local-config"},
           "local_config_digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},

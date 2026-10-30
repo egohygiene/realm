@@ -21,6 +21,7 @@ import subprocess
 from datetime import date, datetime, timezone
 from pathlib import Path, PurePosixPath
 from typing import Any
+from urllib.parse import urlsplit
 
 ROOT = Path(__file__).resolve().parents[1]
 SEMVER = re.compile(r"v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)")
@@ -105,6 +106,37 @@ def same(value: Any, expected: Any, label: str) -> None:
 def text(value: Any, label: str, maximum: int = 1000) -> str:
     if not isinstance(value, str) or not value or len(value) > maximum:
         fail(f"{label} must be bounded nonempty text")
+    return value
+
+
+def namespace_uri(value: Any) -> str:
+    """Accept the bounded HTTP(S)/URN namespace subset used by this index."""
+    value = text(value, "installed SBOM namespace", 4096)
+    if (
+        not re.fullmatch(r"[A-Za-z0-9._~:/?\[\]@!$&'()*+,;=%-]+", value)
+        or re.search(r"%(?![0-9A-Fa-f]{2})", value)
+        or "#" in value
+    ):
+        fail("installed SBOM namespace must be a supported absolute URI")
+    try:
+        parsed = urlsplit(value)
+        if parsed.scheme in {"http", "https"}:
+            # Syntax inspection only; no DNS or network request occurs.
+            _ = parsed.port
+    except ValueError:
+        fail("installed SBOM namespace has unsupported URI syntax")
+    if any(character in parsed.path + parsed.query for character in "[]"):
+        fail("installed SBOM namespace has unsupported path syntax")
+    if parsed.scheme in {"http", "https"}:
+        if not parsed.netloc or not parsed.hostname:
+            fail("installed SBOM namespace requires an HTTP(S) authority")
+    elif parsed.scheme == "urn":
+        if parsed.netloc or not re.fullmatch(
+            r"[A-Za-z0-9][A-Za-z0-9-]{0,31}:.+", parsed.path
+        ):
+            fail("installed SBOM namespace requires a supported URN identifier")
+    else:
+        fail("installed SBOM namespace supports HTTP(S) or URN only")
     return value
 
 
@@ -544,26 +576,20 @@ def verified_image(directory: Path) -> tuple[dict, dict[str, bytes], str]:
     same(receipt.get("state"), "limited", "image evidence state")
     same(receipt.get("release_ready"), False, "image evidence readiness")
     files = inventory(directory)
-    receipts = []
-    for name, data in files.items():
-        if len(data) > MAX_JSON or b'"realm.image-evidence/v1"' not in data:
-            continue
-        value = decode_object(data)
-        if value.get("contract") == "realm.image-evidence/v1":
-            same(value, receipt, "verified image receipt")
-            receipts.append(name)
-    if len(receipts) != 1:
-        fail("image evidence requires one unambiguous verified receipt")
+    receipt_name = "image-evidence.json"
+    if receipt_name not in files or len(files[receipt_name]) > MAX_JSON:
+        fail("image evidence requires its fixed bounded receipt")
+    same(decode_object(files[receipt_name]), receipt, "verified image receipt")
     expected = {
         relative(artifact["path"]) for artifact in receipt["artifacts"].values()
-    } | set(receipts)
+    } | {receipt_name}
     if set(files) != expected:
         fail("image evidence contains undeclared files")
     for artifact in receipt["artifacts"].values():
         data = files[artifact["path"]]
         if len(data) != artifact["bytes"] or checksum(data) != artifact["sha256"]:
             fail("captured image artifact changed after owner verification")
-    return receipt, files, receipts[0]
+    return receipt, files, receipt_name
 
 
 def bundle_files(
@@ -581,6 +607,7 @@ def bundle_files(
     platforms = set()
     local_ids = set()
     source_inputs = {}
+    namespaces = set()
     for receipt, payloads, receipt_name in sorted(
         images, key=lambda item: item[0]["subject"]["platform"]
     ):
@@ -623,9 +650,10 @@ def bundle_files(
         )
         sbom_artifact = receipt["artifacts"]["sbom"]
         sbom = json.loads(payloads[sbom_artifact["path"]])
-        namespace = text(
-            sbom.get("documentNamespace"), "installed SBOM namespace", 4096
-        )
+        namespace = namespace_uri(sbom.get("documentNamespace"))
+        if namespace in namespaces:
+            fail("platform SBOM namespaces must be distinct")
+        namespaces.add(namespace)
         external_documents.append(
             {
                 "externalDocumentId": "DocumentRef-" + platform.replace("/", "-"),

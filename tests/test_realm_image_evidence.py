@@ -556,6 +556,142 @@ class PortableEvidenceTests(unittest.TestCase):
                 ):
                     tool.tool_pins()
 
+    def test_publication_is_atomic_and_preserves_an_empty_racing_directory(self):
+        tool = module()
+        with tempfile.TemporaryDirectory() as temp:
+            parent = Path(temp)
+            source = parent / "source"
+            source.mkdir()
+            (source / "new").write_text("new")
+            target = parent / "target"
+            target.mkdir()
+            inode = target.stat().st_ino
+            with self.assertRaisesRegex(ValueError, "already exists"):
+                tool.publish_directory(source, target)
+            self.assertEqual(target.stat().st_ino, inode)
+            self.assertEqual(list(target.iterdir()), [])
+            target.rmdir()
+            tool.publish_directory(source, target)
+            self.assertFalse(source.exists())
+            self.assertEqual((target / "new").read_text(), "new")
+
+    def test_verify_and_plan_never_execute_image_tools(self):
+        from unittest import mock
+
+        with tempfile.TemporaryDirectory() as temp:
+            directory = Path(temp)
+            tool, receipt = self.fixture(directory)
+            with mock.patch.object(
+                tool, "run", side_effect=AssertionError("unexpected tool execution")
+            ):
+                self.assertEqual(tool.verify_evidence(directory), receipt)
+                self.assertEqual(
+                    tool.build_plan("sha256:" + "a" * 64, "b" * 40)["status"], "planned"
+                )
+
+    def test_tool_deadline_stops_an_owned_descendant_holding_pipes(self):
+        import os
+        import sys
+        import time
+
+        tool = module()
+        with tempfile.TemporaryDirectory() as temp:
+            marker = Path(temp) / "must-not-be-written"
+            child = (
+                "import time; from pathlib import Path; time.sleep(0.4); Path("
+                + repr(str(marker))
+                + ").write_text('unexpected')"
+            )
+            parent = (
+                "import subprocess,sys,time; subprocess.Popen([sys.executable,'-c',"
+                + repr(child)
+                + "]); time.sleep(10)"
+            )
+            with self.assertRaisesRegex(ValueError, "deadline"):
+                tool.run([sys.executable, "-c", parent], dict(os.environ), timeout=0.1)
+            time.sleep(0.5)
+            self.assertFalse(marker.exists())
+
+    def test_docker_client_timeout_cleans_only_the_identified_owned_container(self):
+        from unittest import mock
+
+        tool = module()
+        captured = {}
+
+        def fake_run(argv, _env, _timeout=300):
+            if argv[1] == "run":
+                captured["name"] = argv[argv.index("--name") + 1]
+                captured["label"] = argv[argv.index("--label") + 1]
+                raise ValueError("synthetic client deadline")
+            if argv[1:3] == ["container", "inspect"]:
+                key, token = captured["label"].split("=", 1)
+                return tool.encode(
+                    {
+                        "Id": "d" * 64,
+                        "Name": "/" + captured["name"],
+                        "Config": {"Labels": {key: token}},
+                    }
+                )
+            if argv[1:3] == ["container", "rm"]:
+                captured["removed"] = argv[-1]
+                return b""
+            self.fail("unexpected container operation")
+
+        with (
+            mock.patch.object(tool, "run", side_effect=fake_run),
+            self.assertRaisesRegex(ValueError, "synthetic client deadline"),
+        ):
+            tool.run_container(
+                ["docker"], ["--network", "none"], "sha256:" + "a" * 64, [], {}
+            )
+        self.assertEqual(captured["removed"], "d" * 64)
+
+    def test_container_cleanup_refuses_unproved_ownership(self):
+        from unittest import mock
+
+        tool = module()
+        for config in (None, {"Labels": None}, {"Labels": {"wrong": "label"}}):
+            calls = []
+
+            def fake_run(argv, _env, _timeout=300, config=config, calls=calls):
+                calls.append(argv)
+                if argv[1] == "run":
+                    return b"synthetic stdout"
+                if argv[1:3] == ["container", "inspect"]:
+                    name = calls[0][calls[0].index("--name") + 1]
+                    return tool.encode(
+                        {"Id": "d" * 64, "Name": "/" + name, "Config": config}
+                    )
+                self.fail("unproved container must not be removed")
+
+            with (
+                self.subTest(config=config),
+                mock.patch.object(tool, "run", side_effect=fake_run),
+                self.assertRaisesRegex(ValueError, "ownership"),
+            ):
+                tool.run_container(["docker"], [], "sha256:" + "a" * 64, [], {})
+            self.assertFalse(any(call[1:3] == ["container", "rm"] for call in calls))
+
+    def test_completed_container_absence_is_verified_without_deletion(self):
+        from unittest import mock
+
+        tool = module()
+
+        def fake_run(argv, _env, _timeout=300):
+            if argv[1] == "run":
+                return b"synthetic stdout"
+            if argv[1:3] == ["container", "inspect"]:
+                raise ValueError("synthetic already-removed container")
+            self.assertEqual(argv[1:3], ["container", "ls"])
+            self.assertIn("--filter", argv)
+            return b""
+
+        with mock.patch.object(tool, "run", side_effect=fake_run):
+            self.assertEqual(
+                tool.run_container(["docker"], [], "sha256:" + "a" * 64, [], {}),
+                b"synthetic stdout",
+            )
+
 
 if __name__ == "__main__":
     unittest.main()

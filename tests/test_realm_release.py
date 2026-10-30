@@ -269,7 +269,8 @@ class RealmReleaseTests(unittest.TestCase):
         sbom = json.dumps(
             {
                 "spdxVersion": "SPDX-2.3",
-                "documentNamespace": "https://example.invalid/sbom/fixture",
+                "documentNamespace": "https://example.invalid/sbom/"
+                + platform.replace("/", "-"),
             }
         ).encode()
         receipt = {
@@ -344,6 +345,27 @@ class RealmReleaseTests(unittest.TestCase):
         files = tool.bundle_files("v0.1.0", "a" * 40, [fixture])
         index = json.loads(files["sbom.spdx.json"])
         self.assertEqual(index["creationInfo"]["created"], "2026-10-30T12:00:00Z")
+
+    def test_namespace_consumer_policy_has_uri_controls_without_network(self) -> None:
+        tool = self.release_module()
+        for value in (
+            "https://example.invalid/sbom/abc",
+            "HTTP://example.invalid/a%20b",
+            "urn:uuid:12345678-abcd-1234-abcd-123456789abc",
+        ):
+            with self.subTest(value=value):
+                self.assertEqual(tool.namespace_uri(value), value)
+        for value in (
+            "not a uri",
+            "https:///missing-host",
+            "https://example.invalid/a#fragment",
+            "https://example.invalid/%GG",
+            "urn::missing-nid",
+            "https://example.invalid/[bad]",
+            "file:///private/sbom",
+        ):
+            with self.subTest(value=value), self.assertRaises(ValueError):
+                tool.namespace_uri(value)
 
     def test_checksum_complete_arbitrary_records_are_not_image_proof(self) -> None:
         tool = self.release_module()
@@ -496,6 +518,30 @@ class RealmReleaseTests(unittest.TestCase):
         self.assertEqual(before, (output / "SHA256SUMS").read_bytes())
         self.verify_local(output)
 
+    def test_owner_receipt_escaped_solidus_is_a_semantic_json_control(self) -> None:
+        evidence = self.directory / "owner-evidence"
+        _helper, owner, receipt = self.owner_fixture(evidence)
+        path = evidence / "image-evidence.json"
+        path.write_bytes(
+            path.read_bytes().replace(
+                b"realm.image-evidence/v1", b"realm.image-evidence\\/v1"
+            )
+        )
+        self.assertEqual(owner.verify_evidence(evidence), receipt)
+        output = self.directory / "escaped-receipt-bundle"
+        self.run_release(
+            "bundle",
+            "--version",
+            "v0.1.0",
+            "--source-revision",
+            "b" * 40,
+            "--image-evidence",
+            str(evidence),
+            "--output",
+            str(output),
+        )
+        self.verify_local(output)
+
     def test_rehashed_root_forgeries_fail_while_owner_payloads_remain_valid(
         self,
     ) -> None:
@@ -553,6 +599,44 @@ class RealmReleaseTests(unittest.TestCase):
             success=False,
         )
         self.assertFalse(output.exists())
+
+    def test_owner_valid_invalid_namespace_rejects_before_output_without_value_leak(
+        self,
+    ) -> None:
+        for number, namespace in enumerate(
+            (
+                "not a uri",
+                "https://example.invalid:private-port/sbom",
+                "https://example.invalid/a#fragment",
+            )
+        ):
+            with self.subTest(number=number):
+                evidence = self.directory / f"owner-evidence-{number}"
+                helper, owner, _receipt = self.owner_fixture(evidence)
+                helper.rewrite(
+                    evidence,
+                    "sbom.spdx.json",
+                    lambda value, namespace=namespace: value.__setitem__(
+                        "documentNamespace", namespace
+                    ),
+                )
+                self.assertIsInstance(owner.verify_evidence(evidence), dict)
+                output = self.directory / f"invalid-namespace-output-{number}"
+                report = self.run_release(
+                    "bundle",
+                    "--version",
+                    "v0.1.0",
+                    "--source-revision",
+                    "b" * 40,
+                    "--image-evidence",
+                    str(evidence),
+                    "--output",
+                    str(output),
+                    success=False,
+                )
+                self.assertFalse(output.exists())
+                self.assertNotIn(namespace, report["message"])
+                self.assertNotIn("private-port", report["message"])
 
     def test_portable_verification_initializes_no_registry_or_scanner_tool(
         self,
