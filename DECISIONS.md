@@ -71,12 +71,12 @@ Do not rewrite historical context to fit current understanding. Amend a record f
 
 ## ADR-0004: Project canonical profiles to the Dev Container standard
 
-- **Status:** Proposed implementation checkpoint; maintainer review pending
+- **Status:** Proposed
 - **Date:** 2026-10-30
 - **Context:** ADR-0001 keeps profiles canonical. A portable container-development
   interface must not make VS Code, Codespaces or Nix the owner of environment
   intent, and the current resolved manifest has no editor/host overlay fields.
-- **Candidate decision:** Keep Realm profiles and the resolved manifest canonical.
+- **Decision:** Proposed for maintainer review: keep Realm profiles and the resolved manifest canonical.
   Project them to the open Dev Container Specification where applicable, with
   explicit consumer overrides and namespaced host adapters. Checked-in generated
   JSON is reviewable output; its generator version, source pins and input digest

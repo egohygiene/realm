@@ -111,6 +111,27 @@ with `Draft201909Validator` and registered format checks. Actual CLI
 `read-configuration` discovers Docker containers; merged configuration may also
 inspect images or resolve Features. It is not a Dockerless schema validator.
 
+## Recorded authored-reference observation
+
+The separate [limited receipt](evidence/devcontainer-authored-reference.v1.json)
+and its [closed schema](../schemas/devcontainer-reference-evidence.v1.schema.json)
+record actual official CLI 0.90.0 and Docker Engine 28.4.0 observations on local
+Linux AMD64. The source fixture SHA-256 is
+`8dfee6fd919c7aad21ebdf31a97e3008b1c6a6110b9f8b84a48c44d8984adc26`.
+The official base-schema check, merged configuration interpretation, container
+start, user/environment/workspace exec checks, reopen of the existing container
+and recreation with identical configuration passed. Only owned temporary
+containers were removed; the fixture bytes stayed unchanged. Sanitized actual
+command templates, package digest and limits are retained in the receipt.
+
+This establishes a working authored image-only reference on that platform. It
+does not establish Realm #10 generation, installed capabilities, Task/Mantle
+workflow, Features, lifecycle commands, forwarded ports, GPU, VS Code,
+Codespaces or DevPod. Recreation is not a Dockerfile or Codespaces rebuild.
+CLI package digest verification does not establish package signatures or
+provenance; neither is claimed. The static checker never imports this receipt
+as authentication or upgrades its external evidence layers from it.
+
 ## Host conformance matrix
 
 The four-host matrix in the mapping records documented expectations separately
@@ -123,7 +144,7 @@ or missing implementation/evidence. None of these expectations is a host test.
 | --- | --- | --- |
 | Reference CLI/local runtime | Portable configuration interpretation; editor settings may be ignored | Exact CLI, engine/platform, source digest, create/exec/rebuild and negative controls |
 | VS Code Dev Containers | VS Code customizations; clone-in-volume changes workspace assumptions | Actual editor connection and shared tooling workflow |
-| GitHub Codespaces | Cloud-host environment; ordinary bind mounts ignored, host:port forwarding unsupported, shutdown behavior differs | Authorized create, machine requirements, editor/browser connection and rebuild |
+| GitHub Codespaces | Cloud-host environment; ordinary bind mounts ignored but volumes allowed, host:port forwarding unsupported, shutdown behavior differs | Authorized create, machine requirements, editor/browser connection and rebuild |
 | DevPod/remote implementation | Supporting-tool listing establishes no blanket field parity | Reviewed implementation/provider/version and the same generated canary |
 
 These limitations come from the pinned

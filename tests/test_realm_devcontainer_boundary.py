@@ -182,6 +182,58 @@ class RealmDevcontainerBoundaryTests(unittest.TestCase):
         self.assertEqual(mapping["reference"]["kind"], "authored-reference-only")
         self.assertIs(mapping["reference"]["realm_profile_applied"], False)
 
+    def test_recorded_reference_evidence_matches_subject_and_retains_limits(
+        self,
+    ) -> None:
+        mapping, reference = self.authored_inputs()
+        receipt = json.loads(
+            (ROOT / "docs/evidence/devcontainer-authored-reference.v1.json").read_text()
+        )
+        self.assertEqual(receipt["schema_version"], "1.0.0")
+        self.assertEqual(
+            receipt["contract"], "realm.devcontainer-reference-evidence/v1"
+        )
+        self.assertEqual(receipt["state"], "limited")
+        self.assertEqual(receipt["scope"], "authored-reference-only/local-linux-amd64")
+        self.assertEqual(
+            receipt["subject"],
+            {
+                "reference_path": REFERENCE.relative_to(ROOT).as_posix(),
+                "reference_sha256": hashlib.sha256(REFERENCE.read_bytes()).hexdigest(),
+                "image": reference["image"],
+            },
+            "Changing authored reference bytes requires fresh observation evidence.",
+        )
+        for receipt_field, mapping_field in [
+            ("repository", "repository"),
+            ("revision", "revision"),
+            ("path", "schema_path"),
+            ("sha256", "sha256"),
+        ]:
+            self.assertEqual(
+                receipt["official_schema"][receipt_field],
+                mapping["spec"][mapping_field],
+            )
+        self.assertEqual(receipt["tools"]["cli"]["version"], mapping["cli"]["version"])
+        self.assertEqual(
+            receipt["tools"]["cli"]["source_revision"], mapping["cli"]["revision"]
+        )
+        self.assertTrue(
+            {
+                "realm-profile-generation",
+                "task-workflow",
+                "mantle-integration",
+                "vscode",
+                "codespaces",
+                "devpod",
+            }.issubset(receipt["unproven"])
+        )
+        result, report = self.run_check()
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertEqual(report["state"], "valid")
+        # run_check also requires every external proof layer to be not-performed;
+        # the separate observation receipt must not authenticate the checker.
+
     def test_requested_unperformed_proof_cannot_become_a_passing_check(self) -> None:
         for layer in sorted(EXTERNAL_LAYERS):
             with self.subTest(layer=layer):

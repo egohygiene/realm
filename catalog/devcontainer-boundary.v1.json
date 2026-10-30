@@ -299,7 +299,7 @@
         "features": "supported",
         "environment": "supported",
         "users": "degraded",
-        "mounts": "ignored",
+        "mounts": "degraded",
         "lifecycle": "supported",
         "ports": "degraded",
         "host-requirements": "host-specific",
@@ -309,6 +309,7 @@
       },
       "limitations": [
         "Host means the cloud VM; bind mounts, shutdown and forwarding semantics differ.",
+        "Ordinary bind mounts are ignored; volume mounts remain allowed by the documented host contract.",
         "No paid Codespaces creation, machine selection, connect or rebuild proof is claimed."
       ]
     },
