@@ -3,10 +3,10 @@
   "publication_version": "1.0.0",
   "profile": "flutter",
   "description": "Base environment plus the pinned Flutter SDK",
-  "catalog_checksum": "sha256:ad15bb347eea66d9d89bb7c0d9d8f4e2cfe6d024b6eaf253af8f263b3a6c7a82",
-  "registry_checksum": "sha256:2ec2581ab7ebe4c4b898abe139f8ac8dd0b3b9b69e89a04f9ac81ff5df988c16",
+  "catalog_checksum": "sha256:1a3ca4c29678556fb4c13769ab91ed65e634ceff37cb90fda11d53031a7e6048",
+  "registry_checksum": "sha256:ab6186d59a0af0e29ffa21fd6c9c57c18380a1fe0264e761103211a3084cb719",
   "profile_checksum": "sha256:1a3fc00b9ebe3ee6ccd474738838c70f208bfa630e939052edcd5710b4ef28fe",
-  "cache_key": "sha256:be7cbfe284ef870811592154840c4b5d11281b6b21661d6fad314773bdb2b12a",
+  "cache_key": "sha256:4efe9f74d9fe367e77fbd8d5d8e41ae7db552c4191e719f59d236d54e6788140",
   "contents": {
     "capabilities": [
       "realm-base",
@@ -156,6 +156,6 @@
   "sbom": {
     "format": "SPDX-2.3 declared-intent",
     "path": "sbom.spdx.json",
-    "sha256": "sha256:0a5fd72b19e2fb4233d01390ba56ac4243776ecaef9f89d3ca93eb3e82964538"
+    "sha256": "sha256:79a9fd89b56f242886bca2542a7c35b3a49ffc92296e32150a62ad7df36d2a75"
   }
 }

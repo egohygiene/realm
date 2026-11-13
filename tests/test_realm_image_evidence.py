@@ -829,9 +829,19 @@ class PortableEvidenceTests(unittest.TestCase):
         )
         for name, checksum in receipt["source"]["inputs"].items():
             with self.subTest(source=name):
-                self.assertEqual(tool.digest((ROOT / name).read_bytes()), checksum)
-        # This checks the committed observation's freshness. Full artifact
-        # verification is separately exercised on the actual portable bundle.
+                historical = ROOT / "tests/fixtures/local-ci-history" / name
+                source = historical if historical.is_file() else ROOT / name
+                self.assertEqual(tool.digest(source.read_bytes()), checksum)
+        # Preserve the qualified source instead of rewriting the old receipt.
+        # Fresh generated metadata does not refresh native runtime qualification.
+        drift = {
+            name for name, checksum in receipt["source"]["inputs"].items()
+            if tool.digest((ROOT / name).read_bytes()) != checksum
+        }
+        self.assertEqual(drift, {"catalog/capabilities.json",
+                                "images/base/packages/locks/debian-trixie-amd64.lock.json"})
+        self.assertEqual(receipt["state"], "limited")
+        self.assertFalse(receipt["release_ready"])
 
 
 if __name__ == "__main__":

@@ -329,7 +329,9 @@ class RealmDevcontainerTests(unittest.TestCase):
         proof = json.loads(
             (ROOT / "docs/evidence/devcontainer-generated-base.v1.json").read_text()
         )
-        bundle = ROOT / "dist/devcontainers/base-linux-amd64"
+        current_bundle = ROOT / "dist/devcontainers/base-linux-amd64"
+        history = ROOT / "tests/fixtures/local-ci-history"
+        bundle = history / "generated-base"
         manifest = json.loads((bundle / "projection.v1.json").read_text())
         paths = {
             "generator_sha256": ROOT / "tools/realm_devcontainer.py",
@@ -337,8 +339,8 @@ class RealmDevcontainerTests(unittest.TestCase):
             "generated_configuration_sha256": bundle
             / ".devcontainer/devcontainer.json",
             "resolved_manifest_sha256": bundle / "resolved-profile.v1.json",
-            "recipe_sha256": bundle / "images/base/Dockerfile",
-            "selected_lock_sha256": bundle
+            "recipe_sha256": current_bundle / "images/base/Dockerfile",
+            "selected_lock_sha256": history
             / "images/base/packages/locks/debian-trixie-amd64.lock.json",
             "official_schema_sha256": ROOT
             / "vendor/devcontainers/devContainer.base.schema.json",
@@ -379,6 +381,14 @@ class RealmDevcontainerTests(unittest.TestCase):
         )
         self.assertEqual(manifest["status"], "generated-source")
         self.assertFalse(manifest["published"])
+        # The actual old source remains bound; a new catalog is not a new run.
+        current_manifest = json.loads((current_bundle / "projection.v1.json").read_text())
+        self.assertNotEqual(current_manifest["source_identity"], manifest["source_identity"])
+        self.assertNotEqual(
+            hashlib.sha256((current_bundle / "projection.v1.json").read_bytes()).hexdigest(),
+            proof["source"]["bundle_manifest_sha256"],
+        )
+        self.assertEqual(self.run_cli("check", current_bundle).returncode, 0)
 
     def test_clean_private_umask_keeps_git_executable_roles(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:

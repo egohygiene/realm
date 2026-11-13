@@ -1,0 +1,22 @@
+name: Local Realm validation
+
+# Explicit act -W target; outside .github/workflows so GitHub never schedules it.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  offline-tests:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      PYTHONDONTWRITEBYTECODE: "1"
+    steps:
+      - name: Copy the selected working tree through act checkout emulation
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # Same pin as validate.yml; act emulates this step.
+      - name: Run the canonical dependency-free unit test command
+        run: python3 -m unittest discover --start-directory tests --pattern 'test_*.py' --verbose
+      - name: Check tracked whitespace
+        run: git diff --check

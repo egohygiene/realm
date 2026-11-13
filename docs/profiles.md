@@ -39,12 +39,17 @@ their consumers, and lexical ordering for otherwise independent nodes.
 | `git` | `base` | Git and a bounded terminal diff tool | forbidden |
 | `cloud` | `base` | pinned OpenTofu and Pulumi clients | forbidden |
 | `media` | `base` | FFmpeg and ImageMagick | forbidden |
-| `full` | all stable non-service profiles | Mantle shell environment | forbidden |
+| `local-ci` | `base` | checksum-pinned `act` client | external Docker connection is explicit; no daemon or socket provisioned |
+| `full` | curated general-purpose non-service profiles | Mantle shell environment | forbidden |
 | `services` | `base` | container host service | explicit opt-in |
 
-`full` means every supported non-service development toolset. It does not mean
-every possible host daemon, database, credential, or product dependency. Those
-belong in explicit service profiles or consuming application orchestration.
+`full` composes the general-purpose development toolsets listed in its profile.
+The `local-ci` execution capability is a separate explicit opt-in because running
+workflows requires a deliberately supplied Docker endpoint and repository/job
+selection. It adds no Docker daemon, socket mount or privileged container, and
+is not inherited by `base` or `full`. Host daemons, databases, credentials and
+product dependencies belong in explicit service profiles or consuming
+application orchestration.
 This definition keeps `full` portable enough for CI and Dev Containers.
 
 The current stable profile family is `base`, `rust`, `node`, `python`,
@@ -52,6 +57,24 @@ The current stable profile family is `base`, `rust`, `node`, `python`,
 privileged/service boundary and is not inherited by `full`. Candidate tools
 remain visible in the tool registry but cannot enter this family until the
 stable-admission contract maps them to a reviewed capability.
+
+The `local-ci` client is admitted separately with upstream release archive pins
+in `config/act.v1.json`. Install it into an explicit user-owned destination with
+`python3 tools/realm_act.py install --output .cache/realm/local-ci/bin/act`.
+An optional `--archive` path permits offline installation from already fetched
+bytes. The installer checks the archive checksum and Linux ELF architecture,
+creates the binary atomically, preserves existing different binaries, and
+does not start Docker or execute workflows. Add the output's `bin` directory to
+the calling process's `PATH`, then follow [local CI](local-ci.md).
+
+Both Linux architectures have reviewed archive pins. Native AMD64, native
+ARM64, AMD64 emulation and an Apple Silicon Linux Dev Container are separate
+runtime qualifications. Archive verification alone does not prove a workflow
+can execute on a particular host. The current Dev Container emitter remains
+base-only; declaring `local-ci` does not claim that a new generated image or
+Dev Container Feature is available. Nix/workstation entries remain resolved
+artifact intent, not implemented installation adapters. Upstream SHA-256 values
+bind bytes; publisher-signature verification is not claimed.
 
 ## Projections
 

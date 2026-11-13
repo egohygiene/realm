@@ -1,11 +1,11 @@
 {
   "schema_version": "1.0.0",
   "resolver_version": "1.0.0",
-  "catalog_version": "1.2.0",
-  "catalog_checksum": "sha256:01ee7fad917b6963d3b11ce7e2f962b44678efbac1dd66bbd6ff9d930f179f8b",
+  "catalog_version": "1.3.0",
+  "catalog_checksum": "sha256:ce753706522abc80ff76f54567f23d261fcaeefe5c4105599f48d8091de4a0c0",
   "configuration_checksum": "sha256:ee1f45dd337a3de6d8443095b4dca596fcc1941a6274ae21ca492b2c96a472ee",
   "profile_checksum": "sha256:965400ef4132e6619c017c2183bcfff62662e43ef1d48f23a6b091d11fd04f61",
-  "resolved_profile_checksum": "sha256:d8056173d6cf8c30a1b4ccec34de66cc418cbce195eea9335dd9acce9039adb2",
+  "resolved_profile_checksum": "sha256:27564bd30278ad7514955b98daacda7a2f1dd138da1d031c4218f9b8f5e5fb89",
   "profile": "base",
   "projection": "docker",
   "distribution": "debian",
@@ -153,5 +153,5 @@
   "aliases": [],
   "transitional_packages": [],
   "unavailable_packages": [],
-  "lock_checksum": "sha256:b994e542623bb298bc07a816a18ac68f1f9eaa6a63eb2e2f53a046cb40de9e52"
+  "lock_checksum": "sha256:76c96adcc8e5283906b4a7e40527e8cebd435df3956a44f92814f1a91b547636"
 }

@@ -1,6 +1,49 @@
 # Realm continuity
 
-## Current integration checkpoint
+## Local CI candidate — 2026-11-13
+
+The maintainer selected [#48](https://github.com/egohygiene/realm/issues/48) for
+implementation. Candidate branch: `feat/48-local-ci-act`, based on verified main
+`0a3bbdc379b54db07dc5103887af0dfe05f97a0a`. This checkpoint records source and
+local validation; it grants no merge, hosted-dispatch or publication authority.
+
+- Added optional `local-ci` profile, checksum-pinned act 0.2.97 installer,
+  digest-pinned `.actrc`, explicit validation manifest, Task entry points and
+  local doctor/plan/run/sweep reports. Base and full capability selections stay
+  unchanged; no daemon/socket is provisioned implicitly.
+- The launcher isolates act user config and default secret/env files. It has
+  real process deadlines, controlled SIGTERM cancellation, exact-label owned
+  job-container cleanup, persistent local action caches and opt-in cloud proxy/CA
+  transport. Service and Docker-action child cleanup remains unqualified.
+- A two-checkout sweep passed: Realm's full `task check` and actual act unittest
+  fixture each passed 208 tests; Reflector's runtime act job and three direct
+  validators passed at its candidate `ea359549218b74164164299e9cdb24cb3191d8a3`.
+  The Reflector branch is being reconciled with newer main independently; use
+  that consumer PR for its final integrated qualification.
+- Real Docker/act execution and TLS-verified HTTPS inside the runner passed on
+  Linux AMD64. Online/offline AMD64 act installation passed; ARM64 archive/ELF
+  verification passed, with native ARM64 execution still unproven.
+- The original Realm workflow failed fetching its pinned remote Task setup
+  Action. The local fixture uses checkout emulation and the canonical unittest
+  command; hosted Action/bootstrap/context parity is explicitly unproven.
+  Native image checks, release/provider jobs and platform gaps remain visible.
+- Catalog fingerprints required regenerated profile/projection declarations and
+  lock metadata. Package entries, snapshots, base-image pins and historical
+  qualification receipts are unchanged. Frozen original-source fixtures verify
+  the old receipts; tests explicitly detect current source drift. No new base
+  image runtime qualification is claimed.
+- Independent review corrected malformed-manifest handling, aggregate Markdown,
+  closed-output timeouts and cancellation cleanup. An asynchronous Mantle
+  cancellation test now waits within a bounded window for kernel termination.
+
+Next: review the draft source change and its local evidence, then qualify native
+ARM64/Apple Silicon and eligible native image jobs separately. Keep #48 open for
+those remaining acceptance gates. Published capability/adapter availability and
+organization-wide file adoption are not inferred from this source candidate.
+See [local CI](docs/local-ci.md) for commands, coverage and recovery. Raw reports,
+logs, downloaded tools, proxy files and credentials stay outside public source.
+
+## Previous integration checkpoint
 
 Observed 2026-10-30. This repository-owned prose snapshot records context, not
 permission or an adopted machine continuity contract. Live instructions,

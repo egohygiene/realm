@@ -26,6 +26,16 @@ supersedes: []
 
 # Realm Roadmap
 
+## Selected local-CI checkpoint — 2026-11-13
+
+The maintainer selected [local validation #48](https://github.com/egohygiene/realm/issues/48).
+The `feat/48-local-ci-act` candidate provides the optional pinned act client,
+`.actrc`, explicit validation selections, local reports and a two-repository
+pilot. [Local CI](docs/local-ci.md) and [continuity](CONTINUITY.md) record the
+commands and exact supported/unproven scope. Native ARM64/Apple Silicon,
+provider-specific jobs and published adapter availability retain their separate
+acceptance gates. Review this bounded draft before adoption or broader rollout.
+
 ## Current engineering handoff — 2026-10-30
 
 Use [roadmap #25](https://github.com/egohygiene/realm/issues/25), the owning issues
