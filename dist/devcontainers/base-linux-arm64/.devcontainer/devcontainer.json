@@ -1,7 +1,7 @@
 {
   "build": {
     "args": {
-      "IMAGE_REVISION": "source-input-sha256:1dee4c41aa78bda50b6446424f33d69e143fc972dee7fa2bea365130ce5d046f",
+      "IMAGE_REVISION": "source-input-sha256:781255d33e4f01739ae20e87fc09b926f7b122e2ccf56ea1cce11967415b2631",
       "IMAGE_VERSION": "0.0.0-dev"
     },
     "context": "..",

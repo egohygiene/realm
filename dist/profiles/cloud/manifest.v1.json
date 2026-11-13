@@ -3,10 +3,10 @@
   "publication_version": "1.0.0",
   "profile": "cloud",
   "description": "Base environment plus pinned infrastructure-as-code clients",
-  "catalog_checksum": "sha256:ad15bb347eea66d9d89bb7c0d9d8f4e2cfe6d024b6eaf253af8f263b3a6c7a82",
-  "registry_checksum": "sha256:2ec2581ab7ebe4c4b898abe139f8ac8dd0b3b9b69e89a04f9ac81ff5df988c16",
+  "catalog_checksum": "sha256:1a3ca4c29678556fb4c13769ab91ed65e634ceff37cb90fda11d53031a7e6048",
+  "registry_checksum": "sha256:ab6186d59a0af0e29ffa21fd6c9c57c18380a1fe0264e761103211a3084cb719",
   "profile_checksum": "sha256:05c81353112c1fe16772b93f04931ffcacd2f7d793a39b9cdb2b396d6f9d7926",
-  "cache_key": "sha256:5cb36583f84a21f27a3ec77adddf4ee53bbfe9a9bce6d84edafe5a71faefe1b9",
+  "cache_key": "sha256:76adb24848f9fc135baf7d8ce9d7c0ebd209b77026f500e7355f1e46525826ce",
   "contents": {
     "capabilities": [
       "realm-base",
@@ -140,6 +140,6 @@
   "sbom": {
     "format": "SPDX-2.3 declared-intent",
     "path": "sbom.spdx.json",
-    "sha256": "sha256:103b739206fcc1e5dd71612c02ad0aac38e39da65403c4a3251c9e551f3220ac"
+    "sha256": "sha256:19ba9e2cafdc651763d674b7e23fd034f1cce28d5e9d9c352520e7ec5f4db591"
   }
 }

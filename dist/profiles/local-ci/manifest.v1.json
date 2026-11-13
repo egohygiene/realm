@@ -1,0 +1,128 @@
+{
+  "schema_version": "1.0.0",
+  "publication_version": "1.0.0",
+  "profile": "local-ci",
+  "description": "Explicit act client selection; Docker engine access remains an external prerequisite",
+  "catalog_checksum": "sha256:1a3ca4c29678556fb4c13769ab91ed65e634ceff37cb90fda11d53031a7e6048",
+  "registry_checksum": "sha256:ab6186d59a0af0e29ffa21fd6c9c57c18380a1fe0264e761103211a3084cb719",
+  "profile_checksum": "sha256:68269b94c1282e8ad2b67fe5a63d8c0fa3db2008be779566cc9e1fa98ad7467b",
+  "cache_key": "sha256:5abf4cc7cd861596e833daac8c1222bdae08a97bcfff260199da7d6856079248",
+  "contents": {
+    "capabilities": [
+      "realm-base",
+      "common-cli",
+      "act-local-ci"
+    ],
+    "packages": {
+      "docker": [
+        "apt:ca-certificates",
+        "apt:curl",
+        "apt:file",
+        "apt:git-lfs",
+        "apt:gnupg",
+        "apt:jq",
+        "apt:openssh-client",
+        "apt:rsync",
+        "apt:tree",
+        "apt:unzip",
+        "apt:wget",
+        "apt:xz-utils",
+        "apt:zip"
+      ],
+      "devcontainer": [
+        "apt:ca-certificates",
+        "apt:curl",
+        "apt:file",
+        "apt:git-lfs",
+        "apt:gnupg",
+        "apt:jq",
+        "apt:openssh-client",
+        "apt:rsync",
+        "apt:tree",
+        "apt:unzip",
+        "apt:wget",
+        "apt:xz-utils",
+        "apt:zip"
+      ],
+      "nix": [
+        "nix:cacert",
+        "nix:curl",
+        "nix:file",
+        "nix:git-lfs",
+        "nix:gnupg",
+        "nix:jq",
+        "nix:openssh",
+        "nix:rsync",
+        "nix:tree",
+        "nix:unzip",
+        "nix:wget",
+        "nix:xz",
+        "nix:zip"
+      ],
+      "workstation": [
+        "nix:cacert",
+        "nix:curl",
+        "nix:file",
+        "nix:git-lfs",
+        "nix:gnupg",
+        "nix:jq",
+        "nix:openssh",
+        "nix:rsync",
+        "nix:tree",
+        "nix:unzip",
+        "nix:wget",
+        "nix:xz",
+        "nix:zip"
+      ]
+    },
+    "artifacts": [
+      {
+        "name": "act",
+        "version": "0.2.97",
+        "source": "https://github.com/nektos/act@2540ba6c49dfbafe167d655e4044921cd2ed19e7",
+        "capability": "act-local-ci"
+      }
+    ],
+    "tools": [
+      {
+        "id": "act",
+        "license": "MIT",
+        "owner": "egohygiene/realm",
+        "source": "https://github.com/nektos/act@2540ba6c49dfbafe167d655e4044921cd2ed19e7",
+        "stable_capability": "act-local-ci"
+      }
+    ]
+  },
+  "support": [
+    {
+      "platform": "linux/amd64",
+      "projections": [
+        "docker",
+        "devcontainer",
+        "nix",
+        "workstation"
+      ]
+    },
+    {
+      "platform": "linux/arm64",
+      "projections": [
+        "docker",
+        "devcontainer",
+        "nix",
+        "workstation"
+      ]
+    }
+  ],
+  "size": {
+    "status": "unmeasured",
+    "metric": "expanded OCI image bytes",
+    "owner": "Realm issue #6",
+    "command": "task image:size ARCH=\"<amd64|arm64>\" IMAGE=\"<published-image>\"",
+    "reason": "No profile OCI image has been built or published. Do not infer an image size from declared package names."
+  },
+  "sbom": {
+    "format": "SPDX-2.3 declared-intent",
+    "path": "sbom.spdx.json",
+    "sha256": "sha256:b8bb7f4c5b01ec45cc2e36865aa13ce4e6b8bd3eccb900f499bcd04e7e715c99"
+  }
+}

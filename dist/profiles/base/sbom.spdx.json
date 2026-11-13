@@ -3,7 +3,7 @@
   "dataLicense": "CC0-1.0",
   "SPDXID": "SPDXRef-DOCUMENT",
   "name": "realm-profile-base",
-  "documentNamespace": "https://schemas.egohygiene.io/realm/profile-sbom/base/8eb6369c4a1d9f054adc2796ac368842eb2c8569c51f281e2615aec5325020ed",
+  "documentNamespace": "https://schemas.egohygiene.io/realm/profile-sbom/base/ebf90537b6d472df72da7444f9e3f532fb253c3b433d3cac272d598e279ab5c2",
   "creationInfo": {
     "created": "2026-08-31T00:00:00Z",
     "creators": [

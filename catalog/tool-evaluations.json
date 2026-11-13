@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "registry_version": "1.1.0",
+  "registry_version": "1.2.0",
   "statuses": [
     "accepted",
     "experimental",
@@ -9,6 +9,39 @@
     "superseded"
   ],
   "tools": {
+    "act": {
+      "display_name": "act",
+      "purpose": "Run explicitly selected GitHub Actions validation jobs locally through an externally supplied Docker engine.",
+      "category": "local-ci",
+      "source": "https://github.com/nektos/act",
+      "version_source": "https://github.com/nektos/act@2540ba6c49dfbafe167d655e4044921cd2ed19e7",
+      "license": "MIT",
+      "platforms": [
+        "linux/amd64",
+        "linux/arm64"
+      ],
+      "security": {
+        "risk": "high",
+        "privileged": false,
+        "network_access": true,
+        "notes": "Runs selected repository code and controls the explicitly supplied Docker endpoint. Socket access can confer host authority; no daemon, socket, secrets or production credentials are provisioned by this capability."
+      },
+      "maintenance": {
+        "upstream": "nektos/act",
+        "review_cadence": "before-version-update",
+        "last_reviewed": "2026-11-13"
+      },
+      "overlap": [],
+      "profile_candidate": "local-ci",
+      "stable_capability": "act-local-ci",
+      "status": "accepted",
+      "owner": "egohygiene/realm",
+      "rationale": "Explicit client-only capability with official v0.2.97 archive SHA-256 pins for Linux AMD64/ARM64 and guarded installation. Admission covers source and installer behavior; native ARM64 workflow execution, Apple Silicon host proof and general non-base projections remain separate qualification gates. Checksums identify bytes, not publisher-signature authentication.",
+      "tests": [
+        "tests/test_realm_act_capability.py",
+        "tests/test_realm_profile_publications.py::RealmProfilePublicationTests.test_every_stable_tool_maps_to_its_profile"
+      ]
+    },
     "aws-cli": {
       "display_name": "AWS CLI",
       "purpose": "Operate and inspect AWS resources from approved cloud-oriented development profiles.",

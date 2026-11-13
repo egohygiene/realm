@@ -14,6 +14,8 @@ This matrix declares supported profile inputs. OCI build, size, SBOM, and proven
 | full | linux/arm64 | yes | yes | yes | yes |
 | git | linux/amd64 | yes | yes | yes | yes |
 | git | linux/arm64 | yes | yes | yes | yes |
+| local-ci | linux/amd64 | yes | yes | yes | yes |
+| local-ci | linux/arm64 | yes | yes | yes | yes |
 | media | linux/amd64 | yes | yes | yes | yes |
 | media | linux/arm64 | yes | yes | yes | yes |
 | node | linux/amd64 | yes | yes | yes | yes |

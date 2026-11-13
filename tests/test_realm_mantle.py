@@ -209,9 +209,18 @@ class RealmMantleTests(unittest.TestCase):
             self.assertLess(time.monotonic() - started, 4)
             pid = int(pidfile.read_text())
             process_status = Path(f"/proc/{pid}/stat")
-            if process_status.exists():
-                # A killed orphan can briefly await its parent's reaper.
-                self.assertEqual(process_status.read_text().split()[2], "Z")
+            # SIGTERM delivery and orphan reaping are asynchronous. Keep the
+            # deadline assertion, but allow the kernel to schedule termination.
+            stopped_by = time.monotonic() + 2
+            while process_status.exists():
+                try:
+                    state = process_status.read_text().split()[2]
+                except FileNotFoundError:
+                    break
+                if state == "Z":
+                    break
+                self.assertLess(time.monotonic(), stopped_by, f"owned child still {state}")
+                time.sleep(0.01)
 
 
 if __name__ == "__main__":

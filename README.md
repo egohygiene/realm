@@ -55,6 +55,14 @@ truth.
 - [`docs/image-evidence.md`](docs/image-evidence.md) documents explicit installed-image
   SBOM/vulnerability capture, immutable identity boundaries and local-only proof.
 
+## Local CI
+
+For local validation without hosted Actions, see [local CI](docs/local-ci.md).
+The opt-in `local-ci` profile declares checksum-pinned `act`; `task act:install`,
+`task local-ci:doctor`, `task local-ci:plan` and `task local-ci:run OUTPUT=...`
+provide the developer path. Docker remains an explicit prerequisite. Reports
+retain unsupported and blocked jobs separately from the checks that ran.
+
 ## Reproducible base image
 
 Realm's first image projection is a deliberately small Debian Trixie base for

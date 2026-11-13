@@ -1,0 +1,11 @@
+{
+  "schema_version": "1.0.0",
+  "name": "local-ci",
+  "description": "Explicit act client selection; Docker engine access remains an external prerequisite",
+  "extends": ["base"],
+  "include": ["act-local-ci"],
+  "exclude": [],
+  "platforms": ["linux/amd64", "linux/arm64"],
+  "projections": ["docker", "devcontainer", "nix", "workstation"],
+  "constraints": {"allow_privileged": false, "allow_services": false, "secrets": "forbidden"}
+}

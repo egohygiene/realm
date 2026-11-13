@@ -3,10 +3,10 @@
   "publication_version": "1.0.0",
   "profile": "python",
   "description": "Base environment plus a pinned Python toolchain",
-  "catalog_checksum": "sha256:ad15bb347eea66d9d89bb7c0d9d8f4e2cfe6d024b6eaf253af8f263b3a6c7a82",
-  "registry_checksum": "sha256:2ec2581ab7ebe4c4b898abe139f8ac8dd0b3b9b69e89a04f9ac81ff5df988c16",
+  "catalog_checksum": "sha256:1a3ca4c29678556fb4c13769ab91ed65e634ceff37cb90fda11d53031a7e6048",
+  "registry_checksum": "sha256:ab6186d59a0af0e29ffa21fd6c9c57c18380a1fe0264e761103211a3084cb719",
   "profile_checksum": "sha256:5ab7a5e705caaa1c5a00077d9a0413c28f20c1d9aadcb4a85e41e861d213287e",
-  "cache_key": "sha256:5f83b79ffb153bfd843ddc53975fc144e8d3d5eeb684e13738c56253920a22c6",
+  "cache_key": "sha256:38dd81fb3fa246fe84b477c78e0ba195ab22b1b3e6477b28cd6d7eb212cf9f01",
   "contents": {
     "capabilities": [
       "realm-base",
@@ -164,6 +164,6 @@
   "sbom": {
     "format": "SPDX-2.3 declared-intent",
     "path": "sbom.spdx.json",
-    "sha256": "sha256:477190ab9cd745bddee6658fd549420d46d55ab9389479076bace3e214ad7d00"
+    "sha256": "sha256:d63274890c14db5ac9dd54d0f3d8cb06010843edf8cad35d15bbe110b37adf0f"
   }
 }

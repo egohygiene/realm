@@ -3,7 +3,7 @@
     {
       "mode": "0644",
       "path": ".devcontainer/devcontainer.json",
-      "sha256": "f9d560f8c847699144e5defa086618aea6a38311dc0250f8247f32886e80dff7"
+      "sha256": "efc207f7f2fa74da13d80c3e35ad658d358053cd93e4827a1c84da3419434c7b"
     },
     {
       "mode": "0644",
@@ -23,7 +23,7 @@
     {
       "mode": "0644",
       "path": "catalog/capabilities.json",
-      "sha256": "16c282cfba5d1b73ef60d2e6ecfe829ae9828197f6272edd377fbc5db7c3b20c"
+      "sha256": "9f579696a628127eac6e93cbb543c343d39e73f5ad7489879532100320727342"
     },
     {
       "mode": "0644",
@@ -38,7 +38,7 @@
     {
       "mode": "0644",
       "path": "images/base/packages/locks/debian-trixie-arm64.lock.json",
-      "sha256": "1983e4a350a221f86e3314df3470a2a5dc5adda4feeb49dbc5af1032c68c4029"
+      "sha256": "7574272c4cd0bcc436ff4e4ba2f1b699be91d99e9f219c6e2ccbca9502a0f172"
     },
     {
       "mode": "0755",
@@ -68,7 +68,7 @@
     {
       "mode": "0644",
       "path": "resolved-profile.v1.json",
-      "sha256": "939b34c7afa1b9441cec5013c47ff9f5de24dfc36226f6178a7c99d672aa1462"
+      "sha256": "b414af1351efdae62f6c005af42a82f39f7ea549729e86ff4440d6692200e5bc"
     }
   ],
   "generator": {
@@ -87,7 +87,7 @@
     },
     "catalog/capabilities.json": {
       "mode": "0644",
-      "sha256": "16c282cfba5d1b73ef60d2e6ecfe829ae9828197f6272edd377fbc5db7c3b20c"
+      "sha256": "9f579696a628127eac6e93cbb543c343d39e73f5ad7489879532100320727342"
     },
     "config/debian-trixie.json": {
       "mode": "0644",
@@ -99,7 +99,7 @@
     },
     "images/base/packages/locks/debian-trixie-arm64.lock.json": {
       "mode": "0644",
-      "sha256": "1983e4a350a221f86e3314df3470a2a5dc5adda4feeb49dbc5af1032c68c4029"
+      "sha256": "7574272c4cd0bcc436ff4e4ba2f1b699be91d99e9f219c6e2ccbca9502a0f172"
     },
     "images/base/scripts/install-apt-packages": {
       "mode": "0755",
@@ -137,6 +137,10 @@
       "mode": "0644",
       "sha256": "e41d149cf8c05a84ffb432c3a6cfb5d7bb889e50f2b4dd07464b0e699a61c673"
     },
+    "profiles/local-ci.profile.json": {
+      "mode": "0644",
+      "sha256": "a356a2ad19620e6e4b2717a6926c1217c796e471a05e9894fb068a33c61fdb21"
+    },
     "profiles/media.profile.json": {
       "mode": "0644",
       "sha256": "e70766fcb36f80b6ff6bfb0a7e9497724a3f7bae4af833c333f7c34108ff4958"
@@ -170,8 +174,8 @@
   "profile": "base",
   "projection": "devcontainer",
   "published": false,
-  "resolved_sha256": "939b34c7afa1b9441cec5013c47ff9f5de24dfc36226f6178a7c99d672aa1462",
+  "resolved_sha256": "b414af1351efdae62f6c005af42a82f39f7ea549729e86ff4440d6692200e5bc",
   "schema_version": "1.0.0",
-  "source_identity": "sha256:1dee4c41aa78bda50b6446424f33d69e143fc972dee7fa2bea365130ce5d046f",
+  "source_identity": "sha256:781255d33e4f01739ae20e87fc09b926f7b122e2ccf56ea1cce11967415b2631",
   "status": "generated-source"
 }

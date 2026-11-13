@@ -1,0 +1,51 @@
+{
+  "schema_version": "realm.local-ci/v1",
+  "checks": [
+    {
+      "id": "offline-contracts-direct",
+      "kind": "direct",
+      "command": ["task", "check"],
+      "timeout_seconds": 600,
+      "required": true
+    },
+    {
+      "id": "offline-contracts-act",
+      "kind": "act",
+      "workflow": ".github/act/local-validation.yml",
+      "job": "offline-tests",
+      "event": "workflow_dispatch",
+      "timeout_seconds": 900,
+      "required": true,
+      "matrix": [],
+      "inputs": {},
+      "platforms": {
+        "ubuntu-24.04": "ghcr.io/catthehacker/ubuntu:act-24.04@sha256:19619a010b204f44c5340bff7d39b68551109fe6a56a53f75201ea91e05d4270"
+      },
+      "required_secrets": []
+    },
+    {
+      "id": "hosted-contracts-wiring",
+      "kind": "unsupported",
+      "required": false,
+      "reason": "The normal validate.yml/contracts job additionally bootstraps checkout and Task through remote Actions. The local act fixture exercises the identical unittest command; direct task check covers the complete offline contract gate. Provider Action bootstrap and hosted context require separate qualification and are not inferred from this fixture."
+    },
+    {
+      "id": "native-image-amd64",
+      "kind": "unsupported",
+      "required": false,
+      "reason": "Outside the portable validation selection: ci:architecture requires an explicitly reviewed native Docker host, signed snapshot replay and nested Docker access. Run task ci:architecture ARCH=amd64 separately on an eligible host; this selection makes no image-build claim."
+    },
+    {
+      "id": "native-image-arm64",
+      "kind": "unsupported",
+      "required": false,
+      "reason": "Native ARM64 image qualification requires a native ARM64 Linux Docker host. AMD64 emulation does not satisfy this check."
+    },
+    {
+      "id": "release-review",
+      "kind": "unsupported",
+      "required": false,
+      "reason": "The manual release review workflow requires live provider/default-branch context and is outside local validation; no release or registry operation is selected."
+    }
+  ]
+}

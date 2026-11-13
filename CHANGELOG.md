@@ -8,5 +8,9 @@ is invented from source commits or image tags.
 
 ### Added
 
+- Opt-in checksum-pinned act tooling, deterministic runner defaults, explicit local
+  validation plans and multi-repository reports, including managed-cloud proxy/CA
+  support and visible unsupported/provider coverage gaps.
+
 - Local planning, review-patch preparation and portable evidence-bundle verification for Realm's incubating container-image release profile.
 - Explicit immutable-digest, signing, registry-adapter, rollback and retention boundaries; local image evidence remains distinct from publication and authentication.

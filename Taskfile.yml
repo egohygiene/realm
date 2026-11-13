@@ -275,6 +275,37 @@ tasks:
     cmds:
       - task: check
 
+  act:install:
+    desc: Install the checksum-pinned local act development client.
+    cmds:
+      - '"{{.PYTHON}}" tools/realm_act.py install --output .cache/realm/local-ci/bin/act'
+
+  local-ci:doctor:
+    desc: Diagnose act and Docker without starting repository checks.
+    vars:
+      ACT: '{{default ".cache/realm/local-ci/bin/act" .ACT}}'
+    env:
+      REALM_LOCAL_ACT: '{{.ACT}}'
+    cmds:
+      - '"{{.PYTHON}}" tools/realm_local_ci.py doctor --act "$REALM_LOCAL_ACT"'
+
+  local-ci:plan:
+    desc: Inspect the explicit local validation selection without executing it.
+    cmds:
+      - '"{{.PYTHON}}" tools/realm_local_ci.py plan --repository .'
+
+  local-ci:run:
+    desc: Run the declared local checks into a new ignored report directory.
+    requires:
+      vars: [OUTPUT]
+    vars:
+      ACT: '{{default ".cache/realm/local-ci/bin/act" .ACT}}'
+    env:
+      REALM_LOCAL_ACT: '{{.ACT}}'
+      REALM_LOCAL_OUTPUT: '{{.OUTPUT}}'
+    cmds:
+      - '"{{.PYTHON}}" tools/realm_local_ci.py run --repository . --act "$REALM_LOCAL_ACT" --output "$REALM_LOCAL_OUTPUT"'
+
   release:plan:
     desc: Inspect a proposed stable tag and local source without mutation.
     requires:
