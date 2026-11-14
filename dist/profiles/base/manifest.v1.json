@@ -3,10 +3,10 @@
   "publication_version": "1.0.0",
   "profile": "base",
   "description": "Small language-neutral development foundation",
-  "catalog_checksum": "sha256:1a3ca4c29678556fb4c13769ab91ed65e634ceff37cb90fda11d53031a7e6048",
-  "registry_checksum": "sha256:ab6186d59a0af0e29ffa21fd6c9c57c18380a1fe0264e761103211a3084cb719",
+  "catalog_checksum": "sha256:2cd6c12815e3d900c22e3c3b7f6fd1668052704cb915b85d34e6142c18324277",
+  "registry_checksum": "sha256:fd4ad125ba37dfc13ce03366cae188349ceb88f0b1f664aab2a0ef914ce955b4",
   "profile_checksum": "sha256:bd591f3701e67972c601165e7d3215ddeca52cda2c6c5fea80649a1cadbcc0c0",
-  "cache_key": "sha256:ebf90537b6d472df72da7444f9e3f532fb253c3b433d3cac272d598e279ab5c2",
+  "cache_key": "sha256:03ff83dd96a614b0984ad756adf73e6d3d27d3abec854cbfef85df1e69805650",
   "contents": {
     "capabilities": [
       "realm-base",
@@ -107,6 +107,6 @@
   "sbom": {
     "format": "SPDX-2.3 declared-intent",
     "path": "sbom.spdx.json",
-    "sha256": "sha256:89c5dcb46fa66d7a6bab5682cd115046f2ca4bbc7bae09d86b429d9f1f0cc08c"
+    "sha256": "sha256:b64efd4c600724def8f6a3bba15c936d8ed8234e53449e7f2915d73cec9207cc"
   }
 }

@@ -4,7 +4,7 @@
     "realm-base",
     "common-cli"
   ],
-  "catalog_version": "1.3.0",
+  "catalog_version": "1.4.0",
   "constraints": {
     "privileged": false,
     "secrets": "forbidden",
@@ -34,6 +34,8 @@
   "schema_version": "1.0.0",
   "source_pins": {
     "act": "https://github.com/nektos/act@2540ba6c49dfbafe167d655e4044921cd2ed19e7",
+    "bash-completion": "https://github.com/scop/bash-completion@47cc2eb87af2f95bc3a6b13ccebe6bd39b1b107a",
+    "cheat": "https://github.com/cheat/cheat@e2aa2d3611a02593a71cbf645050424228c0e8b0",
     "debian": "https://snapshot.debian.org/archive/debian/20260829T120000Z/",
     "debian-security": "https://snapshot.debian.org/archive/debian-security/20260829T120000Z/",
     "devcontainers-base": "mcr.microsoft.com/devcontainers/base:2.1.15-trixie@sha256:b8c3669fb4cc652621b3386517c40ab3e151e827de958d6fe75528798ffb5727",

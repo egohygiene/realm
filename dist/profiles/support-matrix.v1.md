@@ -22,6 +22,8 @@ This matrix declares supported profile inputs. OCI build, size, SBOM, and proven
 | node | linux/arm64 | yes | yes | yes | yes |
 | python | linux/amd64 | yes | yes | yes | yes |
 | python | linux/arm64 | yes | yes | yes | yes |
+| reference | linux/amd64 | yes | yes | yes | yes |
+| reference | linux/arm64 | yes | yes | yes | yes |
 | rust | linux/amd64 | yes | yes | yes | yes |
 | rust | linux/arm64 | yes | yes | yes | yes |
 | services | linux/amd64 | — | yes | yes | yes |

@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "registry_version": "1.2.0",
+  "registry_version": "1.3.0",
   "statuses": [
     "accepted",
     "experimental",
@@ -49,7 +49,10 @@
       "source": "https://github.com/aws/aws-cli-v2",
       "version_source": null,
       "license": "Apache-2.0",
-      "platforms": ["linux/amd64", "linux/arm64"],
+      "platforms": [
+        "linux/amd64",
+        "linux/arm64"
+      ],
       "security": {
         "risk": "medium",
         "privileged": false,
@@ -69,6 +72,71 @@
       "rationale": "Useful cloud client already represented in the capability catalog, but stable inclusion waits for an immutable package/version lock and smoke test.",
       "tests": []
     },
+    "bash-completion": {
+      "display_name": "bash-completion",
+      "purpose": "Provide the upstream completion helper fallback required by cheat when the host has no compatible helper library.",
+      "category": "shell",
+      "source": "https://github.com/scop/bash-completion",
+      "version_source": "https://github.com/scop/bash-completion@47cc2eb87af2f95bc3a6b13ccebe6bd39b1b107a",
+      "license": "GPL-2.0-or-later",
+      "platforms": [
+        "linux/amd64",
+        "linux/arm64"
+      ],
+      "security": {
+        "risk": "low",
+        "privileged": false,
+        "network_access": false,
+        "notes": "Exact upstream helper and compatibility source are bundled with original license. The guarded interactive activation uses an existing helper when available and does not install system packages or perform startup network requests."
+      },
+      "maintenance": {
+        "upstream": "scop/bash-completion",
+        "review_cadence": "before-version-update",
+        "last_reviewed": "2026-11-13"
+      },
+      "overlap": [],
+      "profile_candidate": "reference",
+      "stable_capability": "cheat-reference",
+      "status": "accepted",
+      "owner": "egohygiene/realm",
+      "rationale": "Pinned2.17.0 helper/compatibility source makes the selected reference bootstrap self-contained for Bash4.2+ while preserving upstream code and distinct license; it is not added to base or full profiles.",
+      "tests": [
+        "tests/test_realm_cheat.py"
+      ]
+    },
+    "cheat": {
+      "display_name": "cheat",
+      "purpose": "Read and maintain local command-reference sheets through an explicit user-owned bootstrap.",
+      "category": "reference",
+      "source": "https://github.com/cheat/cheat",
+      "version_source": "https://github.com/cheat/cheat@e2aa2d3611a02593a71cbf645050424228c0e8b0",
+      "license": "MIT",
+      "platforms": [
+        "linux/amd64",
+        "linux/arm64"
+      ],
+      "security": {
+        "risk": "low",
+        "privileged": false,
+        "network_access": true,
+        "notes": "Bootstrap explicitly acquires pinned bytes. Shell activation performs no network or package setup; personal sheets/configuration remain user-owned. Editors, pagers and custom completion libraries are trusted user configuration."
+      },
+      "maintenance": {
+        "upstream": "cheat/cheat",
+        "review_cadence": "before-version-update",
+        "last_reviewed": "2026-11-13"
+      },
+      "overlap": [],
+      "profile_candidate": "reference",
+      "stable_capability": "cheat-reference",
+      "status": "accepted",
+      "owner": "egohygiene/realm",
+      "rationale": "Version5.1.0 has checksum-pinned official Linux AMD64/ARM64 gzip assets, exact upstream completion and a pinned Bash completion fallback dependency with retained licenses. Admission covers native Linux bootstrap and local source controls, not optional image/Nix adapters or native ARM64 runtime qualification.",
+      "tests": [
+        "tests/test_realm_cheat.py",
+        "tests/test_realm_profile_publications.py::RealmProfilePublicationTests.test_every_stable_tool_maps_to_its_profile"
+      ]
+    },
     "docker-compose-v1": {
       "display_name": "Docker Compose v1",
       "purpose": "Legacy Python-based Docker Compose client.",
@@ -76,7 +144,10 @@
       "source": "https://github.com/docker/compose",
       "version_source": null,
       "license": "Apache-2.0",
-      "platforms": ["linux/amd64", "linux/arm64"],
+      "platforms": [
+        "linux/amd64",
+        "linux/arm64"
+      ],
       "security": {
         "risk": "medium",
         "privileged": false,
@@ -88,7 +159,9 @@
         "review_cadence": "on-demand",
         "last_reviewed": "2026-08-20"
       },
-      "overlap": ["docker-compose-v2"],
+      "overlap": [
+        "docker-compose-v2"
+      ],
       "profile_candidate": "services",
       "stable_capability": null,
       "status": "superseded",
@@ -103,7 +176,10 @@
       "source": "https://github.com/docker/compose",
       "version_source": null,
       "license": "Apache-2.0",
-      "platforms": ["linux/amd64", "linux/arm64"],
+      "platforms": [
+        "linux/amd64",
+        "linux/arm64"
+      ],
       "security": {
         "risk": "high",
         "privileged": false,
@@ -115,7 +191,9 @@
         "review_cadence": "before-adoption",
         "last_reviewed": "2026-08-20"
       },
-      "overlap": ["docker-compose-v1"],
+      "overlap": [
+        "docker-compose-v1"
+      ],
       "profile_candidate": "services",
       "stable_capability": null,
       "status": "experimental",
@@ -130,7 +208,10 @@
       "source": "https://ffmpeg.org/",
       "version_source": "https://snapshot.debian.org/archive/debian/20260829T120000Z/",
       "license": "LGPL-2.1-or-later / GPL-2.0-or-later depending on build",
-      "platforms": ["linux/amd64", "linux/arm64"],
+      "platforms": [
+        "linux/amd64",
+        "linux/arm64"
+      ],
       "security": {
         "risk": "medium",
         "privileged": false,
@@ -148,7 +229,9 @@
       "status": "accepted",
       "owner": "egohygiene/realm",
       "rationale": "The Debian snapshot pin and bounded media profile make the declared package intent reproducible; a built-image package lock and runtime smoke test remain required before an OCI release.",
-      "tests": ["tests/test_realm_profile_publications.py::RealmProfilePublicationTests.test_every_stable_tool_maps_to_its_profile"]
+      "tests": [
+        "tests/test_realm_profile_publications.py::RealmProfilePublicationTests.test_every_stable_tool_maps_to_its_profile"
+      ]
     },
     "flutter": {
       "display_name": "Flutter SDK",
@@ -157,7 +240,10 @@
       "source": "https://github.com/flutter/flutter",
       "version_source": "https://github.com/flutter/flutter@20f82749394e68bcfbbeee96bad384abaae09c13",
       "license": "BSD-3-Clause",
-      "platforms": ["linux/amd64", "linux/arm64"],
+      "platforms": [
+        "linux/amd64",
+        "linux/arm64"
+      ],
       "security": {
         "risk": "medium",
         "privileged": false,
@@ -175,7 +261,9 @@
       "status": "accepted",
       "owner": "egohygiene/realm",
       "rationale": "The SDK is pinned to the reviewed 3.35.1 revision and isolated in a dedicated profile so it does not inflate unrelated language environments.",
-      "tests": ["tests/test_realm_profile_publications.py::RealmProfilePublicationTests.test_every_stable_tool_maps_to_its_profile"]
+      "tests": [
+        "tests/test_realm_profile_publications.py::RealmProfilePublicationTests.test_every_stable_tool_maps_to_its_profile"
+      ]
     },
     "git": {
       "display_name": "Git",
@@ -184,7 +272,10 @@
       "source": "https://git-scm.com/",
       "version_source": "https://snapshot.debian.org/archive/debian/20260829T120000Z/",
       "license": "GPL-2.0-only",
-      "platforms": ["linux/amd64", "linux/arm64"],
+      "platforms": [
+        "linux/amd64",
+        "linux/arm64"
+      ],
       "security": {
         "risk": "medium",
         "privileged": false,
@@ -202,7 +293,9 @@
       "status": "accepted",
       "owner": "egohygiene/realm",
       "rationale": "Git is kept in a dedicated profile with a snapshot-pinned package source; the base image stays intentionally smaller.",
-      "tests": ["tests/test_realm_profile_publications.py::RealmProfilePublicationTests.test_every_stable_tool_maps_to_its_profile"]
+      "tests": [
+        "tests/test_realm_profile_publications.py::RealmProfilePublicationTests.test_every_stable_tool_maps_to_its_profile"
+      ]
     },
     "git-delta": {
       "display_name": "delta",
@@ -211,7 +304,10 @@
       "source": "https://github.com/dandavison/delta",
       "version_source": "https://github.com/dandavison/delta@a589ff9debaefdd3992384434120f5a03a103481",
       "license": "MIT",
-      "platforms": ["linux/amd64", "linux/arm64"],
+      "platforms": [
+        "linux/amd64",
+        "linux/arm64"
+      ],
       "security": {
         "risk": "low",
         "privileged": false,
@@ -229,7 +325,9 @@
       "status": "accepted",
       "owner": "egohygiene/realm",
       "rationale": "A bounded terminal diff tool adds useful review ergonomics while the profile remains separate from the language and base profiles.",
-      "tests": ["tests/test_realm_profile_publications.py::RealmProfilePublicationTests.test_every_stable_tool_maps_to_its_profile"]
+      "tests": [
+        "tests/test_realm_profile_publications.py::RealmProfilePublicationTests.test_every_stable_tool_maps_to_its_profile"
+      ]
     },
     "google-cloud-cli": {
       "display_name": "Google Cloud CLI",
@@ -238,7 +336,10 @@
       "source": "https://github.com/GoogleCloudPlatform/cloud-sdk-docker",
       "version_source": null,
       "license": "Apache-2.0 and component-specific licenses",
-      "platforms": ["linux/amd64", "linux/arm64"],
+      "platforms": [
+        "linux/amd64",
+        "linux/arm64"
+      ],
       "security": {
         "risk": "medium",
         "privileged": false,
@@ -265,7 +366,10 @@
       "source": "https://imagemagick.org/",
       "version_source": "https://snapshot.debian.org/archive/debian/20260829T120000Z/",
       "license": "ImageMagick",
-      "platforms": ["linux/amd64", "linux/arm64"],
+      "platforms": [
+        "linux/amd64",
+        "linux/arm64"
+      ],
       "security": {
         "risk": "medium",
         "privileged": false,
@@ -283,7 +387,9 @@
       "status": "accepted",
       "owner": "egohygiene/realm",
       "rationale": "Image conversion belongs with FFmpeg in the explicitly selected media profile and shares its snapshot-pinned package source.",
-      "tests": ["tests/test_realm_profile_publications.py::RealmProfilePublicationTests.test_every_stable_tool_maps_to_its_profile"]
+      "tests": [
+        "tests/test_realm_profile_publications.py::RealmProfilePublicationTests.test_every_stable_tool_maps_to_its_profile"
+      ]
     },
     "mantle": {
       "display_name": "Mantle",
@@ -292,7 +398,10 @@
       "source": "https://github.com/egohygiene/mantle",
       "version_source": "https://github.com/egohygiene/mantle@e5a4e9ca20833a29d6f20b18ff7103674ed3a064",
       "license": "MIT",
-      "platforms": ["linux/amd64", "linux/arm64"],
+      "platforms": [
+        "linux/amd64",
+        "linux/arm64"
+      ],
       "security": {
         "risk": "medium",
         "privileged": false,
@@ -310,7 +419,9 @@
       "status": "accepted",
       "owner": "egohygiene/mantle",
       "rationale": "Realm consumes the reviewed immutable Mantle revision while leaving shell behavior and installer implementation with Mantle.",
-      "tests": ["tests/test_realm_profile_publications.py::RealmProfilePublicationTests.test_every_stable_tool_maps_to_its_profile"]
+      "tests": [
+        "tests/test_realm_profile_publications.py::RealmProfilePublicationTests.test_every_stable_tool_maps_to_its_profile"
+      ]
     },
     "node": {
       "display_name": "Node.js",
@@ -319,7 +430,10 @@
       "source": "https://github.com/nodejs/node",
       "version_source": "https://github.com/nodejs/node@v24.6.0",
       "license": "MIT",
-      "platforms": ["linux/amd64", "linux/arm64"],
+      "platforms": [
+        "linux/amd64",
+        "linux/arm64"
+      ],
       "security": {
         "risk": "low",
         "privileged": false,
@@ -337,7 +451,9 @@
       "status": "accepted",
       "owner": "egohygiene/realm",
       "rationale": "Pinned runtime already represented by the node-toolchain capability and directly owned by the Node profile.",
-      "tests": ["tests/test_realm_profiles.py::RealmProfileTests.test_catalog_and_profiles_are_valid"]
+      "tests": [
+        "tests/test_realm_profiles.py::RealmProfileTests.test_catalog_and_profiles_are_valid"
+      ]
     },
     "opentofu": {
       "display_name": "OpenTofu",
@@ -346,7 +462,10 @@
       "source": "https://github.com/opentofu/opentofu",
       "version_source": "https://github.com/opentofu/opentofu@v1.10.6",
       "license": "MPL-2.0",
-      "platforms": ["linux/amd64", "linux/arm64"],
+      "platforms": [
+        "linux/amd64",
+        "linux/arm64"
+      ],
       "security": {
         "risk": "high",
         "privileged": false,
@@ -358,13 +477,17 @@
         "review_cadence": "monthly",
         "last_reviewed": "2026-08-20"
       },
-      "overlap": ["pulumi"],
+      "overlap": [
+        "pulumi"
+      ],
       "profile_candidate": "cloud",
       "stable_capability": "cloud-cli",
       "status": "accepted",
       "owner": "egohygiene/realm",
       "rationale": "Pinned artifact already declared by the cloud-cli capability. Stable inclusion is tooling-only and does not grant apply authority.",
-      "tests": ["tests/test_realm_profile_publications.py::RealmProfilePublicationTests.test_every_stable_tool_maps_to_its_profile"]
+      "tests": [
+        "tests/test_realm_profile_publications.py::RealmProfilePublicationTests.test_every_stable_tool_maps_to_its_profile"
+      ]
     },
     "pulumi": {
       "display_name": "Pulumi",
@@ -373,7 +496,10 @@
       "source": "https://github.com/pulumi/pulumi",
       "version_source": "https://github.com/pulumi/pulumi@v3.196.0",
       "license": "Apache-2.0",
-      "platforms": ["linux/amd64", "linux/arm64"],
+      "platforms": [
+        "linux/amd64",
+        "linux/arm64"
+      ],
       "security": {
         "risk": "high",
         "privileged": false,
@@ -385,13 +511,17 @@
         "review_cadence": "monthly",
         "last_reviewed": "2026-08-20"
       },
-      "overlap": ["opentofu"],
+      "overlap": [
+        "opentofu"
+      ],
       "profile_candidate": "cloud",
       "stable_capability": "cloud-cli",
       "status": "accepted",
       "owner": "egohygiene/realm",
       "rationale": "Pinned artifact already declared by the cloud-cli capability; inclusion supports consumers without making Pulumi mandatory.",
-      "tests": ["tests/test_realm_profile_publications.py::RealmProfilePublicationTests.test_every_stable_tool_maps_to_its_profile"]
+      "tests": [
+        "tests/test_realm_profile_publications.py::RealmProfilePublicationTests.test_every_stable_tool_maps_to_its_profile"
+      ]
     },
     "python": {
       "display_name": "Python",
@@ -400,7 +530,10 @@
       "source": "https://github.com/python/cpython",
       "version_source": "https://github.com/python/cpython@bcee1c322115c581da27600f2ae55e5439c027eb",
       "license": "PSF-2.0",
-      "platforms": ["linux/amd64", "linux/arm64"],
+      "platforms": [
+        "linux/amd64",
+        "linux/arm64"
+      ],
       "security": {
         "risk": "low",
         "privileged": false,
@@ -418,7 +551,9 @@
       "status": "accepted",
       "owner": "egohygiene/realm",
       "rationale": "The selected CPython revision is represented by the dedicated Python capability and does not make Python a requirement of the base image.",
-      "tests": ["tests/test_realm_profile_publications.py::RealmProfilePublicationTests.test_every_stable_tool_maps_to_its_profile"]
+      "tests": [
+        "tests/test_realm_profile_publications.py::RealmProfilePublicationTests.test_every_stable_tool_maps_to_its_profile"
+      ]
     },
     "rustup": {
       "display_name": "rustup",
@@ -427,7 +562,10 @@
       "source": "https://github.com/rust-lang/rustup",
       "version_source": "https://github.com/rust-lang/rustup@1.28.2",
       "license": "MIT OR Apache-2.0",
-      "platforms": ["linux/amd64", "linux/arm64"],
+      "platforms": [
+        "linux/amd64",
+        "linux/arm64"
+      ],
       "security": {
         "risk": "low",
         "privileged": false,
@@ -445,7 +583,9 @@
       "status": "accepted",
       "owner": "egohygiene/realm",
       "rationale": "Pinned artifact already represented by the rust-toolchain capability and directly owned by the Rust profile.",
-      "tests": ["tests/test_realm_profiles.py::RealmProfileTests.test_language_profile_inherits_base"]
+      "tests": [
+        "tests/test_realm_profiles.py::RealmProfileTests.test_language_profile_inherits_base"
+      ]
     },
     "strace": {
       "display_name": "strace",
@@ -454,7 +594,10 @@
       "source": "https://strace.io/",
       "version_source": null,
       "license": "LGPL-2.1-or-later",
-      "platforms": ["linux/amd64", "linux/arm64"],
+      "platforms": [
+        "linux/amd64",
+        "linux/arm64"
+      ],
       "security": {
         "risk": "medium",
         "privileged": false,
@@ -466,7 +609,9 @@
         "review_cadence": "before-adoption",
         "last_reviewed": "2026-08-20"
       },
-      "overlap": ["sysdig"],
+      "overlap": [
+        "sysdig"
+      ],
       "profile_candidate": "diagnostics",
       "stable_capability": null,
       "status": "experimental",
@@ -481,7 +626,10 @@
       "source": "https://github.com/draios/sysdig",
       "version_source": null,
       "license": "Apache-2.0",
-      "platforms": ["linux/amd64", "linux/arm64"],
+      "platforms": [
+        "linux/amd64",
+        "linux/arm64"
+      ],
       "security": {
         "risk": "high",
         "privileged": true,
@@ -493,7 +641,9 @@
         "review_cadence": "before-adoption",
         "last_reviewed": "2026-08-20"
       },
-      "overlap": ["strace"],
+      "overlap": [
+        "strace"
+      ],
       "profile_candidate": "diagnostics-privileged",
       "stable_capability": null,
       "status": "deferred",
@@ -508,7 +658,10 @@
       "source": "https://github.com/hashicorp/terraform",
       "version_source": null,
       "license": "BUSL-1.1 for current upstream releases",
-      "platforms": ["linux/amd64", "linux/arm64"],
+      "platforms": [
+        "linux/amd64",
+        "linux/arm64"
+      ],
       "security": {
         "risk": "high",
         "privileged": false,
@@ -520,7 +673,9 @@
         "review_cadence": "on-demand",
         "last_reviewed": "2026-08-20"
       },
-      "overlap": ["opentofu"],
+      "overlap": [
+        "opentofu"
+      ],
       "profile_candidate": "cloud",
       "stable_capability": null,
       "status": "rejected",

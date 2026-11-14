@@ -40,6 +40,7 @@ their consumers, and lexical ordering for otherwise independent nodes.
 | `cloud` | `base` | pinned OpenTofu and Pulumi clients | forbidden |
 | `media` | `base` | FFmpeg and ImageMagick | forbidden |
 | `local-ci` | `base` | checksum-pinned `act` client | external Docker connection is explicit; no daemon or socket provisioned |
+| `reference` | `base` | pinned cheat and upstream Bash completion | explicit user-owned bootstrap; no privileged install or services |
 | `full` | curated general-purpose non-service profiles | Mantle shell environment | forbidden |
 | `services` | `base` | container host service | explicit opt-in |
 
@@ -77,6 +78,11 @@ artifact intent, not implemented installation adapters. Upstream SHA-256 values
 bind bytes; publisher-signature verification is not claimed.
 
 ## Projections
+
+The optional `reference` capability has an implemented native Linux user-owned
+bootstrap, documented in [the cheat reference guide](cheat-reference.md). Its
+other projection entries describe artifact intent, not available optional image,
+Dev Container or Nix renderers. Base/full profiles do not inherit it.
 
 - `docker` produces packages and artifacts for an OCI build.
 - `devcontainer` produces the image/features inputs and editor integration.

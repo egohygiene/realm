@@ -8,6 +8,9 @@ is invented from source commits or image tags.
 
 ### Added
 
+- Optional pinned cheat reference tooling with an explicit user-owned bootstrap,
+  preserved personal configuration/sheets and guarded upstream Bash completion.
+
 - Opt-in checksum-pinned act tooling, deterministic runner defaults, explicit local
   validation plans and multi-repository reports, including managed-cloud proxy/CA
   support and visible unsupported/provider coverage gaps.

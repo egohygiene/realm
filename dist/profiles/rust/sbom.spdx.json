@@ -3,7 +3,7 @@
   "dataLicense": "CC0-1.0",
   "SPDXID": "SPDXRef-DOCUMENT",
   "name": "realm-profile-rust",
-  "documentNamespace": "https://schemas.egohygiene.io/realm/profile-sbom/rust/e0dd8c04e7ea820ffb36a717073e06bf58e7f8125c149867f65d859a4c36b313",
+  "documentNamespace": "https://schemas.egohygiene.io/realm/profile-sbom/rust/fd8d14fb246d93241e1a5639371cb8763f6931ccb762e4e845b18b405b4a3550",
   "creationInfo": {
     "created": "2026-08-31T00:00:00Z",
     "creators": [

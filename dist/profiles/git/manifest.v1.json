@@ -3,10 +3,10 @@
   "publication_version": "1.0.0",
   "profile": "git",
   "description": "Base environment plus Git and a bounded terminal diff tool",
-  "catalog_checksum": "sha256:1a3ca4c29678556fb4c13769ab91ed65e634ceff37cb90fda11d53031a7e6048",
-  "registry_checksum": "sha256:ab6186d59a0af0e29ffa21fd6c9c57c18380a1fe0264e761103211a3084cb719",
+  "catalog_checksum": "sha256:2cd6c12815e3d900c22e3c3b7f6fd1668052704cb915b85d34e6142c18324277",
+  "registry_checksum": "sha256:fd4ad125ba37dfc13ce03366cae188349ceb88f0b1f664aab2a0ef914ce955b4",
   "profile_checksum": "sha256:d96943f99a75853a308e9188283c06138d51a993c7b721449fa8ed2261b05746",
-  "cache_key": "sha256:3fd8b04b84ee033c03cecd0042eeb9cea50fae29af5ae3679336816c4bdd3855",
+  "cache_key": "sha256:9ced19c3eb0090dfe3a92c8f6e35712213be3223f21944ce7c04cac100e4b9b9",
   "contents": {
     "capabilities": [
       "realm-base",
@@ -138,6 +138,6 @@
   "sbom": {
     "format": "SPDX-2.3 declared-intent",
     "path": "sbom.spdx.json",
-    "sha256": "sha256:f8d2955456f85c64a8fc492681a7b642d22972e4899b08769cd78ee001e39328"
+    "sha256": "sha256:86dc687fa6af284ee295811ee9ca865cb94ce85ffba7492ab8cff9dc85e0e0fe"
   }
 }

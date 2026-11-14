@@ -3,10 +3,10 @@
   "publication_version": "1.0.0",
   "profile": "node",
   "description": "Base environment plus a pinned Node.js toolchain",
-  "catalog_checksum": "sha256:1a3ca4c29678556fb4c13769ab91ed65e634ceff37cb90fda11d53031a7e6048",
-  "registry_checksum": "sha256:ab6186d59a0af0e29ffa21fd6c9c57c18380a1fe0264e761103211a3084cb719",
+  "catalog_checksum": "sha256:2cd6c12815e3d900c22e3c3b7f6fd1668052704cb915b85d34e6142c18324277",
+  "registry_checksum": "sha256:fd4ad125ba37dfc13ce03366cae188349ceb88f0b1f664aab2a0ef914ce955b4",
   "profile_checksum": "sha256:fd7e45455b05a7c46babdcbc2b4a53d3c05304023dd14e9dad01d7cb77d85241",
-  "cache_key": "sha256:542883ef97eb28e62578146f396387cd8e33de072aa36e833f352116e8693c75",
+  "cache_key": "sha256:1da2daa066996d81eace5b05caa84b6d5d378f6b1d31a5b27192cf21a42088b0",
   "contents": {
     "capabilities": [
       "realm-base",
@@ -158,6 +158,6 @@
   "sbom": {
     "format": "SPDX-2.3 declared-intent",
     "path": "sbom.spdx.json",
-    "sha256": "sha256:04a232789107b2b8ec1703707cc85472b0f842764e8f445c16f0ed70d5ccb67a"
+    "sha256": "sha256:d73c7bc8fb981c0c17d4f1da8f51500adc0b55c361937805e78a6fa2e9205ab2"
   }
 }
