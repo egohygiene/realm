@@ -280,6 +280,11 @@ tasks:
     cmds:
       - '"{{.PYTHON}}" tools/realm_act.py install --output .cache/realm/local-ci/bin/act'
 
+  cheat:bootstrap:
+    desc: Explicitly provision the pinned user-owned cheat reference capability and guarded Bash activation.
+    cmds:
+      - '"{{.PYTHON}}" tools/realm_cheat.py bootstrap'
+
   local-ci:doctor:
     desc: Diagnose act and Docker without starting repository checks.
     vars:

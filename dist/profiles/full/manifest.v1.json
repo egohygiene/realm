@@ -3,10 +3,10 @@
   "publication_version": "1.0.0",
   "profile": "full",
   "description": "Union of supported non-service development toolsets",
-  "catalog_checksum": "sha256:1a3ca4c29678556fb4c13769ab91ed65e634ceff37cb90fda11d53031a7e6048",
-  "registry_checksum": "sha256:ab6186d59a0af0e29ffa21fd6c9c57c18380a1fe0264e761103211a3084cb719",
+  "catalog_checksum": "sha256:2cd6c12815e3d900c22e3c3b7f6fd1668052704cb915b85d34e6142c18324277",
+  "registry_checksum": "sha256:fd4ad125ba37dfc13ce03366cae188349ceb88f0b1f664aab2a0ef914ce955b4",
   "profile_checksum": "sha256:c3b2266c4702cff9a290a23d2bdaa47db3836b9bff16d4a001c9013391773624",
-  "cache_key": "sha256:024deee11f11ddc1da6a59fd7e88e8aee89a54e6e004d48847367ec2b42e6bd9",
+  "cache_key": "sha256:b0340a26cc691b2d427dff5c947dde529038be6dfbf079d6356efcc44088a07f",
   "contents": {
     "capabilities": [
       "realm-base",
@@ -311,6 +311,6 @@
   "sbom": {
     "format": "SPDX-2.3 declared-intent",
     "path": "sbom.spdx.json",
-    "sha256": "sha256:2f2e9e58d77223eb907b39edcf160f30e0307a3701da5570251521a096e420a2"
+    "sha256": "sha256:be0d55aff39d749a827a7a4d17c79d27ef101eb3a98a07d7836f4a0b1e2f4aa2"
   }
 }

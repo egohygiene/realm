@@ -1,0 +1,24 @@
+{
+  "schema_version": "realm.cheat-install/v1",
+  "repository": "cheat/cheat",
+  "version": "5.1.0",
+  "license": "MIT",
+  "source_revision": "e2aa2d3611a02593a71cbf645050424228c0e8b0",
+  "artifacts": {
+    "linux/amd64": {
+      "url": "https://github.com/cheat/cheat/releases/download/5.1.0/cheat-linux-amd64.gz",
+      "sha256": "8c8405574d51d63ee89594bfed241f478d507d96af78e5c370dcbe65633d7b34"
+    },
+    "linux/arm64": {
+      "url": "https://github.com/cheat/cheat/releases/download/5.1.0/cheat-linux-arm64.gz",
+      "sha256": "78fd70fedd7c2cd297af827c29c495c8f6d2b9a880739450ac13e18eefa2f17b"
+    }
+  },
+  "completion_sha256": "1b53fe00df0afaa37ff36a12c6cc32439359ca45a135b9c85f31dcf26f5320f7",
+  "bash_completion": {
+    "version": "2.17.0",
+    "source_revision": "47cc2eb87af2f95bc3a6b13ccebe6bd39b1b107a",
+    "library_sha256": "36a471efffeccb63d851d211cfc2c86eb471ece4b8d90b6497ef807d7ed0257f",
+    "compatibility_sha256": "ffe73ddfefc93936eae2a8aac8a3f749da8ed160485717393a272e84f9c754e2"
+  }
+}

@@ -58,6 +58,11 @@ truth.
 ## Local CI
 
 For local validation without hosted Actions, see [local CI](docs/local-ci.md).
+
+For a local command reference, the optional `reference` profile provides pinned
+cheat and upstream Bash completion through `task cheat:bootstrap`. See
+[bootstrap, personal sheets and recovery](docs/cheat-reference.md). The explicit
+user-owned bootstrap leaves base/full package selections unchanged.
 The opt-in `local-ci` profile declares checksum-pinned `act`; `task act:install`,
 `task local-ci:doctor`, `task local-ci:plan` and `task local-ci:run OUTPUT=...`
 provide the developer path. Docker remains an explicit prerequisite. Reports

@@ -3,7 +3,7 @@
   "dataLicense": "CC0-1.0",
   "SPDXID": "SPDXRef-DOCUMENT",
   "name": "realm-profile-git",
-  "documentNamespace": "https://schemas.egohygiene.io/realm/profile-sbom/git/3fd8b04b84ee033c03cecd0042eeb9cea50fae29af5ae3679336816c4bdd3855",
+  "documentNamespace": "https://schemas.egohygiene.io/realm/profile-sbom/git/9ced19c3eb0090dfe3a92c8f6e35712213be3223f21944ce7c04cac100e4b9b9",
   "creationInfo": {
     "created": "2026-08-31T00:00:00Z",
     "creators": [

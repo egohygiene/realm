@@ -1,0 +1,141 @@
+{
+  "schema_version": "1.0.0",
+  "publication_version": "1.0.0",
+  "profile": "reference",
+  "description": "Explicit user-owned cheat CLI and native Bash completion bootstrap",
+  "catalog_checksum": "sha256:2cd6c12815e3d900c22e3c3b7f6fd1668052704cb915b85d34e6142c18324277",
+  "registry_checksum": "sha256:fd4ad125ba37dfc13ce03366cae188349ceb88f0b1f664aab2a0ef914ce955b4",
+  "profile_checksum": "sha256:2b45f24eac067516f66b1fae334498e36991ddb15cb328d105fb46a7d4a4e9d1",
+  "cache_key": "sha256:2b67bb764fb4acb704e2e1648c2e29d794552395cac2f5e357044819940ff038",
+  "contents": {
+    "capabilities": [
+      "realm-base",
+      "common-cli",
+      "cheat-reference"
+    ],
+    "packages": {
+      "docker": [
+        "apt:ca-certificates",
+        "apt:curl",
+        "apt:file",
+        "apt:git-lfs",
+        "apt:gnupg",
+        "apt:jq",
+        "apt:openssh-client",
+        "apt:rsync",
+        "apt:tree",
+        "apt:unzip",
+        "apt:wget",
+        "apt:xz-utils",
+        "apt:zip"
+      ],
+      "devcontainer": [
+        "apt:ca-certificates",
+        "apt:curl",
+        "apt:file",
+        "apt:git-lfs",
+        "apt:gnupg",
+        "apt:jq",
+        "apt:openssh-client",
+        "apt:rsync",
+        "apt:tree",
+        "apt:unzip",
+        "apt:wget",
+        "apt:xz-utils",
+        "apt:zip"
+      ],
+      "nix": [
+        "nix:cacert",
+        "nix:curl",
+        "nix:file",
+        "nix:git-lfs",
+        "nix:gnupg",
+        "nix:jq",
+        "nix:openssh",
+        "nix:rsync",
+        "nix:tree",
+        "nix:unzip",
+        "nix:wget",
+        "nix:xz",
+        "nix:zip"
+      ],
+      "workstation": [
+        "nix:cacert",
+        "nix:curl",
+        "nix:file",
+        "nix:git-lfs",
+        "nix:gnupg",
+        "nix:jq",
+        "nix:openssh",
+        "nix:rsync",
+        "nix:tree",
+        "nix:unzip",
+        "nix:wget",
+        "nix:xz",
+        "nix:zip"
+      ]
+    },
+    "artifacts": [
+      {
+        "name": "bash-completion",
+        "version": "2.17.0",
+        "source": "https://github.com/scop/bash-completion@47cc2eb87af2f95bc3a6b13ccebe6bd39b1b107a",
+        "capability": "cheat-reference"
+      },
+      {
+        "name": "cheat",
+        "version": "5.1.0",
+        "source": "https://github.com/cheat/cheat@e2aa2d3611a02593a71cbf645050424228c0e8b0",
+        "capability": "cheat-reference"
+      }
+    ],
+    "tools": [
+      {
+        "id": "bash-completion",
+        "license": "GPL-2.0-or-later",
+        "owner": "egohygiene/realm",
+        "source": "https://github.com/scop/bash-completion@47cc2eb87af2f95bc3a6b13ccebe6bd39b1b107a",
+        "stable_capability": "cheat-reference"
+      },
+      {
+        "id": "cheat",
+        "license": "MIT",
+        "owner": "egohygiene/realm",
+        "source": "https://github.com/cheat/cheat@e2aa2d3611a02593a71cbf645050424228c0e8b0",
+        "stable_capability": "cheat-reference"
+      }
+    ]
+  },
+  "support": [
+    {
+      "platform": "linux/amd64",
+      "projections": [
+        "docker",
+        "devcontainer",
+        "nix",
+        "workstation"
+      ]
+    },
+    {
+      "platform": "linux/arm64",
+      "projections": [
+        "docker",
+        "devcontainer",
+        "nix",
+        "workstation"
+      ]
+    }
+  ],
+  "size": {
+    "status": "unmeasured",
+    "metric": "expanded OCI image bytes",
+    "owner": "Realm issue #6",
+    "command": "task image:size ARCH=\"<amd64|arm64>\" IMAGE=\"<published-image>\"",
+    "reason": "No profile OCI image has been built or published. Do not infer an image size from declared package names."
+  },
+  "sbom": {
+    "format": "SPDX-2.3 declared-intent",
+    "path": "sbom.spdx.json",
+    "sha256": "sha256:99dc975b46a1d93cb6d00864771b3bbc2e214142b0b1af02295638b65632b9df"
+  }
+}

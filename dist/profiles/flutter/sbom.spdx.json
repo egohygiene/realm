@@ -3,7 +3,7 @@
   "dataLicense": "CC0-1.0",
   "SPDXID": "SPDXRef-DOCUMENT",
   "name": "realm-profile-flutter",
-  "documentNamespace": "https://schemas.egohygiene.io/realm/profile-sbom/flutter/4efe9f74d9fe367e77fbd8d5d8e41ae7db552c4191e719f59d236d54e6788140",
+  "documentNamespace": "https://schemas.egohygiene.io/realm/profile-sbom/flutter/3caa0ba5754cc72423e2fd1b07ef8bb59bb1ab39d53f02e69730a7f6f6af0836",
   "creationInfo": {
     "created": "2026-08-31T00:00:00Z",
     "creators": [

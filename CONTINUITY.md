@@ -1,6 +1,41 @@
 # Realm continuity
 
-## Local CI candidate — 2026-11-13
+## Reference bootstrap checkpoint — 2026-11-13
+
+The maintainer selected [issue40](https://github.com/egohygiene/realm/issues/40)
+for an optional command-reference capability. Base main is
+`75c1b2e1475b972a0ce1c8594e8daba2e1cf8686` (merged local-CI foundation);
+candidate branch is `feat/40-cheat-cli`.
+
+- The `reference` profile admits checksum-pinned cheat 5.1.0 and its exact
+  upstream Bash completion/helper sources with separate preserved licenses.
+  `task cheat:bootstrap` explicitly provisions a versioned user-owned prefix,
+  default XDG configuration, personal-sheet directory and guarded Bash hook.
+- Startup is interactive-only, performs no network/install/configuration writes,
+  tolerates missing optional files and preserves existing completion. Repeated
+  bootstrap and sourcing are stable; existing configuration, personal sheets and
+  local Bash prose survive. Unsafe managed paths, modes and markers fail closed.
+- Native Linux AMD64 online/offline bootstrap, actual version/list/example and
+  real PTY Tab completion passed under temporary HOME. Repeated activation is
+  warning-free and registration stays unchanged. Both architecture gzip hashes
+  and Linux ELF identities passed; native ARM64 execution remains unrun.
+- Focused controls and the complete offline Task gate are recorded in the PR.
+  The guide records install paths, community-sheet opt-in, upgrades, rollback,
+  removal and recoverable partial-bootstrap behavior.
+- Adding catalog intent refreshes profile/Dev Container declarations and lock
+  fingerprints. The 13 APT package records per architecture, snapshots, base
+  recipe and package intent are unchanged. Historical qualification receipts
+  and their original fixtures stay unchanged; no refreshed image runtime proof
+  is inferred from regenerated metadata.
+- Other projection entries remain artifact intent. The current Dev Container
+  emitter is base-only; no optional image/Nix/workstation renderer, hosted job,
+  release publication, new-batch merge or fleet adoption was performed.
+
+Next: independently review this draft and its exact-head receipts. Preserve
+issue40 until review/integration; keep native ARM64 and optional projection
+qualification explicit. Other Realm acceptance remains in #60 and its owners.
+
+## Previous local-CI implementation checkpoint — 2026-11-13 (historical)
 
 The maintainer selected [#48](https://github.com/egohygiene/realm/issues/48) for
 implementation. Candidate branch: `feat/48-local-ci-act`, based on verified main
